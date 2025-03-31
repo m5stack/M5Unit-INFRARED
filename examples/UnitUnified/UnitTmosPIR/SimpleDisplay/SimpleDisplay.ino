@@ -7,5 +7,3 @@
   Simple display example using M5UnitUnified for UnitTmosPIR
 */
 #include "main/SimpleDisplay.cpp"
-
-

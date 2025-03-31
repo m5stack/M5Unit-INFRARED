@@ -99,8 +99,6 @@ jobs:
           - esp32
 
         exclude:
-          - unit: UnitNCIR
-            sketch: SimpleDisplay
           - board: m5stack_atom
             sketch: SimpleDisplay
           - board: m5stack_capsule

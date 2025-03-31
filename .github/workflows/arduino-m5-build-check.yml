@@ -101,15 +101,11 @@ jobs:
           - esp32
 
         exclude:
-          - unit: UnitTmosPIR
-            sketch: SimpleDisplay
           - board: m5stack_atom
             sketch: SimpleDisplay
           - board: m5stack_capsule
             sketch: SimpleDisplay
           - board: m5stack_stamp_s3
-            sketch: SimpleDisplay
-          - unit: UnitTmosPIR
             sketch: SimpleDisplay
 
     steps:

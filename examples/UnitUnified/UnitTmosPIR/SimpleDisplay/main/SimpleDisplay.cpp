@@ -56,7 +56,7 @@ struct BarI16 {
     {
         dst->fillRect(x, y, _wid, _hgt, 0);
         int32_t w = _wid * ((_val + _disp_range / 2) / _disp_range);
-        w         = std::max(std::min(w, (int32_t)_wid), 0);
+        w         = std::max(std::min(w, (int32_t)_wid), (int32_t)0);
 
         uint8_t pal = _val < (_thres - _hyst) ? 12 : _val > _thres ? 13 : 14;
         dst->fillRect(x, y, w, _hgt >> 1, pal);
@@ -65,11 +65,11 @@ struct BarI16 {
         dst->drawFastVLine(x + _wid / 2, y, _hgt, 7 /* white */);  // origin (0)
 
         int32_t xx = _wid * (((float)_thres + _disp_range / 2) / _disp_range);
-        xx         = std::max(std::min(xx, (int32_t)_wid), 0);
+        xx         = std::max(std::min(xx, (int32_t)_wid), (int32_t)0);
         dst->drawFastVLine(x + xx, y, _hgt, 1 /* blue */);  // Thres
 
         xx = _wid * (((float)(_thres - _hyst) + _disp_range / 2) / _disp_range);
-        xx = std::max(std::min(xx, (int32_t)_wid), 0);
+        xx = std::max(std::min(xx, (int32_t)_wid), (int32_t)0);
         dst->drawFastVLine(x + xx, y, _hgt, 4 /* red */);  // Hyst
     }
 

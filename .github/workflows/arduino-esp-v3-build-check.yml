@@ -61,7 +61,7 @@ jobs:
           - SimpleDisplay
 
         unit:
-          - UnitTmosIR
+          - UnitTmosPIR
 
         board:
           - m5stack_atom

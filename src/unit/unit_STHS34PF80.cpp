@@ -63,7 +63,7 @@ namespace unit {
 // class UnitSTHS34PF80
 const char UnitSTHS34PF80::name[] = "UnitSTHS34PF80";
 const types::uid_t UnitSTHS34PF80::uid{"UnitSTHS34PF80"_mmh3};
-const types::uid_t UnitSTHS34PF80::attr{0};
+const types::attr_t UnitSTHS34PF80::attr{attribute::AccessI2C};
 
 sths34pf80::ODR UnitSTHS34PF80::maximum_odr(const ObjectTemperatureAverage avg_tmos)
 {

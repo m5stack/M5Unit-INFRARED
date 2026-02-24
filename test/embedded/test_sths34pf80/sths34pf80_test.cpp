@@ -244,7 +244,7 @@ TEST_P(TestSTHS34PF80, Settings)
         EXPECT_TRUE(unit->readGainMode(g));
         EXPECT_EQ(g, Gain::Wide);
 
-        // Faild to write in periodic
+        // Failed to write in periodic
         EXPECT_TRUE(unit->startPeriodicMeasurement(cfg.mode, cfg.odr));
         EXPECT_TRUE(unit->inPeriodic());
 
@@ -263,7 +263,7 @@ TEST_P(TestSTHS34PF80, Settings)
         EXPECT_TRUE(unit->readSensitivityRaw(prev_raw));
         EXPECT_TRUE(unit->readSensitivity(prev_s));
 
-        // Faild to write in periodic
+        // Failed to write in periodic
         EXPECT_TRUE(unit->inPeriodic());
         EXPECT_FALSE(unit->writeSensitivityRaw(-128));
         EXPECT_TRUE(unit->readSensitivityRaw(raw));
@@ -512,7 +512,7 @@ TEST_P(TestSTHS34PF80, Reset)
     EXPECT_TRUE(unit->readMotionHysteresis(hyst_m));
     EXPECT_TRUE(unit->readAmbientShockHysteresis(hyst_a));
 
-    // Set default on reseet
+    // Set default on reset
     EXPECT_EQ(avg_t, AmbientTemperatureAverage::Samples8);
     EXPECT_EQ(avg_tmos, ObjectTemperatureAverage::Samples128);
 
@@ -537,7 +537,7 @@ TEST_P(TestSTHS34PF80, Reset)
     EXPECT_EQ(hyst_a, 30);
 }
 
-TEST_P(TestSTHS34PF80, SingleSHot)
+TEST_P(TestSTHS34PF80, SingleShot)
 {
     SCOPED_TRACE(ustr);
 
@@ -657,4 +657,223 @@ TEST_P(TestSTHS34PF80, Periodic)
         EXPECT_FALSE(unit->isMotion());
         EXPECT_FALSE(unit->isAmbientShock());
     }
+}
+
+// Test 1: measureSingleshot should fail during periodic measurement
+TEST_P(TestSTHS34PF80, MeasureSingleshotInPeriodic)
+{
+    SCOPED_TRACE(ustr);
+
+    EXPECT_TRUE(unit->inPeriodic());
+    Data d{};
+    EXPECT_FALSE(unit->measureSingleshot(d, AmbientTemperatureAverage::Samples8, ObjectTemperatureAverage::Samples32));
+
+    // Verify data is untouched (zeroed)
+    EXPECT_EQ(d.object(), 0);
+    EXPECT_EQ(d.ambient(), 0);
+    EXPECT_EQ(d.compensated_object(), 0);
+    EXPECT_EQ(d.presence(), 0);
+    EXPECT_EQ(d.motion(), 0);
+    EXPECT_EQ(d.ambient_shock(), 0);
+}
+
+// Test 2: startPeriodicMeasurement with PowerDown ODR should fail
+TEST_P(TestSTHS34PF80, StartPeriodicWithPowerDown)
+{
+    SCOPED_TRACE(ustr);
+
+    EXPECT_TRUE(unit->stopPeriodicMeasurement());
+    EXPECT_FALSE(unit->inPeriodic());
+
+    EXPECT_FALSE(unit->startPeriodicMeasurement(Gain::Default, ODR::PowerDown));
+    EXPECT_FALSE(unit->inPeriodic());
+
+    EXPECT_FALSE(unit->startPeriodicMeasurement(Gain::Wide, ODR::PowerDown));
+    EXPECT_FALSE(unit->inPeriodic());
+}
+
+// Test 3: config() getter/setter
+TEST_P(TestSTHS34PF80, Config)
+{
+    SCOPED_TRACE(ustr);
+
+    // Get default config
+    auto cfg = unit->config();
+    EXPECT_TRUE(cfg.start_periodic);
+    EXPECT_EQ(cfg.mode, Gain::Default);
+    EXPECT_EQ(cfg.odr, ODR::Rate30);
+    EXPECT_TRUE(cfg.comp_type);
+    EXPECT_FALSE(cfg.abs);
+    EXPECT_EQ(cfg.avg_t, AmbientTemperatureAverage::Samples8);
+    EXPECT_EQ(cfg.avg_tmos, ObjectTemperatureAverage::Samples32);
+
+    // Set and get config
+    UnitSTHS34PF80::config_t new_cfg{};
+    new_cfg.start_periodic = false;
+    new_cfg.mode           = Gain::Wide;
+    new_cfg.odr            = ODR::Rate4;
+    new_cfg.comp_type      = false;
+    new_cfg.abs            = true;
+    new_cfg.avg_t          = AmbientTemperatureAverage::Samples2;
+    new_cfg.avg_tmos       = ObjectTemperatureAverage::Samples256;
+    unit->config(new_cfg);
+
+    auto readback = unit->config();
+    EXPECT_FALSE(readback.start_periodic);
+    EXPECT_EQ(readback.mode, Gain::Wide);
+    EXPECT_EQ(readback.odr, ODR::Rate4);
+    EXPECT_FALSE(readback.comp_type);
+    EXPECT_TRUE(readback.abs);
+    EXPECT_EQ(readback.avg_t, AmbientTemperatureAverage::Samples2);
+    EXPECT_EQ(readback.avg_tmos, ObjectTemperatureAverage::Samples256);
+
+    // Restore original config
+    unit->config(cfg);
+    auto restored = unit->config();
+    EXPECT_TRUE(restored.start_periodic);
+    EXPECT_EQ(restored.mode, Gain::Default);
+    EXPECT_EQ(restored.odr, ODR::Rate30);
+}
+
+// Test 4: begin() with start_periodic=false should not start periodic measurement
+TEST_P(TestSTHS34PF80, BeginWithoutStartPeriodic)
+{
+    SCOPED_TRACE(ustr);
+
+    EXPECT_TRUE(unit->stopPeriodicMeasurement());
+    EXPECT_FALSE(unit->inPeriodic());
+
+    // Set config to not start periodic on begin
+    auto original_cfg  = unit->config();
+    auto cfg           = original_cfg;
+    cfg.start_periodic = false;
+    unit->config(cfg);
+
+    // Call begin() directly - should succeed without starting periodic
+    EXPECT_TRUE(unit->begin());
+    EXPECT_FALSE(unit->inPeriodic());
+
+    // Verify sensitivity was read correctly
+    EXPECT_NE(unit->sensitivity(), 0);
+
+    // Restore config and restart periodic for subsequent tests
+    unit->config(original_cfg);
+    EXPECT_TRUE(
+        unit->startPeriodicMeasurement(original_cfg.mode, original_cfg.odr, original_cfg.comp_type, original_cfg.abs));
+    EXPECT_TRUE(unit->inPeriodic());
+}
+
+// Test 5: maximum_odr() static function
+TEST_P(TestSTHS34PF80, MaximumODR)
+{
+    SCOPED_TRACE(ustr);
+
+    EXPECT_EQ(UnitSTHS34PF80::maximum_odr(ObjectTemperatureAverage::Samples2), ODR::Rate30);
+    EXPECT_EQ(UnitSTHS34PF80::maximum_odr(ObjectTemperatureAverage::Samples8), ODR::Rate30);
+    EXPECT_EQ(UnitSTHS34PF80::maximum_odr(ObjectTemperatureAverage::Samples32), ODR::Rate30);
+    EXPECT_EQ(UnitSTHS34PF80::maximum_odr(ObjectTemperatureAverage::Samples128), ODR::Rate8);
+    EXPECT_EQ(UnitSTHS34PF80::maximum_odr(ObjectTemperatureAverage::Samples256), ODR::Rate4);
+    EXPECT_EQ(UnitSTHS34PF80::maximum_odr(ObjectTemperatureAverage::Samples512), ODR::Rate2);
+    EXPECT_EQ(UnitSTHS34PF80::maximum_odr(ObjectTemperatureAverage::Samples1024), ODR::Rate1);
+    EXPECT_EQ(UnitSTHS34PF80::maximum_odr(ObjectTemperatureAverage::Samples2048), ODR::Rate0_5);
+}
+
+// Test 7: Data struct raw byte conversion (pure logic, no device needed)
+TEST(DataTest, RawConversion)
+{
+    Data d{};
+    d.sensitivity = 2048;
+
+    // TOBJECT (raw[0:1]) - positive
+    d.raw[0] = 0x00;
+    d.raw[1] = 0x04;  // 0x0400 = 1024
+    EXPECT_EQ(d.object(), 1024);
+    EXPECT_FLOAT_EQ(d.objectTemperature(), 1024.0f / 2048.0f);
+
+    // TOBJECT - negative
+    d.raw[0] = 0x00;
+    d.raw[1] = 0xFC;  // 0xFC00 = -1024 (signed)
+    EXPECT_EQ(d.object(), -1024);
+    EXPECT_FLOAT_EQ(d.objectTemperature(), -1024.0f / 2048.0f);
+
+    // TAMBIENT (raw[2:3])
+    d.raw[2] = 0xE8;
+    d.raw[3] = 0x03;  // 0x03E8 = 1000
+    EXPECT_EQ(d.ambient(), 1000);
+    EXPECT_FLOAT_EQ(d.ambientTemperature(), 1000.0f / 100.0f);  // Fixed divisor 100
+
+    // TOBJ_COMP (raw[4:5])
+    d.raw[4] = 0x00;
+    d.raw[5] = 0x02;  // 0x0200 = 512
+    EXPECT_EQ(d.compensated_object(), 512);
+    EXPECT_FLOAT_EQ(d.compensatedObjectTemperature(), 512.0f / 2048.0f);
+
+    // TPRESENCE (raw[6:7])
+    d.raw[6] = 0xD2;
+    d.raw[7] = 0x04;  // 0x04D2 = 1234
+    EXPECT_EQ(d.presence(), 1234);
+
+    // TPRESENCE - negative
+    d.raw[6] = 0x2E;
+    d.raw[7] = 0xFB;  // 0xFB2E = -1234 (signed)
+    EXPECT_EQ(d.presence(), -1234);
+
+    // TMOTION (raw[8:9])
+    d.raw[8] = 0x39;
+    d.raw[9] = 0x05;  // 0x0539 = 1337
+    EXPECT_EQ(d.motion(), 1337);
+
+    // TAMB_SHOCK (raw[10:11])
+    d.raw[10] = 0x2A;
+    d.raw[11] = 0x00;  // 0x002A = 42
+    EXPECT_EQ(d.ambient_shock(), 42);
+
+    // Detection flags (raw[12])
+    d.raw[12] = 0x00;
+    EXPECT_FALSE(d.isPresence());
+    EXPECT_FALSE(d.isMotion());
+    EXPECT_FALSE(d.isAmbientShock());
+
+    d.raw[12] = Data::PRES_FLAG;
+    EXPECT_TRUE(d.isPresence());
+    EXPECT_FALSE(d.isMotion());
+    EXPECT_FALSE(d.isAmbientShock());
+
+    d.raw[12] = Data::MOT_FLAG;
+    EXPECT_FALSE(d.isPresence());
+    EXPECT_TRUE(d.isMotion());
+    EXPECT_FALSE(d.isAmbientShock());
+
+    d.raw[12] = Data::TAMB_SHOCK_FLAG;
+    EXPECT_FALSE(d.isPresence());
+    EXPECT_FALSE(d.isMotion());
+    EXPECT_TRUE(d.isAmbientShock());
+
+    d.raw[12] = Data::PRES_FLAG | Data::MOT_FLAG | Data::TAMB_SHOCK_FLAG;
+    EXPECT_TRUE(d.isPresence());
+    EXPECT_TRUE(d.isMotion());
+    EXPECT_TRUE(d.isAmbientShock());
+}
+
+// Test 7b: Data struct with zero sensitivity should produce NaN
+TEST(DataTest, ZeroSensitivity)
+{
+    Data d{};
+    d.sensitivity = 0;
+
+    d.raw[0] = 0x00;
+    d.raw[1] = 0x04;
+    d.raw[2] = 0xE8;
+    d.raw[3] = 0x03;
+    d.raw[4] = 0x00;
+    d.raw[5] = 0x02;
+
+    EXPECT_FALSE(std::isfinite(d.objectTemperature()));
+    EXPECT_FALSE(std::isfinite(d.ambientTemperature()));
+    EXPECT_FALSE(std::isfinite(d.compensatedObjectTemperature()));
+
+    // Raw values should still be readable
+    EXPECT_EQ(d.object(), 1024);
+    EXPECT_EQ(d.ambient(), 1000);
+    EXPECT_EQ(d.compensated_object(), 512);
 }

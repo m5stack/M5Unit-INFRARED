@@ -10,6 +10,7 @@
 #include <M5UnitUnified.h>
 #include <M5UnitUnifiedINFRARED.h>
 #include <M5Utility.h>
+#include <M5HAL.hpp>  // For NessoN1
 
 using namespace m5::unit::sths34pf80;
 
@@ -22,28 +23,58 @@ m5::unit::UnitTmosPIR unit;
 void setup()
 {
     M5.begin();
+    M5.setTouchButtonHeightByRatio(100);
 
+    // The screen shall be in landscape mode
+    if (lcd.height() > lcd.width()) {
+        lcd.setRotation(1);
+    }
+
+    auto board       = M5.getBoard();
     auto pin_num_sda = M5.getPin(m5::pin_name_t::port_a_sda);
     auto pin_num_scl = M5.getPin(m5::pin_name_t::port_a_scl);
-    M5_LOGI("getPin: SDA:%u SCL:%u", pin_num_sda, pin_num_scl);
-    Wire.begin(pin_num_sda, pin_num_scl, 100 * 1000U);
 
-    if (!Units.add(unit, Wire) || !Units.begin()) {
-        lcd.clear(TFT_RED);
-        M5_LOGE("Failed to begin");
-        while (true) {
-            m5::utility::delay(10000);
+    // For NessoN1 GROVE
+    if (board == m5::board_t::board_ArduinoNessoN1) {
+        // Port A of the NessoN1 is QWIIC, then use portB (GROVE)
+        pin_num_sda = M5.getPin(m5::pin_name_t::port_b_out);
+        pin_num_scl = M5.getPin(m5::pin_name_t::port_b_in);
+        M5_LOGI("getPin(NessoN1): SDA:%u SCL:%u", pin_num_sda, pin_num_scl);
+        // Wire is used internally, so SoftwareI2C handles the unit
+        m5::hal::bus::I2CBusConfig i2c_cfg;
+        i2c_cfg.pin_sda = m5::hal::gpio::getPin(pin_num_sda);
+        i2c_cfg.pin_scl = m5::hal::gpio::getPin(pin_num_scl);
+        auto i2c_bus    = m5::hal::bus::i2c::getBus(i2c_cfg);
+        M5_LOGI("Bus:%d", i2c_bus.has_value());
+        if (!Units.add(unit, i2c_bus ? i2c_bus.value() : nullptr) || !Units.begin()) {
+            M5_LOGE("Failed to begin");
+            lcd.fillScreen(TFT_RED);
+            while (true) {
+                m5::utility::delay(10000);
+            }
+        }
+    } else {
+        // Using TwoWire
+        M5_LOGI("getPin: SDA:%u SCL:%u", pin_num_sda, pin_num_scl);
+        Wire.end();
+        Wire.begin(pin_num_sda, pin_num_scl, 400 * 1000U);
+        if (!Units.add(unit, Wire) || !Units.begin()) {
+            M5_LOGE("Failed to begin");
+            lcd.fillScreen(TFT_RED);
+            while (true) {
+                m5::utility::delay(10000);
+            }
         }
     }
+
     M5_LOGI("M5UnitUnified has been begun");
     M5_LOGI("%s", Units.debugInfo().c_str());
-    lcd.clear(TFT_DARKGREEN);
+    lcd.fillScreen(TFT_DARKGREEN);
 }
 
 void loop()
 {
     M5.update();
-    auto touch = M5.Touch.getDetail();
     Units.update();
 
     // Periodic
@@ -56,7 +87,7 @@ void loop()
     }
 
     // Toggle single <-> periodic
-    if (M5.BtnA.wasClicked() || touch.wasClicked()) {
+    if (M5.BtnA.wasClicked()) {
         static bool single{};
         single = !single;
 
@@ -73,17 +104,19 @@ void loop()
         } else {
             M5.Speaker.tone(4000, 20);
             auto cfg = unit.config();
+            unit.writeAverageTrim(cfg.avg_t, cfg.avg_tmos);
             unit.startPeriodicMeasurement(cfg.mode, cfg.odr, cfg.comp_type, cfg.abs);
         }
     }
 
     // Reset
-    if (M5.BtnA.wasHold() || touch.wasHold()) {
+    if (M5.BtnA.wasHold()) {
         M5.Speaker.tone(2000, 30);
         unit.stopPeriodicMeasurement();
         unit.softReset();
         M5.Speaker.tone(2000, 30);
         auto cfg = unit.config();
+        unit.writeAverageTrim(cfg.avg_t, cfg.avg_tmos);
         unit.startPeriodicMeasurement(cfg.mode, cfg.odr, cfg.comp_type, cfg.abs);
     }
 }

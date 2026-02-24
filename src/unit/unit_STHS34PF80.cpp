@@ -53,7 +53,7 @@ constexpr ODR max_odr_table[] = {
     ODR::Rate30, ODR::Rate30, ODR::Rate30, ODR::Rate8, ODR::Rate4, ODR::Rate2, ODR::Rate1, ODR::Rate0_5,
 };
 
-// For singleshot (Typcal)
+// For singleshot (Typical)
 constexpr uint32_t wait_table[] = {5, 6, 9, 20, 36, 67, 128, 252};
 
 }  // namespace

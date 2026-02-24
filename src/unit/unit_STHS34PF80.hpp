@@ -115,51 +115,63 @@ struct Data {
     std::array<uint8_t, 13> raw{};
     uint16_t sensitivity{};  //!< Sensitivity value (NOT RAW)
 
+    //! @brief TOBJECT raw value
     inline int16_t object() const
     {
         return static_cast<int16_t>((raw[1] << 8) | raw[0]);
     }
+    //! @brief Object temperature (degrees Celsius)
     inline float objectTemperature() const
     {
         return sensitivity ? object() / (float)sensitivity : std::numeric_limits<float>::quiet_NaN();
     }
+    //! @brief TAMBIENT raw value
     inline int16_t ambient() const
     {
         return static_cast<int16_t>((raw[3] << 8) | raw[2]);
     }
+    //! @brief Ambient temperature (degrees Celsius)
     inline float ambientTemperature() const
     {
-        // It is possible withoutsensitivity, but the absence of sensitivity is an error
+        // It is possible without sensitivity, but the absence of sensitivity is an error
         return sensitivity ? ambient() / 100.f /* Fixed value */ : std::numeric_limits<float>::quiet_NaN();
     }
+    //! @brief TOBJ_COMP raw value (Disabled if wide mode)
     inline int16_t compensated_object() const
     {
         return static_cast<int16_t>((raw[5] << 8) | raw[4]);
     }
+    //! @brief Compensated object temperature (degrees Celsius)
     inline float compensatedObjectTemperature() const
     {
         return sensitivity ? compensated_object() / (float)sensitivity : std::numeric_limits<float>::quiet_NaN();
     }
+    //! @brief TPRESENCE raw value
     inline int16_t presence() const
     {
         return static_cast<int16_t>((raw[7] << 8) | raw[6]);
     }
+    //! @brief TMOTION raw value
     inline int16_t motion() const
     {
         return static_cast<int16_t>((raw[9] << 8) | raw[8]);
     }
+    //! @brief TAMB_SHOCK raw value
     inline int16_t ambient_shock() const
     {
         return static_cast<int16_t>((raw[11] << 8) | raw[10]);
     }
+    //! @brief Presence detection flag
     inline bool isPresence() const
     {
         return raw[12] & PRES_FLAG;
     }
+    //! @brief Motion detection flag
     inline bool isMotion() const
     {
         return raw[12] & MOT_FLAG;
     }
+    //! @brief Ambient shock detection flag
     inline bool isAmbientShock() const
     {
         return raw[12] & TAMB_SHOCK_FLAG;
@@ -193,7 +205,7 @@ public:
         bool comp_type{true};
         //! Using absolute value for detect presence if start on begin
         bool abs{false};
-        //! Amibient  samples if start on begin
+        //! Ambient samples if start on begin
         sths34pf80::AmbientTemperatureAverage avg_t{sths34pf80::AmbientTemperatureAverage::Samples8};
         //! Object samples if start on begin
         sths34pf80::ObjectTemperatureAverage avg_tmos{sths34pf80::ObjectTemperatureAverage::Samples32};
@@ -215,12 +227,12 @@ public:
 
     ///@name Settings for begin
     ///@{
-    /*! @brief Gets the configration */
+    /*! @brief Gets the configuration */
     inline config_t config()
     {
         return _cfg;
     }
-    //! @brief Set the configration
+    //! @brief Set the configuration
     inline void config(const config_t& cfg)
     {
         _cfg = cfg;
@@ -283,17 +295,17 @@ public:
     {
         return !empty() ? oldest().ambient_shock() : 0;
     }
-    //! @brief Oldest presence detefction
+    //! @brief Oldest presence detection
     inline bool isPresence() const
     {
         return !empty() ? oldest().isPresence() : false;
     }
-    //! @brief Oldest motion detefction
+    //! @brief Oldest motion detection
     inline bool isMotion() const
     {
         return !empty() ? oldest().isMotion() : false;
     }
-    //! @brief Oldest ambient shock detefction
+    //! @brief Oldest ambient shock detection
     inline bool isAmbientShock() const
     {
         return !empty() ? oldest().isAmbientShock() : false;
@@ -342,7 +354,7 @@ public:
     ///@{
     /*!
       @brief Measurement single shot
-      @param[out] data Measuerd data
+      @param[out] data Measured data
       @param avg_t The number of averaged samples for ambient temperature
       @param avg_tmos The number of averaged samples for object temperature
       @return True if successful
@@ -359,14 +371,14 @@ public:
     ///@name Settings
     ///@{
     /*!
-      @brief Read the avarage trim
+      @brief Read the average trim
       @param[out] avg_t The number of averaged samples for ambient temperature
       @param[out] avg_tmos The number of averaged samples for object temperature
       @return True if successful
      */
     bool readAverageTrim(sths34pf80::AmbientTemperatureAverage& avg_t, sths34pf80::ObjectTemperatureAverage& avg_tmos);
     /*!
-      @brief Write the avarage trim
+      @brief Write the average trim
       @param avg_t The number of averaged samples for ambient temperature
       @param avg_tmos The number of averaged samples for object temperature
       @return True if successful
@@ -397,7 +409,7 @@ public:
      */
     bool readSensitivityRaw(int8_t& raw);
     /*!
-      @brief Read the raw sensitivity
+      @brief Read the sensitivity
       @param[out] value Sensitivity
       @return True if successful
      */
@@ -419,7 +431,7 @@ public:
 
     /*!
       @brief Read the ODR
-      @param odr ODR
+      @param[out] odr ODR
       @return True if successful
      */
     bool readObjectDataRate(sths34pf80::ODR& odr);
@@ -439,7 +451,7 @@ public:
 
     /*!
       @brief Read the low pass filter
-      @param[out] lp_p_m For presence and motion detection
+      @param[out] lpf_p_m For presence and motion detection
       @param[out] lpf_m For motion detection
       @param[out] lpf_p For presence detection
       @param[out] lpf_a_t For ambient temperature shock detection
@@ -449,7 +461,7 @@ public:
                            sths34pf80::LowPassFilter& lpf_p, sths34pf80::LowPassFilter& lpf_a_t);
     /*!
       @brief Write the low pass filter
-      @param lp_p_m For presence and motion detection
+      @param lpf_p_m For presence and motion detection
       @param lpf_m For motion detection
       @param lpf_p For presence detection
       @param lpf_a_t For ambient temperature shock detection
@@ -458,7 +470,7 @@ public:
       @warning During periodic detection runs, an error is returned
     */
     bool writeLowPassFilter(const sths34pf80::LowPassFilter lpf_p_m, const sths34pf80::LowPassFilter lpf_m,
-                            const sths34pf80::LowPassFilter lpf_p, const sths34pf80::LowPassFilter lpf_a);
+                            const sths34pf80::LowPassFilter lpf_p, const sths34pf80::LowPassFilter lpf_a_t);
 
     /*!
       @brief Read the threshold for presence detection
@@ -497,7 +509,7 @@ public:
     bool readAmbientShockThreshold(uint16_t& thres);
     /*!
       @brief Write the threshold for ambient shock detection
-      @param[out] thres Threshold
+      @param thres Threshold
       @return True if successful
       @warning During periodic detection runs, an error is returned
      */
@@ -540,7 +552,7 @@ public:
     bool readAmbientShockHysteresis(uint8_t& hyst);
     /*!
       @brief Write the hysteresis for ambient shock detection
-      @param[out] hyst Hysteresis
+      @param hyst Hysteresis
       @return True if successful
       @warning During periodic detection runs, an error is returned
      */

@@ -13,8 +13,9 @@
 #include <googletest/test_template.hpp>
 #include <googletest/test_helper.hpp>
 #include <unit/unit_STHS34PF80.hpp>
+#include <m5_unit_component/adapter_i2c.hpp>
 #include <cmath>
-#include <random>
+#include <esp_random.h>
 
 using namespace m5::unit::googletest;
 using namespace m5::unit;
@@ -22,10 +23,8 @@ using namespace m5::unit::sths34pf80;
 using namespace m5::unit::sths34pf80::command;
 using m5::unit::types::elapsed_time_t;
 
-const ::testing::Environment* global_fixture = ::testing::AddGlobalTestEnvironment(new GlobalFixture<400000U>());
-
 constexpr uint32_t STORED_SIZE{4};
-class TestSTHS34PF80 : public ComponentTestBase<UnitSTHS34PF80, bool> {
+class TestSTHS34PF80 : public I2CComponentTestBase<UnitSTHS34PF80> {
 protected:
     virtual UnitSTHS34PF80* get_instance() override
     {
@@ -37,19 +36,9 @@ protected:
         }
         return ptr;
     }
-    virtual bool is_using_hal() const override
-    {
-        return GetParam();
-    };
 };
 
-// INSTANTIATE_TEST_SUITE_P(ParamValues, TestSTHS34PF80, ::testing::Values(false, true));
-// INSTANTIATE_TEST_SUITE_P(ParamValues, TestSTHS34PF80, ::testing::Values(true));
-INSTANTIATE_TEST_SUITE_P(ParamValues, TestSTHS34PF80, ::testing::Values(false));
-
 namespace {
-auto rng = std::default_random_engine{};
-
 constexpr AmbientTemperatureAverage avg_t_table[] = {
     AmbientTemperatureAverage::Samples8,
     AmbientTemperatureAverage::Samples4,
@@ -127,6 +116,16 @@ constexpr std::pair<AT, ODR> odr_valid_table[] = {
     {AT::Samples1024, ODR::Rate0_25}, {AT::Samples1024, ODR::Rate1},    //
     {AT::Samples2048, ODR::Rate0_25}, {AT::Samples2048, ODR::Rate0_5},  //
 };
+// Subset for periodic timing measurement: one entry per unique ODR (max rate for each AVG_TMOS)
+// Rate0_25 entries are excluded as odr_validation already covers start/stop for all combinations
+constexpr std::pair<AT, ODR> periodic_test_table[] = {
+    {AT::Samples2, ODR::Rate30},      //
+    {AT::Samples128, ODR::Rate8},     //
+    {AT::Samples256, ODR::Rate4},     //
+    {AT::Samples512, ODR::Rate2},     //
+    {AT::Samples1024, ODR::Rate1},    //
+    {AT::Samples2048, ODR::Rate0_5},  //
+};
 constexpr std::pair<AT, ODR> odr_invalid_table[] = {
     {AT::Samples128, ODR::Rate15}, {AT::Samples128, ODR::Rate30},   //
     {AT::Samples256, ODR::Rate8},  {AT::Samples256, ODR::Rate30},   //
@@ -152,45 +151,9 @@ void odr_validation(UnitSTHS34PF80* unit)
     }
 }
 
-template <class U>
-elapsed_time_t test_periodic(U* unit, const uint32_t times, const uint32_t measure_duration = 0)
-{
-    auto tm         = unit->interval();
-    auto timeout_at = m5::utility::millis() + 10 * 1000;
-
-    do {
-        unit->update();
-        if (unit->updated()) {
-            break;
-        }
-        std::this_thread::yield();
-    } while (!unit->updated() && m5::utility::millis() <= timeout_at);
-    // timeout
-    if (!unit->updated()) {
-        return 0;
-    }
-
-    //
-    uint32_t measured{};
-    auto start_at = m5::utility::millis();
-    timeout_at    = start_at + (times * (tm + measure_duration) * 2);
-
-    do {
-        unit->update();
-        measured += unit->updated() ? 1 : 0;
-        if (measured >= times) {
-            break;
-        }
-        std::this_thread::yield();
-
-    } while (measured < times && m5::utility::millis() <= timeout_at);
-    return (measured == times) ? m5::utility::millis() - start_at : 0;
-    //   return (measured == times) ? unit->updatedMillis() - start_at : 0;
-}
-
 }  // namespace
 
-TEST_P(TestSTHS34PF80, Settings)
+TEST_F(TestSTHS34PF80, Settings)
 {
     AmbientTemperatureAverage ata{};
     ObjectTemperatureAverage ota{};
@@ -341,7 +304,7 @@ TEST_P(TestSTHS34PF80, Settings)
     }
 }
 
-TEST_P(TestSTHS34PF80, SettingsNeedResetAlgo)
+TEST_F(TestSTHS34PF80, SettingsNeedResetAlgo)
 {
     auto cfg = unit->config();
 
@@ -356,14 +319,17 @@ TEST_P(TestSTHS34PF80, SettingsNeedResetAlgo)
     std::array<LowPassFilter, 4> wlpf = {LowPassFilter::ODR20, LowPassFilter::ODR50, LowPassFilter::ODR100,
                                          LowPassFilter::ODR9};
     uint16_t twv[3]{};
-    twv[0] = (100 + rng()) & 255;
-    twv[1] = (100 + rng()) & 255;
-    twv[2] = (100 + rng()) & 255;
+    twv[0] = 100 + (esp_random() % 156);  // 100-255, always > hwv max (49)
+    twv[1] = 100 + (esp_random() % 156);
+    twv[2] = 100 + (esp_random() % 156);
 
     uint8_t hwv[3]{};
-    hwv[0] = rng() % 50;
-    hwv[1] = rng() % 50;
-    hwv[2] = rng() % 50;
+    hwv[0] = esp_random() % 50;
+    hwv[1] = esp_random() % 50;
+    hwv[2] = esp_random() % 50;
+
+    auto s = m5::utility::formatString("twv:%u,%u,%u hwv:%u,%u,%u", twv[0], twv[1], twv[2], hwv[0], hwv[1], hwv[2]);
+    SCOPED_TRACE(s);
 
     //
     EXPECT_TRUE(unit->readLowPassFilter(prev_lpf[0], prev_lpf[1], prev_lpf[2], prev_lpf[3]));
@@ -374,16 +340,16 @@ TEST_P(TestSTHS34PF80, SettingsNeedResetAlgo)
     EXPECT_FALSE(unit->readPresenceThreshold(prev_thres_p));
     EXPECT_FALSE(unit->readMotionThreshold(prev_thres_m));
     EXPECT_FALSE(unit->readAmbientShockThreshold(prev_thres_a));
-    EXPECT_FALSE(unit->writePresenceThreshold(rng()));
-    EXPECT_FALSE(unit->writeMotionThreshold(rng()));
-    EXPECT_FALSE(unit->writeAmbientShockThreshold(rng()));
+    EXPECT_FALSE(unit->writePresenceThreshold(esp_random()));
+    EXPECT_FALSE(unit->writeMotionThreshold(esp_random()));
+    EXPECT_FALSE(unit->writeAmbientShockThreshold(esp_random()));
 
     EXPECT_FALSE(unit->readPresenceHysteresis(prev_hyst_p));
     EXPECT_FALSE(unit->readMotionHysteresis(prev_hyst_m));
     EXPECT_FALSE(unit->readAmbientShockHysteresis(prev_hyst_a));
-    EXPECT_FALSE(unit->writePresenceHysteresis(rng()));
-    EXPECT_FALSE(unit->writeMotionHysteresis(rng()));
-    EXPECT_FALSE(unit->writeAmbientShockHysteresis(rng()));
+    EXPECT_FALSE(unit->writePresenceHysteresis(esp_random()));
+    EXPECT_FALSE(unit->writeMotionHysteresis(esp_random()));
+    EXPECT_FALSE(unit->writeAmbientShockHysteresis(esp_random()));
 
     //
     EXPECT_TRUE(unit->stopPeriodicMeasurement());
@@ -467,7 +433,7 @@ TEST_P(TestSTHS34PF80, SettingsNeedResetAlgo)
     }
 }
 
-TEST_P(TestSTHS34PF80, Reset)
+TEST_F(TestSTHS34PF80, Reset)
 {
     SCOPED_TRACE(ustr);
 
@@ -537,7 +503,7 @@ TEST_P(TestSTHS34PF80, Reset)
     EXPECT_EQ(hyst_a, 30);
 }
 
-TEST_P(TestSTHS34PF80, SingleShot)
+TEST_F(TestSTHS34PF80, SingleShot)
 {
     SCOPED_TRACE(ustr);
 
@@ -548,7 +514,7 @@ TEST_P(TestSTHS34PF80, SingleShot)
                                          LowPassFilter::ODR50));
 
     for (auto&& avg_tmos : avg_tmos_table) {
-        AmbientTemperatureAverage avg_t = static_cast<AmbientTemperatureAverage>(rng() & 0x03);
+        AmbientTemperatureAverage avg_t = static_cast<AmbientTemperatureAverage>(esp_random() & 0x03);
         Data d{};
         uint32_t count{4};
         while (count--) {
@@ -568,23 +534,33 @@ TEST_P(TestSTHS34PF80, SingleShot)
     }
 }
 
-TEST_P(TestSTHS34PF80, Periodic)
+TEST_F(TestSTHS34PF80, Periodic)
 {
     SCOPED_TRACE(ustr);
 
     EXPECT_TRUE(unit->stopPeriodicMeasurement());
     odr_validation(unit.get());
 
-    for (auto&& p : odr_valid_table) {
+    for (auto&& p : periodic_test_table) {
         EXPECT_TRUE(unit->writeAverageTrim(AmbientTemperatureAverage::Samples8, p.first));
 
         EXPECT_TRUE(unit->startPeriodicMeasurement(Gain::Default, p.second));
         EXPECT_TRUE(unit->inPeriodic());
-        auto elapsed = test_periodic(unit.get(), STORED_SIZE);
+
+        auto ad          = unit->asAdapter<m5::unit::AdapterI2C>(m5::unit::Adapter::Type::I2C);
+        bool is_bus      = ad && ad->implType() == m5::unit::AdapterI2C::ImplType::Bus;
+        uint32_t timeout = is_bus ? std::max<uint32_t>(unit->interval(), 500) * (STORED_SIZE + 1) * 4
+                                  : unit->interval() * (STORED_SIZE + 1) * 2;
+        auto r           = collect_periodic_measurements(unit.get(), STORED_SIZE, timeout);
+        EXPECT_FALSE(r.timed_out);
+        EXPECT_EQ(r.update_count, STORED_SIZE);
+        // Sensor actual interval is ~1.5% longer than nominal
+        uint32_t tol =
+            is_bus ? std::max<uint32_t>(unit->interval() / 20, 5) : std::max<uint32_t>(unit->interval() / 50, 2);
+        EXPECT_LE(r.median(), r.expected_interval + tol);
+
         EXPECT_TRUE(unit->stopPeriodicMeasurement());
         EXPECT_FALSE(unit->inPeriodic());
-
-        EXPECT_GE(elapsed, unit->interval() * STORED_SIZE);
 
         EXPECT_EQ(unit->available(), STORED_SIZE);
         EXPECT_FALSE(unit->empty());
@@ -660,7 +636,7 @@ TEST_P(TestSTHS34PF80, Periodic)
 }
 
 // Test 1: measureSingleshot should fail during periodic measurement
-TEST_P(TestSTHS34PF80, MeasureSingleshotInPeriodic)
+TEST_F(TestSTHS34PF80, MeasureSingleshotInPeriodic)
 {
     SCOPED_TRACE(ustr);
 
@@ -678,7 +654,7 @@ TEST_P(TestSTHS34PF80, MeasureSingleshotInPeriodic)
 }
 
 // Test 2: startPeriodicMeasurement with PowerDown ODR should fail
-TEST_P(TestSTHS34PF80, StartPeriodicWithPowerDown)
+TEST_F(TestSTHS34PF80, StartPeriodicWithPowerDown)
 {
     SCOPED_TRACE(ustr);
 
@@ -693,7 +669,7 @@ TEST_P(TestSTHS34PF80, StartPeriodicWithPowerDown)
 }
 
 // Test 3: config() getter/setter
-TEST_P(TestSTHS34PF80, Config)
+TEST_F(TestSTHS34PF80, Config)
 {
     SCOPED_TRACE(ustr);
 
@@ -736,7 +712,7 @@ TEST_P(TestSTHS34PF80, Config)
 }
 
 // Test 4: begin() with start_periodic=false should not start periodic measurement
-TEST_P(TestSTHS34PF80, BeginWithoutStartPeriodic)
+TEST_F(TestSTHS34PF80, BeginWithoutStartPeriodic)
 {
     SCOPED_TRACE(ustr);
 
@@ -764,7 +740,7 @@ TEST_P(TestSTHS34PF80, BeginWithoutStartPeriodic)
 }
 
 // Test 5: maximum_odr() static function
-TEST_P(TestSTHS34PF80, MaximumODR)
+TEST_F(TestSTHS34PF80, MaximumODR)
 {
     SCOPED_TRACE(ustr);
 

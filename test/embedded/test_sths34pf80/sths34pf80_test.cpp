@@ -739,6 +739,63 @@ TEST_F(TestSTHS34PF80, BeginWithoutStartPeriodic)
     EXPECT_TRUE(unit->inPeriodic());
 }
 
+// Test 4b: begin() with start_periodic=true should apply config to hardware
+TEST_F(TestSTHS34PF80, BeginAppliesConfig)
+{
+    SCOPED_TRACE(ustr);
+
+    EXPECT_TRUE(unit->stopPeriodicMeasurement());
+    EXPECT_FALSE(unit->inPeriodic());
+
+    // Save original config for restoration
+    auto original_cfg = unit->config();
+
+    // Set non-default config
+    auto cfg           = original_cfg;
+    cfg.start_periodic = true;
+    cfg.mode           = Gain::Default;
+    cfg.odr            = ODR::Rate1;
+    cfg.comp_type      = false;
+    cfg.abs            = true;
+    cfg.avg_t          = AmbientTemperatureAverage::Samples2;
+    cfg.avg_tmos       = ObjectTemperatureAverage::Samples8;
+    unit->config(cfg);
+
+    // begin() should apply all config fields to hardware
+    EXPECT_TRUE(unit->begin());
+    EXPECT_TRUE(unit->inPeriodic());
+
+    // Verify gain mode (readable during periodic)
+    Gain gain{};
+    EXPECT_TRUE(unit->readGainMode(gain));
+    EXPECT_EQ(gain, cfg.mode);
+
+    // Verify ODR (readable during periodic)
+    ODR odr{};
+    EXPECT_TRUE(unit->readObjectDataRate(odr));
+    EXPECT_EQ(odr, cfg.odr);
+
+    // Verify average trim (readable during periodic)
+    AmbientTemperatureAverage avg_t{};
+    ObjectTemperatureAverage avg_tmos{};
+    EXPECT_TRUE(unit->readAverageTrim(avg_t, avg_tmos));
+    EXPECT_EQ(avg_t, cfg.avg_t);
+    EXPECT_EQ(avg_tmos, cfg.avg_tmos);
+
+    // Verify algorithm config (requires stop)
+    EXPECT_TRUE(unit->stopPeriodicMeasurement());
+    uint8_t acfg{};
+    EXPECT_TRUE(unit->readAlgorithmConfig(acfg));
+    // comp_type=false -> bit2=0, abs=true -> bit1=1
+    EXPECT_EQ(acfg & 0x04, 0x00);  // comp_type off
+    EXPECT_EQ(acfg & 0x02, 0x02);  // abs on
+
+    // Restore original config and restart
+    unit->config(original_cfg);
+    EXPECT_TRUE(unit->begin());
+    EXPECT_TRUE(unit->inPeriodic());
+}
+
 // Test 5: maximum_odr() static function
 TEST_F(TestSTHS34PF80, MaximumODR)
 {

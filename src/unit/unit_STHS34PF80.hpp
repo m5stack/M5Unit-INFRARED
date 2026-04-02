@@ -69,6 +69,8 @@ enum class ObjectTemperatureAverage : uint8_t {
 /*!
   @enum Gain
   @brief Gain mode
+  @note In Wide mode, TOBJ_COMP and smart digital algorithms (presence/motion/ambient shock detection) are not
+  available. Only TOBJECT and TAMBIENT are valid.
  */
 enum class Gain : uint8_t {
     Wide,            //!< Wide mode
@@ -123,7 +125,7 @@ struct Data {
     //! @brief Object temperature (degrees Celsius)
     inline float objectTemperature() const
     {
-        return sensitivity ? object() / (float)sensitivity : std::numeric_limits<float>::quiet_NaN();
+        return sensitivity ? object() / static_cast<float>(sensitivity) : std::numeric_limits<float>::quiet_NaN();
     }
     //! @brief TAMBIENT raw value
     inline int16_t ambient() const
@@ -144,7 +146,8 @@ struct Data {
     //! @brief Compensated object temperature (degrees Celsius)
     inline float compensatedObjectTemperature() const
     {
-        return sensitivity ? compensated_object() / (float)sensitivity : std::numeric_limits<float>::quiet_NaN();
+        return sensitivity ? compensated_object() / static_cast<float>(sensitivity)
+                           : std::numeric_limits<float>::quiet_NaN();
     }
     //! @brief TPRESENCE raw value
     inline int16_t presence() const
@@ -190,6 +193,8 @@ class UnitSTHS34PF80 : public Component, public PeriodicMeasurementAdapter<UnitS
 
 public:
     //! @brief Get the maximum ODR value that can be set
+    //! @param avg_tmos Object temperature average setting
+    //! @return Maximum ODR value for the given average setting
     static sths34pf80::ODR maximum_odr(const sths34pf80::ObjectTemperatureAverage avg_tmos);
 
     /*!
@@ -205,7 +210,7 @@ public:
         sths34pf80::ODR odr{sths34pf80::ODR::Rate30};
         //! Using compensated value if start on begin (Valid only if mode is default mode)
         bool comp_type{true};
-        //! Using absolute value for detect presence if start on begin
+        //! Use absolute value for presence detection if start on begin
         bool abs{false};
         //! Ambient samples if start on begin
         sths34pf80::AmbientTemperatureAverage avg_t{sths34pf80::AmbientTemperatureAverage::Samples8};
@@ -213,6 +218,8 @@ public:
         sths34pf80::ObjectTemperatureAverage avg_tmos{sths34pf80::ObjectTemperatureAverage::Samples32};
     };
 
+    //! @brief Constructor
+    //! @param addr I2C address (default: 0x5A)
     explicit UnitSTHS34PF80(const uint8_t addr = DEFAULT_ADDRESS)
         : Component(addr), _data{new m5::container::CircularBuffer<sths34pf80::Data>(1)}
     {
@@ -224,7 +231,11 @@ public:
     {
     }
 
+    //! @brief Begin communication and apply config
+    //! @return True if successful
     virtual bool begin() override;
+    //! @brief Update periodic measurement data
+    //! @param force Force update regardless of timing
     virtual void update(const bool force = false) override;
 
     ///@name Settings for begin
@@ -444,7 +455,7 @@ public:
     ///@{
     /*!
       @brief Reset the algorithm
-      @details Apply each value to the embedded linear algorithm for compensate for ambient temperature variations in
+      @details Apply each value to the embedded linear algorithm to compensate for ambient temperature variations in
       the object temperature
       @return True if successful
       @warning During periodic detection runs, an error is returned
@@ -570,6 +581,7 @@ public:
     ///@}
 
     //! @brief Software reset
+    //! @return True if successful
     bool softReset();
 
 protected:

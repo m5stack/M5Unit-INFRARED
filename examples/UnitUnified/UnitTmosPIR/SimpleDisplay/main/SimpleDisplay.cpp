@@ -280,7 +280,7 @@ struct View {
         _prev_m = _is_m;
         _prev_a = _is_a;
         _is_p   = d.isPresence();
-        _is_m   = d.isMotion() && d.motion() > 0;
+        _is_m   = d.isMotion();
         _is_a   = d.isAmbientShock();
 
         // Flash on detection edges
@@ -427,24 +427,29 @@ uint8_t hys_p{}, hys_m{}, hys_a{};
 void set_params()
 {
     auto cfg = unit.config();
+    bool ok  = true;
     // Adjust for wide mode
     uint16_t s{};
     if (cfg.mode == Gain::Wide) {
         unit.readSensitivity(s);
-        unit.writeSensitivity(s / 8);
+        ok &= unit.writeSensitivity(s / 8);
     }
 
     // Low pass filter and Trim
-    unit.writeLowPassFilter(LowPassFilter::ODR9, LowPassFilter::ODR200, LowPassFilter::ODR50, LowPassFilter::ODR50);
-    unit.writeAverageTrim(cfg.avg_t, cfg.avg_tmos);
+    ok &=
+        unit.writeLowPassFilter(LowPassFilter::ODR9, LowPassFilter::ODR200, LowPassFilter::ODR50, LowPassFilter::ODR50);
+    ok &= unit.writeAverageTrim(cfg.avg_t, cfg.avg_tmos);
 
     // These parameters can only be read/written in Power-down mode
-    unit.writePresenceThreshold(200);
-    unit.writePresenceHysteresis(50);
-    unit.writeMotionThreshold(500);
-    unit.writeMotionHysteresis(100);
-    unit.writeAmbientShockThreshold(10);
-    unit.writeAmbientShockHysteresis(2);
+    ok &= unit.writePresenceThreshold(200);
+    ok &= unit.writePresenceHysteresis(50);
+    ok &= unit.writeMotionThreshold(500);
+    ok &= unit.writeMotionHysteresis(100);
+    ok &= unit.writeAmbientShockThreshold(10);
+    ok &= unit.writeAmbientShockHysteresis(2);
+    if (!ok) {
+        M5_LOGE("Failed to configure STHS34PF80");
+    }
 
     unit.readSensitivity(s);
     unit.readPresenceThreshold(thres_p);
@@ -522,7 +527,7 @@ void setup()
             m5::utility::delay(10000);
         }
     }
-    M5_LOGI("M5UnitUnified has been begun");
+    M5_LOGI("M5UnitUnified initialized");
     M5_LOGI("%s", Units.debugInfo().c_str());
 
     set_params();

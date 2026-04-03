@@ -15,7 +15,7 @@ The working principle is based on the blackbody radiation principle described by
 ## Related Link
 See also examples using conventional methods here.
 
-- [Unit TMOS PIR & Datasheet](https://docs.m5stack.switch-science.com/en/unit/UNIT-TMOS%20PIR)
+- [Unit TMOS PIR & Datasheet](https://docs.m5stack.com/en/unit/UNIT-TMOS%20PIR)
 
 ### Required Libraries:
 - [M5UnitUnified](https://github.com/m5stack/M5UnitUnified)

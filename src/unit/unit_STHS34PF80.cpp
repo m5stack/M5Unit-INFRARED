@@ -41,7 +41,7 @@ inline constexpr uint16_t raw_to_sensitivity(const int8_t raw)
 
 inline constexpr int8_t sensitivity_to_raw(const uint16_t s)
 {
-    return static_cast<int8_t>(((int)s - 2048) / 16);
+    return static_cast<int8_t>((static_cast<int>(s) - 2048) / 16);
 }
 
 constexpr uint32_t interval_table[] = {
@@ -53,7 +53,7 @@ constexpr ODR max_odr_table[] = {
     ODR::Rate30, ODR::Rate30, ODR::Rate30, ODR::Rate8, ODR::Rate4, ODR::Rate2, ODR::Rate1, ODR::Rate0_5,
 };
 
-// For singleshot (Typcal)
+// For singleshot (Typical)
 constexpr uint32_t wait_table[] = {5, 6, 9, 20, 36, 67, 128, 252};
 
 }  // namespace
@@ -299,7 +299,12 @@ bool UnitSTHS34PF80::writeGainMode(const sths34pf80::Gain mode)
 bool UnitSTHS34PF80::readSensitivityRaw(int8_t& raw)
 {
     raw = -128;
-    return readRegister8(SENS_DATA_REG, (uint8_t&)raw, 0);
+    uint8_t tmp{};
+    if (readRegister8(SENS_DATA_REG, tmp, 0)) {
+        raw = static_cast<int8_t>(tmp);
+        return true;
+    }
+    return false;
 }
 
 bool UnitSTHS34PF80::readSensitivity(uint16_t& value)
@@ -319,7 +324,7 @@ bool UnitSTHS34PF80::writeSensitivityRaw(const int8_t raw)
         return false;
     }
 
-    if (writeRegister8(SENS_DATA_REG, (uint8_t)raw)) {
+    if (writeRegister8(SENS_DATA_REG, static_cast<uint8_t>(raw))) {
         _sensitivity = raw_to_sensitivity(raw);
         return true;
     }

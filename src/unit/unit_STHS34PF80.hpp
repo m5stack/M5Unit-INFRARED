@@ -69,6 +69,8 @@ enum class ObjectTemperatureAverage : uint8_t {
 /*!
   @enum Gain
   @brief Gain mode
+  @note In Wide mode, TOBJ_COMP and smart digital algorithms (presence/motion/ambient shock detection) are not
+  available. Only TOBJECT and TAMBIENT are valid.
  */
 enum class Gain : uint8_t {
     Wide,            //!< Wide mode
@@ -86,7 +88,7 @@ enum class ODR : uint8_t {
     Rate1,      //!< Every 1000 ms
     Rate2,      //!< Every 500 ms
     Rate4,      //!< Every 250 ms
-    Rate8,      //!< Every 126 ms
+    Rate8,      //!< Every 125 ms
     Rate15,     //!< Every 66.67 ms
     Rate30,     //!< Every 33.33 ms
 };
@@ -115,51 +117,64 @@ struct Data {
     std::array<uint8_t, 13> raw{};
     uint16_t sensitivity{};  //!< Sensitivity value (NOT RAW)
 
+    //! @brief TOBJECT raw value
     inline int16_t object() const
     {
         return static_cast<int16_t>((raw[1] << 8) | raw[0]);
     }
+    //! @brief Object temperature (degrees Celsius)
     inline float objectTemperature() const
     {
-        return sensitivity ? object() / (float)sensitivity : std::numeric_limits<float>::quiet_NaN();
+        return sensitivity ? object() / static_cast<float>(sensitivity) : std::numeric_limits<float>::quiet_NaN();
     }
+    //! @brief TAMBIENT raw value
     inline int16_t ambient() const
     {
         return static_cast<int16_t>((raw[3] << 8) | raw[2]);
     }
+    //! @brief Ambient temperature (degrees Celsius)
     inline float ambientTemperature() const
     {
-        // It is possible withoutsensitivity, but the absence of sensitivity is an error
+        // It is possible without sensitivity, but the absence of sensitivity is an error
         return sensitivity ? ambient() / 100.f /* Fixed value */ : std::numeric_limits<float>::quiet_NaN();
     }
+    //! @brief TOBJ_COMP raw value (Disabled if wide mode)
     inline int16_t compensated_object() const
     {
         return static_cast<int16_t>((raw[5] << 8) | raw[4]);
     }
+    //! @brief Compensated object temperature (degrees Celsius)
     inline float compensatedObjectTemperature() const
     {
-        return sensitivity ? compensated_object() / (float)sensitivity : std::numeric_limits<float>::quiet_NaN();
+        return sensitivity ? compensated_object() / static_cast<float>(sensitivity)
+                           : std::numeric_limits<float>::quiet_NaN();
     }
+    //! @brief TPRESENCE raw value
     inline int16_t presence() const
     {
         return static_cast<int16_t>((raw[7] << 8) | raw[6]);
     }
+    //! @brief TMOTION raw value
     inline int16_t motion() const
     {
         return static_cast<int16_t>((raw[9] << 8) | raw[8]);
     }
+    //! @brief TAMB_SHOCK raw value
     inline int16_t ambient_shock() const
     {
         return static_cast<int16_t>((raw[11] << 8) | raw[10]);
     }
+    //! @brief Presence detection flag
     inline bool isPresence() const
     {
         return raw[12] & PRES_FLAG;
     }
+    //! @brief Motion detection flag
     inline bool isMotion() const
     {
         return raw[12] & MOT_FLAG;
     }
+    //! @brief Ambient shock detection flag
     inline bool isAmbientShock() const
     {
         return raw[12] & TAMB_SHOCK_FLAG;
@@ -170,12 +185,16 @@ struct Data {
 /*!
   @class m5::unit::UnitSTHS34PF80
   @brief STHS34PF80 unit
+  @note CTRL3 (22h) interrupt configuration and ALGO_CONFIG INT_PULSED (bit 3) are not implemented because the INT pin
+  is not exposed through the GROVE connector on M5Stack UNIT TMOS PIR (U185)
 */
 class UnitSTHS34PF80 : public Component, public PeriodicMeasurementAdapter<UnitSTHS34PF80, sths34pf80::Data> {
     M5_UNIT_COMPONENT_HPP_BUILDER(UnitSTHS34PF80, 0x5A);
 
 public:
     //! @brief Get the maximum ODR value that can be set
+    //! @param avg_tmos Object temperature average setting
+    //! @return Maximum ODR value for the given average setting
     static sths34pf80::ODR maximum_odr(const sths34pf80::ObjectTemperatureAverage avg_tmos);
 
     /*!
@@ -191,14 +210,16 @@ public:
         sths34pf80::ODR odr{sths34pf80::ODR::Rate30};
         //! Using compensated value if start on begin (Valid only if mode is default mode)
         bool comp_type{true};
-        //! Using absolute value for detect presence if start on begin
+        //! Use absolute value for presence detection if start on begin
         bool abs{false};
-        //! Amibient  samples if start on begin
+        //! Ambient samples if start on begin
         sths34pf80::AmbientTemperatureAverage avg_t{sths34pf80::AmbientTemperatureAverage::Samples8};
         //! Object samples if start on begin
         sths34pf80::ObjectTemperatureAverage avg_tmos{sths34pf80::ObjectTemperatureAverage::Samples32};
     };
 
+    //! @brief Constructor
+    //! @param addr I2C address (default: 0x5A)
     explicit UnitSTHS34PF80(const uint8_t addr = DEFAULT_ADDRESS)
         : Component(addr), _data{new m5::container::CircularBuffer<sths34pf80::Data>(1)}
     {
@@ -210,17 +231,21 @@ public:
     {
     }
 
+    //! @brief Begin communication and apply config
+    //! @return True if successful
     virtual bool begin() override;
+    //! @brief Update periodic measurement data
+    //! @param force Force update regardless of timing
     virtual void update(const bool force = false) override;
 
     ///@name Settings for begin
     ///@{
-    /*! @brief Gets the configration */
+    /*! @brief Gets the configuration */
     inline config_t config()
     {
         return _cfg;
     }
-    //! @brief Set the configration
+    //! @brief Set the configuration
     inline void config(const config_t& cfg)
     {
         _cfg = cfg;
@@ -283,17 +308,17 @@ public:
     {
         return !empty() ? oldest().ambient_shock() : 0;
     }
-    //! @brief Oldest presence detefction
+    //! @brief Oldest presence detection
     inline bool isPresence() const
     {
         return !empty() ? oldest().isPresence() : false;
     }
-    //! @brief Oldest motion detefction
+    //! @brief Oldest motion detection
     inline bool isMotion() const
     {
         return !empty() ? oldest().isMotion() : false;
     }
-    //! @brief Oldest ambient shock detefction
+    //! @brief Oldest ambient shock detection
     inline bool isAmbientShock() const
     {
         return !empty() ? oldest().isAmbientShock() : false;
@@ -342,7 +367,7 @@ public:
     ///@{
     /*!
       @brief Measurement single shot
-      @param[out] data Measuerd data
+      @param[out] data Measured data
       @param avg_t The number of averaged samples for ambient temperature
       @param avg_tmos The number of averaged samples for object temperature
       @return True if successful
@@ -359,14 +384,14 @@ public:
     ///@name Settings
     ///@{
     /*!
-      @brief Read the avarage trim
+      @brief Read the average trim
       @param[out] avg_t The number of averaged samples for ambient temperature
       @param[out] avg_tmos The number of averaged samples for object temperature
       @return True if successful
      */
     bool readAverageTrim(sths34pf80::AmbientTemperatureAverage& avg_t, sths34pf80::ObjectTemperatureAverage& avg_tmos);
     /*!
-      @brief Write the avarage trim
+      @brief Write the average trim
       @param avg_t The number of averaged samples for ambient temperature
       @param avg_tmos The number of averaged samples for object temperature
       @return True if successful
@@ -397,7 +422,7 @@ public:
      */
     bool readSensitivityRaw(int8_t& raw);
     /*!
-      @brief Read the raw sensitivity
+      @brief Read the sensitivity
       @param[out] value Sensitivity
       @return True if successful
      */
@@ -419,7 +444,7 @@ public:
 
     /*!
       @brief Read the ODR
-      @param odr ODR
+      @param[out] odr ODR
       @return True if successful
      */
     bool readObjectDataRate(sths34pf80::ODR& odr);
@@ -430,7 +455,7 @@ public:
     ///@{
     /*!
       @brief Reset the algorithm
-      @details Apply each value to the embedded linear algorithm for compensate for ambient temperature variations in
+      @details Apply each value to the embedded linear algorithm to compensate for ambient temperature variations in
       the object temperature
       @return True if successful
       @warning During periodic detection runs, an error is returned
@@ -439,7 +464,7 @@ public:
 
     /*!
       @brief Read the low pass filter
-      @param[out] lp_p_m For presence and motion detection
+      @param[out] lpf_p_m For presence and motion detection
       @param[out] lpf_m For motion detection
       @param[out] lpf_p For presence detection
       @param[out] lpf_a_t For ambient temperature shock detection
@@ -449,7 +474,7 @@ public:
                            sths34pf80::LowPassFilter& lpf_p, sths34pf80::LowPassFilter& lpf_a_t);
     /*!
       @brief Write the low pass filter
-      @param lp_p_m For presence and motion detection
+      @param lpf_p_m For presence and motion detection
       @param lpf_m For motion detection
       @param lpf_p For presence detection
       @param lpf_a_t For ambient temperature shock detection
@@ -458,7 +483,7 @@ public:
       @warning During periodic detection runs, an error is returned
     */
     bool writeLowPassFilter(const sths34pf80::LowPassFilter lpf_p_m, const sths34pf80::LowPassFilter lpf_m,
-                            const sths34pf80::LowPassFilter lpf_p, const sths34pf80::LowPassFilter lpf_a);
+                            const sths34pf80::LowPassFilter lpf_p, const sths34pf80::LowPassFilter lpf_a_t);
 
     /*!
       @brief Read the threshold for presence detection
@@ -497,7 +522,7 @@ public:
     bool readAmbientShockThreshold(uint16_t& thres);
     /*!
       @brief Write the threshold for ambient shock detection
-      @param[out] thres Threshold
+      @param thres Threshold
       @return True if successful
       @warning During periodic detection runs, an error is returned
      */
@@ -540,7 +565,7 @@ public:
     bool readAmbientShockHysteresis(uint8_t& hyst);
     /*!
       @brief Write the hysteresis for ambient shock detection
-      @param[out] hyst Hysteresis
+      @param hyst Hysteresis
       @return True if successful
       @warning During periodic detection runs, an error is returned
      */
@@ -556,6 +581,7 @@ public:
     ///@}
 
     //! @brief Software reset
+    //! @return True if successful
     bool softReset();
 
 protected:

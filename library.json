@@ -1,7 +1,7 @@
 {
     "name": "M5Unit-INFRARED",
     "description": "Library for M5Stack UNIT INFRARED using M5UnitUnified",
-    "keywords": "m5stack, m5unitunified, infrared, tmos, pir, sths34pf80, i2c",
+    "keywords": "m5stack, m5unitunified, infrared, tmos, pir, sths34pf80, as312, i2c, gpio",
     "authors": {
         "name": "M5Stack",
         "url": "https://www.m5stack.com"

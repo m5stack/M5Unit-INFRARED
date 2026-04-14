@@ -62,6 +62,7 @@ jobs:
         unit:
           - UnitTmosPIR
           - UnitPIR
+          - UnitOP
 
         board:
           - arduino_nesso_n1

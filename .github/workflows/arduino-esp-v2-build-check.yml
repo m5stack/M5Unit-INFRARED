@@ -63,6 +63,7 @@ jobs:
         unit:
           - UnitTmosPIR
           - UnitPIR
+          - UnitOP
 
         board:
           - m5stack-atom

@@ -59,6 +59,7 @@ jobs:
         unit:
           - UnitTmosPIR
           - UnitPIR
+          - UnitOP
 
         board:
           - Core
@@ -100,6 +101,8 @@ jobs:
           - { example: PlotToSerial, unit: HatPIR, board: StickS3, framework: Arduino, espressif32: latest }
           - { example: PlotToSerial, unit: HatPIR, board: CoreInk, framework: Arduino, espressif32: latest }
           - { example: PlotToSerial, unit: HatPIR, board: NessoN1, framework: Arduino, espressif32: latest }
+
+
 
     steps:
       - name: Checkout

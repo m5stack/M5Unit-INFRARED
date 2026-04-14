@@ -18,12 +18,20 @@ Unit PIR is a passive infrared motion detection sensor unit utilizing the AS312 
 ### SKU: U054
 Hat PIR is a passive infrared motion detection sensor for M5StickC series, utilizing the AS312 chip. Same functionality as Unit PIR in a Hat form factor.
 
+### SKU: U057
+Unit OP90 is a 90° non-contact photoelectric limit switch. The unit has an infrared transmitter and receiver located on opposite sides. During normal operation, the transmitter continuously emits an infrared signal to the receiver. When an object passes between them and blocks the infrared signal, the output terminal will generate an action signal to detect the object's passage. It is commonly used in mechanical control systems as a safety interlock or photoelectric counter.
+
+### SKU: U058
+Unit OP180 is a 180° non-contact photoelectric limit switch. The unit has an infrared transmitter and receiver located on opposite sides. During normal operation, the transmitter continuously emits an infrared signal to the receiver. When an object passes between them and blocks the infrared signal, the output terminal will generate an action signal to detect the object's passage. It is commonly used in mechanical control systems as a safety interlock or a photoelectric counter.
+
 ## Related Link
 See also examples using conventional methods here.
 
 - [Unit TMOS PIR & Datasheet](https://docs.m5stack.com/en/unit/UNIT-TMOS%20PIR)
 - [Unit PIR & Datasheet](https://docs.m5stack.com/en/unit/PIR)
 - [Hat PIR & Datasheet](https://docs.m5stack.com/en/hat/hat-pir)
+- [Unit OP90 & Datasheet](https://docs.m5stack.com/en/unit/OP.90)
+- [Unit OP180 & Datasheet](https://docs.m5stack.com/en/unit/OP180)
 
 ### Required Libraries:
 - [M5UnitUnified](https://github.com/m5stack/M5UnitUnified)

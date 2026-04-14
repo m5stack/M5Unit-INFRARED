@@ -14,6 +14,7 @@
 #define M5_UNIT_UNIFIED_INFRARED_HPP
 
 #include "unit/unit_STHS34PF80.hpp"
+#include "unit/unit_AS312.hpp"
 
 /*!
   @namespace m5
@@ -27,6 +28,10 @@ namespace m5 {
 namespace unit {
 //! @brief Alias for M5Stack's M5-TMOSPIR unit (internally uses STHS34PF80)
 using UnitTmosPIR = m5::unit::UnitSTHS34PF80;
+//! @brief Alias for M5Stack's Unit PIR (SKU: U004, internally uses AS312)
+using UnitPIR = m5::unit::UnitAS312;
+//! @brief Alias for M5Stack's Hat PIR (SKU: U054, internally uses AS312)
+using HatPIR = m5::unit::UnitAS312;
 
 }  // namespace unit
 }  // namespace m5

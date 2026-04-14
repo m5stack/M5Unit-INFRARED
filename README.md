@@ -12,10 +12,18 @@ It communicates with M5 devices via I2C (default address: 0x5A).
 
 The working principle is based on the blackbody radiation principle described by Planck's law, which not only monitors ambient temperature but also detects human presence and motion. 
 
+### SKU: U004
+Unit PIR is a passive infrared motion detection sensor unit utilizing the AS312 chip. It detects motion by sensing changes in infrared radiation from human bodies or warm objects via a single digital GPIO output.
+
+### SKU: U054
+Hat PIR is a passive infrared motion detection sensor for M5StickC series, utilizing the AS312 chip. Same functionality as Unit PIR in a Hat form factor.
+
 ## Related Link
 See also examples using conventional methods here.
 
 - [Unit TMOS PIR & Datasheet](https://docs.m5stack.com/en/unit/UNIT-TMOS%20PIR)
+- [Unit PIR & Datasheet](https://docs.m5stack.com/en/unit/PIR)
+- [Hat PIR & Datasheet](https://docs.m5stack.com/en/hat/hat-pir)
 
 ### Required Libraries:
 - [M5UnitUnified](https://github.com/m5stack/M5UnitUnified)
@@ -28,6 +36,23 @@ See also examples using conventional methods here.
 
 ## Examples
 See also [examples/UnitUnified](examples/UnitUnified)
+
+### For ArduinoIDE settings
+For UnitPIR / HatPIR examples, you must choose a define symbol for the unit you will use.
+(Rewrite source or specify with compile options)
+
+- PlotToSerial
+```cpp
+// *************************************************************
+// Choose one define symbol to match the unit you are using
+// *************************************************************
+#if !defined(USING_UNIT_PIR) && !defined(USING_HAT_PIR)
+// For UnitPIR (U004)
+// #define USING_UNIT_PIR
+// For HatPIR (U054)
+// #define USING_HAT_PIR
+#endif
+```
 
 ### Doxygen document
 [GitHub Pages](https://m5stack.github.io/M5Unit-INFRARED/)

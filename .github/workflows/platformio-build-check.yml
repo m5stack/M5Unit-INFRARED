@@ -58,6 +58,7 @@ jobs:
 
         unit:
           - UnitTmosPIR
+          - UnitPIR
 
         board:
           - Core
@@ -92,6 +93,13 @@ jobs:
             board: Core
             framework: Arduino
             espressif32: latest
+
+          # HatPIR (Hat-compatible boards)
+          - { example: PlotToSerial, unit: HatPIR, board: StickCPlus, framework: Arduino, espressif32: latest }
+          - { example: PlotToSerial, unit: HatPIR, board: StickCPlus2, framework: Arduino, espressif32: latest }
+          - { example: PlotToSerial, unit: HatPIR, board: StickS3, framework: Arduino, espressif32: latest }
+          - { example: PlotToSerial, unit: HatPIR, board: CoreInk, framework: Arduino, espressif32: latest }
+          - { example: PlotToSerial, unit: HatPIR, board: NessoN1, framework: Arduino, espressif32: latest }
 
     steps:
       - name: Checkout

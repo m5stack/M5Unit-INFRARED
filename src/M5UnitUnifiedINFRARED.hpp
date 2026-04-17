@@ -34,7 +34,7 @@ using UnitTmosPIR = m5::unit::UnitSTHS34PF80;
 using UnitPIR = m5::unit::UnitAS312;
 //! @brief Alias for M5Stack's Hat PIR (SKU: U054, internally uses AS312)
 using HatPIR = m5::unit::UnitAS312;
-//! @brief Alias for M5Stack's Unit OP90 (SKU: U057) / Unit OP180 (SKU: U058, internally uses ITR9606)
+//! @brief Alias for M5Stack's Unit OP90 / Unit OP180 (SKU: U057/U058, internally uses ITR9606)
 using UnitOP = m5::unit::UnitITR9606;
 
 }  // namespace unit

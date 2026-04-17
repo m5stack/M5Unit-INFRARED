@@ -58,11 +58,18 @@ jobs:
 
         sketch:
           - PlotToSerial
+          - SendIR
 
         unit:
           - UnitTmosPIR
           - UnitPIR
           - UnitOP
+          - UnitIR
+
+        exclude:
+          - { sketch: SendIR, unit: UnitTmosPIR }
+          - { sketch: SendIR, unit: UnitPIR }
+          - { sketch: SendIR, unit: UnitOP }
 
         board:
           - arduino_nesso_n1

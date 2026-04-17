@@ -5,10 +5,10 @@
  */
 /*!
   @file M5UnitUnifiedINFRARED.hpp
-  @brief Main header of M5UnitINFRARED
+  @brief Main header of M5Unit-INFRARED
 
-  @mainpage M5UnitINFRARED
-  Library for UnitINFRARED using M5UnitUnified.
+  @mainpage M5Unit-INFRARED
+  Library for M5Unit-INFRARED using M5UnitUnified.
 */
 #ifndef M5_UNIT_UNIFIED_INFRARED_HPP
 #define M5_UNIT_UNIFIED_INFRARED_HPP
@@ -16,6 +16,7 @@
 #include "unit/unit_STHS34PF80.hpp"
 #include "unit/unit_AS312.hpp"
 #include "unit/unit_ITR9606.hpp"
+#include "unit/unit_IR.hpp"
 
 /*!
   @namespace m5

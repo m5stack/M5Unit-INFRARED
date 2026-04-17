@@ -20,6 +20,9 @@ Unit OP90 is a 90° non-contact photoelectric limit switch. The unit has an infr
 ### SKU: U058
 Unit OP180 is a 180° non-contact photoelectric limit switch. The unit has an infrared transmitter and receiver located on opposite sides. During normal operation, the transmitter continuously emits an infrared signal to the receiver. When an object passes between them and blocks the infrared signal, the output terminal will generate an action signal to detect the object's passage. It is commonly used in mechanical control systems as a safety interlock or a photoelectric counter.
 
+### SKU: U002
+Unit IR is a compact short-range photoelectric transceiver unit integrating both infrared transmission and reception. It features a 940nm infrared emitting diode and a 38kHz hardware-demodulating receiver, supporting modulated transmission and automatic demodulation reception for standard infrared protocols such as NEC. The unit communicates via a Grove HY2.0-4P interface with an effective range of less than 5 meters, and incorporates LEGO-compatible mounting holes for flexible integration with LEGO structures or screw-based installation. Suitable for smart home control, infrared remote learning, and short-range inter-device communication.
+
 ## Related Link
 See also examples using conventional methods here.
 
@@ -28,6 +31,7 @@ See also examples using conventional methods here.
 - [Hat PIR & Datasheet](https://docs.m5stack.com/en/hat/hat-pir)
 - [Unit OP90 & Datasheet](https://docs.m5stack.com/en/unit/OP.90)
 - [Unit OP180 & Datasheet](https://docs.m5stack.com/en/unit/OP180)
+- [Unit IR & Datasheet](https://docs.m5stack.com/en/unit/ir)
 
 ### Required Libraries:
 - [M5UnitUnified](https://github.com/m5stack/M5UnitUnified)
@@ -42,10 +46,10 @@ See also examples using conventional methods here.
 See also [examples/UnitUnified](examples/UnitUnified)
 
 ### For ArduinoIDE settings
-For UnitPIR / HatPIR examples, you must choose a define symbol for the unit you will use.
+You must choose a define symbol for the unit you will use.
 (Rewrite source or specify with compile options)
 
-- PlotToSerial
+- UnitPIR / HatPIR (PlotToSerial)
 ```cpp
 // *************************************************************
 // Choose one define symbol to match the unit you are using
@@ -57,6 +61,22 @@ For UnitPIR / HatPIR examples, you must choose a define symbol for the unit you 
 // #define USING_HAT_PIR
 #endif
 ```
+
+- UnitIR (PlotToSerial / SendIR)
+
+By default, the examples use the Grove-connected Unit IR (U002).
+To use a board's built-in IR transmitter/receiver instead, define `USING_BUILTIN_IR`
+(either uncomment in the source or pass `-DUSING_BUILTIN_IR` as a compile option).
+
+```cpp
+// Uncomment to use a board's built-in IR instead of Unit IR (U002)
+// #define USING_BUILTIN_IR
+```
+
+Supported boards for built-in IR:
+StickC / StickCPlus / StickCPlus2 / StickS3,
+Atom (Lite / Matrix / U / S3 / S3 Lite / S3U / S3R), AtomEchoS3R,
+Capsule, NanoC6, NessoN1, Cardputer / CardputerADV (17 boards).
 
 
 ### Doxygen document

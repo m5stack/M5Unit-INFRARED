@@ -59,11 +59,18 @@ jobs:
 
         sketch:
           - PlotToSerial
+          - SendIR
 
         unit:
           - UnitTmosPIR
           - UnitPIR
           - UnitOP
+          - UnitIR
+
+        exclude:
+          - { sketch: SendIR, unit: UnitTmosPIR }
+          - { sketch: SendIR, unit: UnitPIR }
+          - { sketch: SendIR, unit: UnitOP }
 
         board:
           - m5stack-atom
@@ -92,6 +99,8 @@ jobs:
             platform-version: 2.0.17
             platform: esp32
             archi: esp32
+
+
 
     steps:
       - name: Checkout

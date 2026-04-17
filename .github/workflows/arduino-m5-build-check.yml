@@ -59,11 +59,18 @@ jobs:
 
         sketch:
           - PlotToSerial
+          - SendIR
 
         unit:
           - UnitTmosPIR
           - UnitPIR
           - UnitOP
+          - UnitIR
+
+        exclude:
+          - { sketch: SendIR, unit: UnitTmosPIR }
+          - { sketch: SendIR, unit: UnitPIR }
+          - { sketch: SendIR, unit: UnitOP }
 
         board:
           - arduino_nesso_n1
@@ -158,6 +165,10 @@ jobs:
             platform: m5stack
             archi: esp32
 
+          # Built-in IR (StickS3 only)
+          - { sketch: PlotToSerial, unit: BuiltinIR, board: m5stack_sticks3, platform-url: "https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json", platform-version: 3.2.5, platform: m5stack, archi: esp32 }
+          - { sketch: SendIR, unit: BuiltinIR, board: m5stack_sticks3, platform-url: "https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json", platform-version: 3.2.5, platform: m5stack, archi: esp32 }
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -184,7 +195,7 @@ jobs:
               version: ${{ matrix.platform-version }}
           libraries: ${{ steps.libs.outputs.yaml }}
           sketch-paths: |
-            - ${{ env.SKETCH_NAMES_FIND_START }}/${{ (matrix.unit == 'HatPIR') && 'UnitPIR' || matrix.unit }}/${{ matrix.sketch }}
+            - ${{ env.SKETCH_NAMES_FIND_START }}/${{ (matrix.unit == 'HatPIR') && 'UnitPIR' || (matrix.unit == 'BuiltinIR' && 'UnitIR' || matrix.unit) }}/${{ matrix.sketch }}
           cli-compile-flags: |
             - --build-property
-            - build.extra_flags=${{ matrix.unit == 'HatPIR' && '-DUSING_HAT_PIR' || (matrix.unit == 'UnitPIR' && '-DUSING_UNIT_PIR' || '') }}
+            - build.extra_flags=${{ matrix.unit == 'HatPIR' && '-DUSING_HAT_PIR' || (matrix.unit == 'UnitPIR' && '-DUSING_UNIT_PIR' || (matrix.unit == 'BuiltinIR' && '-DUSING_BUILTIN_IR' || '')) }}

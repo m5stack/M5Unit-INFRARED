@@ -55,11 +55,18 @@ jobs:
       matrix:
         example:
           - PlotToSerial
+          - SendIR
 
         unit:
           - UnitTmosPIR
           - UnitPIR
           - UnitOP
+          - UnitIR
+
+        exclude:
+          - { example: SendIR, unit: UnitTmosPIR }
+          - { example: SendIR, unit: UnitPIR }
+          - { example: SendIR, unit: UnitOP }
 
         board:
           - Core
@@ -94,6 +101,10 @@ jobs:
             board: Core
             framework: Arduino
             espressif32: latest
+
+          # Built-in IR (StickS3 only)
+          - { example: Builtin_SendIR, unit: "", board: StickS3, framework: Arduino, espressif32: latest }
+          - { example: Builtin_PlotToSerial, unit: "", board: StickS3, framework: Arduino, espressif32: latest }
 
           # HatPIR (Hat-compatible boards)
           - { example: PlotToSerial, unit: HatPIR, board: StickCPlus, framework: Arduino, espressif32: latest }

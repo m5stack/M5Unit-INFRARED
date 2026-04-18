@@ -55,9 +55,18 @@ jobs:
       matrix:
         example:
           - PlotToSerial
+          - SendIR
 
         unit:
           - UnitTmosPIR
+          - UnitPIR
+          - UnitOP
+          - UnitIR
+
+        exclude:
+          - { example: SendIR, unit: UnitTmosPIR }
+          - { example: SendIR, unit: UnitPIR }
+          - { example: SendIR, unit: UnitOP }
 
         board:
           - Core
@@ -92,6 +101,23 @@ jobs:
             board: Core
             framework: Arduino
             espressif32: latest
+
+          # Built-in IR (StickS3 only)
+          - { example: Builtin_SendIR, unit: "", board: StickS3, framework: Arduino, espressif32: latest }
+          - { example: Builtin_PlotToSerial, unit: "", board: StickS3, framework: Arduino, espressif32: latest }
+
+          # HatPIR (Hat-compatible boards)
+          - { example: PlotToSerial, unit: HatPIR, board: StickCPlus, framework: Arduino, espressif32: latest }
+          - { example: PlotToSerial, unit: HatPIR, board: StickCPlus2, framework: Arduino, espressif32: latest }
+          - { example: PlotToSerial, unit: HatPIR, board: StickS3, framework: Arduino, espressif32: latest }
+          - { example: PlotToSerial, unit: HatPIR, board: CoreInk, framework: Arduino, espressif32: latest }
+          - { example: PlotToSerial, unit: HatPIR, board: NessoN1, framework: Arduino, espressif32: latest }
+
+          # ViaPbHub (Core only)
+          - { example: ViaPbHub, unit: UnitPIR, board: Core, framework: Arduino, espressif32: latest }
+          - { example: ViaPbHub, unit: UnitOP, board: Core, framework: Arduino, espressif32: latest }
+
+
 
     steps:
       - name: Checkout

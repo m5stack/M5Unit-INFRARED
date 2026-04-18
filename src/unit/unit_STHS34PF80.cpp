@@ -145,7 +145,7 @@ bool UnitSTHS34PF80::start_periodic_measurement(const sths34pf80::Gain mode, con
     }
 
     //
-    acfg = (comp_type ? 0x04 : 0x00) | (abs ? 0x02 : 0x00);
+    acfg = (comp_type ? 0x04 : 0x00) | (abs ? 0x01 : 0x00);
     v    = CTRL1_BDU | m5::stl::to_underlying(odr);  // Enabled BDU and ODR
 
     _periodic = writeGainMode(mode) && write_algorithm_config(acfg) && resetAlgorithm() && writeRegister8(CTRL1_REG, v);

@@ -185,7 +185,7 @@ struct Data {
 /*!
   @class m5::unit::UnitSTHS34PF80
   @brief STHS34PF80 unit
-  @note CTRL3 (22h) interrupt configuration and ALGO_CONFIG INT_PULSED (bit 3) are not implemented because the INT pin
+  @note CTRL3 (22h) interrupt configuration and ALGO_CONFIG INT_PULSED (bit 1) are not implemented because the INT pin
   is not exposed through the GROVE connector on M5Stack UNIT TMOS PIR (U185)
 */
 class UnitSTHS34PF80 : public Component, public PeriodicMeasurementAdapter<UnitSTHS34PF80, sths34pf80::Data> {

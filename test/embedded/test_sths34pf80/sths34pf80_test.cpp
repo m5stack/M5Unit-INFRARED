@@ -786,14 +786,57 @@ TEST_F(TestSTHS34PF80, BeginAppliesConfig)
     EXPECT_TRUE(unit->stopPeriodicMeasurement());
     uint8_t acfg{};
     EXPECT_TRUE(unit->readAlgorithmConfig(acfg));
-    // comp_type=false -> bit2=0, abs=true -> bit1=1
-    EXPECT_EQ(acfg & 0x04, 0x00);  // comp_type off
-    EXPECT_EQ(acfg & 0x02, 0x02);  // abs on
+    // ALGO_CONFIG (28h): bit2=COMP_TYPE, bit1=INT_PULSED, bit0=SEL_ABS
+    // comp_type=false -> bit2=0, abs=true -> bit0=1 (SEL_ABS)
+    EXPECT_EQ(acfg & 0x04, 0x00);  // COMP_TYPE off
+    EXPECT_EQ(acfg & 0x02, 0x00);  // INT_PULSED must not be set
+    EXPECT_EQ(acfg & 0x01, 0x01);  // SEL_ABS on
 
     // Restore original config and restart
     unit->config(original_cfg);
     EXPECT_TRUE(unit->begin());
     EXPECT_TRUE(unit->inPeriodic());
+}
+
+// Verify ALGO_CONFIG bit layout: bit2=COMP_TYPE, bit1=INT_PULSED, bit0=SEL_ABS (datasheet 28h)
+TEST_F(TestSTHS34PF80, AlgorithmConfigBits)
+{
+    SCOPED_TRACE(ustr);
+
+    EXPECT_TRUE(unit->stopPeriodicMeasurement());
+    EXPECT_FALSE(unit->inPeriodic());
+
+    uint8_t acfg{};
+
+    // comp_type=true, abs=true -> COMP_TYPE|SEL_ABS (0x05)
+    EXPECT_TRUE(unit->startPeriodicMeasurement(Gain::Default, ODR::Rate8, true, true));
+    EXPECT_TRUE(unit->stopPeriodicMeasurement());
+    EXPECT_TRUE(unit->readAlgorithmConfig(acfg));
+    EXPECT_EQ(acfg & 0x04, 0x04);  // COMP_TYPE
+    EXPECT_EQ(acfg & 0x02, 0x00);  // INT_PULSED must not be set
+    EXPECT_EQ(acfg & 0x01, 0x01);  // SEL_ABS
+
+    // comp_type=true, abs=false -> COMP_TYPE only (0x04)
+    EXPECT_TRUE(unit->startPeriodicMeasurement(Gain::Default, ODR::Rate8, true, false));
+    EXPECT_TRUE(unit->stopPeriodicMeasurement());
+    EXPECT_TRUE(unit->readAlgorithmConfig(acfg));
+    EXPECT_EQ(acfg & 0x04, 0x04);
+    EXPECT_EQ(acfg & 0x02, 0x00);
+    EXPECT_EQ(acfg & 0x01, 0x00);
+
+    // comp_type=false, abs=true -> SEL_ABS only (0x01)
+    EXPECT_TRUE(unit->startPeriodicMeasurement(Gain::Default, ODR::Rate8, false, true));
+    EXPECT_TRUE(unit->stopPeriodicMeasurement());
+    EXPECT_TRUE(unit->readAlgorithmConfig(acfg));
+    EXPECT_EQ(acfg & 0x04, 0x00);
+    EXPECT_EQ(acfg & 0x02, 0x00);
+    EXPECT_EQ(acfg & 0x01, 0x01);
+
+    // comp_type=false, abs=false -> all clear (0x00)
+    EXPECT_TRUE(unit->startPeriodicMeasurement(Gain::Default, ODR::Rate8, false, false));
+    EXPECT_TRUE(unit->stopPeriodicMeasurement());
+    EXPECT_TRUE(unit->readAlgorithmConfig(acfg));
+    EXPECT_EQ(acfg & 0x07, 0x00);
 }
 
 // Test 5: maximum_odr() static function

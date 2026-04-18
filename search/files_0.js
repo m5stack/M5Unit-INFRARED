@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['m5unitunifiedinfrared_2ehpp_0',['M5UnitUnifiedINFRARED.hpp',['../_m5_unit_unified_i_n_f_r_a_r_e_d_8hpp.html',1,'']]]
+  ['auto_5fdetect_5fcodec_2ecpp_0',['auto_detect_codec.cpp',['../auto__detect__codec_8cpp.html',1,'']]],
+  ['auto_5fdetect_5fcodec_2ehpp_1',['auto_detect_codec.hpp',['../auto__detect__codec_8hpp.html',1,'']]]
 ];

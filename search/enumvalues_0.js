@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['default_0',['Default',['../unit___s_t_h_s34_p_f80_8hpp.html#a7ce1ea92914e5829c5b1deb4dd396e21a7a1920d61156abc05a60135aefe8bc67',1,'m5::unit::sths34pf80']]]
+  ['custom_0',['Custom',['../ir__codec_8hpp.html#abad07de0674f26a553411c1a09073655a90589c47f06eb971d548591f23c285af',1,'m5::unit::ir']]]
 ];

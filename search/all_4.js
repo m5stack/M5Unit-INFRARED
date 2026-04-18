@@ -1,4 +1,12 @@
 var searchData=
 [
-  ['gain_0',['Gain',['../unit___s_t_h_s34_p_f80_8hpp.html#a7ce1ea92914e5829c5b1deb4dd396e21',1,'m5::unit::sths34pf80']]]
+  ['empty_0',['empty',['../classm5_1_1unit_1_1_unit_i_r.html#afa679f6d7c3ccbebb3f3d807caee997f',1,'m5::unit::UnitIR']]],
+  ['encode_1',['encode',['../classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html#a68019e339e0535dc3556ac0bf7fc7ac3',1,'m5::unit::ir::AutoDetectCodec::encode()'],['../classm5_1_1unit_1_1ir_1_1_i_r_codec.html#a622f8613bb8f4223a9d98422bf8c7d4a',1,'m5::unit::ir::IRCodec::encode()'],['../classm5_1_1unit_1_1ir_1_1_mitsubishi_codec.html#a1ee5d229a5b72197de5c5fbb52d5a3be',1,'m5::unit::ir::MitsubishiCodec::encode()'],['../classm5_1_1unit_1_1ir_1_1_nec_codec.html#a8bfbd33481391cb907debf498c5bf369',1,'m5::unit::ir::NecCodec::encode()'],['../classm5_1_1unit_1_1ir_1_1_panasonic_codec.html#a1c5d96857f157875e118b12732e484ef',1,'m5::unit::ir::PanasonicCodec::encode()'],['../classm5_1_1unit_1_1ir_1_1_raw_codec.html#a805766e77555a5d8f65fe0f2bd0fe84a',1,'m5::unit::ir::RawCodec::encode()'],['../classm5_1_1unit_1_1ir_1_1_rc5_codec.html#af3e71b936d6dc3c55dfbe787a963b1c3',1,'m5::unit::ir::Rc5Codec::encode()'],['../classm5_1_1unit_1_1ir_1_1_rc6_codec.html#acf1fc35860900dcd575ece36a66accdc',1,'m5::unit::ir::Rc6Codec::encode()'],['../classm5_1_1unit_1_1ir_1_1_sirc_codec.html#a14097e88555de69fd37aa4568ef2130d',1,'m5::unit::ir::SircCodec::encode()']]],
+  ['encodemanchester_2',['encodeManchester',['../ir__rmt__items_8cpp.html#a953c56c561b5a5448370160eb210bfc8',1,'m5::unit::ir']]],
+  ['encodepanasonic_3',['encodePanasonic',['../classm5_1_1unit_1_1ir_1_1_panasonic_codec.html#a356f839a3233c0a2331782362f52b91c',1,'m5::unit::ir::PanasonicCodec']]],
+  ['encodepulsedistance_4',['encodePulseDistance',['../ir__rmt__items_8cpp.html#ac6b399b889f1d04009c62b113d523484',1,'m5::unit::ir']]],
+  ['encodepulsewidth_5',['encodePulseWidth',['../ir__rmt__items_8cpp.html#aa61bc4a16aaa0c709f3205a79c8886df',1,'m5::unit::ir']]],
+  ['encoderaw_6',['encodeRaw',['../classm5_1_1unit_1_1ir_1_1_nec_codec.html#abee84c225155abdc9f54e189ff23d92c',1,'m5::unit::ir::NecCodec::encodeRaw()'],['../classm5_1_1unit_1_1ir_1_1_raw_codec.html#a450d80dda5a253c617ee80c44a0f8f09',1,'m5::unit::ir::RawCodec::encodeRaw()']]],
+  ['encoderaw48_7',['encodeRaw48',['../classm5_1_1unit_1_1ir_1_1_panasonic_codec.html#a0b6aa3a740caa4724cbbfd5ccc70d9b7',1,'m5::unit::ir::PanasonicCodec']]],
+  ['encoderepeat_8',['encodeRepeat',['../classm5_1_1unit_1_1ir_1_1_nec_codec.html#a74f2cef1a7178f0c1146365d524f3f09',1,'m5::unit::ir::NecCodec']]]
 ];

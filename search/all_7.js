@@ -1,10 +1,7 @@
 var searchData=
 [
-  ['m5_0',['m5',['../namespacem5.html',1,'']]],
-  ['m5unitinfrared_1',['M5UnitINFRARED',['../index.html',1,'']]],
-  ['m5unitunifiedinfrared_2ehpp_2',['M5UnitUnifiedINFRARED.hpp',['../_m5_unit_unified_i_n_f_r_a_r_e_d_8hpp.html',1,'']]],
-  ['maximum_5fodr_3',['maximum_odr',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a1f8ecaeb4f061abd7347e3ec183fc6fa',1,'m5::unit::UnitSTHS34PF80']]],
-  ['measuresingleshot_4',['measureSingleshot',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a79bdf20cbc5171f96328de8c338badd7',1,'m5::unit::UnitSTHS34PF80']]],
-  ['mode_5',['mode',['../structm5_1_1unit_1_1_unit_s_t_h_s34_p_f80_1_1config__t.html#aef0c8323d696a69e5ca66ae230837b0d',1,'m5::unit::UnitSTHS34PF80::config_t']]],
-  ['motion_6',['motion',['../structm5_1_1unit_1_1sths34pf80_1_1_data.html#a3be28238245847ac73ea166222cc77c3',1,'m5::unit::sths34pf80::Data::motion()'],['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#aba9c968cb3c2e1e164430ce907595e05',1,'m5::unit::UnitSTHS34PF80::motion()']]]
+  ['hasrx_0',['hasRX',['../classm5_1_1unit_1_1_unit_i_r.html#a9ca65b6cf625ea2ad4b3d794cfccfb1a',1,'m5::unit::UnitIR']]],
+  ['hastx_1',['hasTX',['../classm5_1_1unit_1_1_unit_i_r.html#a70a4e13d8a25b012a4956f47634aa51d',1,'m5::unit::UnitIR']]],
+  ['hatpir_2',['HatPIR',['../_m5_unit_unified_i_n_f_r_a_r_e_d_8hpp.html#abdc93bd1fcf6223ae74a6c8c04b8a7b2',1,'m5::unit']]],
+  ['hold_5ftime_5fms_3',['HOLD_TIME_MS',['../classm5_1_1unit_1_1_unit_a_s312.html#a5d1138e6a516c728080b2e6b9413c6d5',1,'m5::unit::UnitAS312']]]
 ];

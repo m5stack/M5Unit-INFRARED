@@ -1,15 +1,11 @@
 var searchData=
 [
-  ['wide_0',['Wide',['../unit___s_t_h_s34_p_f80_8hpp.html#a7ce1ea92914e5829c5b1deb4dd396e21ae7c770a61dbdf81ca922ae0260e327c1',1,'m5::unit::sths34pf80']]],
-  ['writeambientshockhysteresis_1',['writeAmbientShockHysteresis',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#ad91edfa8badccbae1c6f5e64130b0bbe',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writeambientshockthreshold_2',['writeAmbientShockThreshold',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#ab9e82e219198a2907e8869a88b1b9376',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writeaveragetrim_3',['writeAverageTrim',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a526586b35ab0ed5541af2803266b8348',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writegainmode_4',['writeGainMode',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#acc5626ed21a5f0b2b2078bdb6b070ff8',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writelowpassfilter_5',['writeLowPassFilter',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a8738ecbc705dc929f007fcfe71546f7c',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writemotionhysteresis_6',['writeMotionHysteresis',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a0d60f4b0e088bf1ab70299f8e512ce75',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writemotionthreshold_7',['writeMotionThreshold',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#af3df2833749e920e3944067f3873b4c8',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writepresencehysteresis_8',['writePresenceHysteresis',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a226726fca24a80216e496060aa3bec98',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writepresencethreshold_9',['writePresenceThreshold',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#ae0624ff293d0599c04a4953da860b4a1',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writesensitivity_10',['writeSensitivity',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a86082cb56e69b96637f4c896f12028b8',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writesensitivityraw_11',['writeSensitivityRaw',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a2589fafd62052f8d6469bb21550dd2bb',1,'m5::unit::UnitSTHS34PF80']]]
+  ['panasonic_0',['Panasonic',['../ir__codec_8hpp.html#abad07de0674f26a553411c1a09073655a4db2eb60906233021c65b511fe814034',1,'m5::unit::ir']]],
+  ['panasonic_1',['panasonic',['../classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html#a780ab4a2a7bcc019a13506a598bec6fb',1,'m5::unit::ir::AutoDetectCodec']]],
+  ['panasonic_5fcodec_2ecpp_2',['panasonic_codec.cpp',['../panasonic__codec_8cpp.html',1,'']]],
+  ['panasonic_5fcodec_2ehpp_3',['panasonic_codec.hpp',['../panasonic__codec_8hpp.html',1,'']]],
+  ['panasoniccodec_4',['PanasonicCodec',['../classm5_1_1unit_1_1ir_1_1_panasonic_codec.html',1,'m5::unit::ir::PanasonicCodec'],['../classm5_1_1unit_1_1ir_1_1_panasonic_codec.html#a231b0251712b6ddf58e116cf90263703',1,'m5::unit::ir::PanasonicCodec::PanasonicCodec()']]],
+  ['powerdown_5',['PowerDown',['../unit___s_t_h_s34_p_f80_8hpp.html#a77c07681630e9a92271561c54036dd20a5738b4738d0d5191678eed09d6b5c6f8',1,'m5::unit::sths34pf80']]],
+  ['presence_6',['presence',['../structm5_1_1unit_1_1sths34pf80_1_1_data.html#ae26d10116f63854de90115aa13191d1f',1,'m5::unit::sths34pf80::Data::presence()'],['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a4769c7b4d4380d36e3d2bb82dfdf32b1',1,'m5::unit::UnitSTHS34PF80::presence()']]],
+  ['protocol_7',['protocol',['../structm5_1_1unit_1_1ir_1_1_decode_result.html#ad2f8177d655284e4a8bb6bfb589260a0',1,'m5::unit::ir::DecodeResult']]]
 ];

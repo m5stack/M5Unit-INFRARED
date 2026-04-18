@@ -42,12 +42,24 @@ See also examples using conventional methods here.
 
 - [M5Unit-INFRARED - MIT](LICENSE)
 
+## Support via [PbHub](https://docs.m5stack.com/en/unit/pbhub_1.1)
+
+|Unit|Support|Note|
+|---|---|---|
+|UnitTmosPIR|NG|I2C with complex registers not supported by PbHub (usable via [PaHub](https://docs.m5stack.com/en/unit/Unit-PaHub%20v2.1))|
+|UnitPIR|OK||
+|HatPIR|NG|Hat form factor (not Grove)|
+|UnitOP|OK||
+|UnitIR|NG|RMT (hardware-demodulated) not supported by PbHub|
+
+See also [M5Unit-HUB](https://github.com/m5stack/M5Unit-HUB)
+
 ## Examples
 See also [examples/UnitUnified](examples/UnitUnified)
 
 - **UnitTmosPIR (U185)**: `PlotToSerial`, `SimpleDisplay`
-- **UnitPIR (U004) / HatPIR (U054)**: `PlotToSerial`
-- **UnitOP (U057/U058)**: `PlotToSerial`
+- **UnitPIR (U004) / HatPIR (U054)**: `PlotToSerial`, `ViaPbHub` (UnitPIR only)
+- **UnitOP (U057/U058)**: `PlotToSerial`, `ViaPbHub`
 - **UnitIR (U002)**: `PlotToSerial`, `SendIR` (both support `-DUSING_BUILTIN_IR` for built-in IR)
 
 ### For ArduinoIDE settings

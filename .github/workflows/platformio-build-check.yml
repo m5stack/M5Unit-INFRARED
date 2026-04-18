@@ -113,6 +113,10 @@ jobs:
           - { example: PlotToSerial, unit: HatPIR, board: CoreInk, framework: Arduino, espressif32: latest }
           - { example: PlotToSerial, unit: HatPIR, board: NessoN1, framework: Arduino, espressif32: latest }
 
+          # ViaPbHub (Core only)
+          - { example: ViaPbHub, unit: UnitPIR, board: Core, framework: Arduino, espressif32: latest }
+          - { example: ViaPbHub, unit: UnitOP, board: Core, framework: Arduino, espressif32: latest }
+
 
 
     steps:

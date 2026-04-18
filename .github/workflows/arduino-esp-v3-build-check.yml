@@ -2,7 +2,8 @@ name: Build(arduino-esp32:3.x)
 
 env:
   SKETCH_NAMES_FIND_START: ./examples/UnitUnified
-  REQUIRED_LIBRARIES: M5Unified,M5UnitUnified
+  REQUIRED_LIBRARIES: M5Unified,M5UnitUnified,M5Unit-HUB
+
 on:
   push:
     tags-ignore:
@@ -144,6 +145,22 @@ jobs:
           - sketch: PlotToSerial
             unit: HatPIR
             board: arduino_nesso_n1
+            platform-url: https://espressif.github.io/arduino-esp32/package_esp32_index.json
+            platform-version: 3.3.6
+            platform: esp32
+            archi: esp32
+
+          # ViaPbHub (Core only)
+          - sketch: ViaPbHub
+            unit: UnitPIR
+            board: m5stack_core
+            platform-url: https://espressif.github.io/arduino-esp32/package_esp32_index.json
+            platform-version: 3.3.6
+            platform: esp32
+            archi: esp32
+          - sketch: ViaPbHub
+            unit: UnitOP
+            board: m5stack_core
             platform-url: https://espressif.github.io/arduino-esp32/package_esp32_index.json
             platform-version: 3.3.6
             platform: esp32

@@ -10,6 +10,7 @@
 #include "unit_IR.hpp"
 #include <M5Utility.hpp>
 #include <cstring>
+#include <freertos/FreeRTOS.h>
 #include <esp_heap_caps.h>
 
 #if defined(M5_UNIT_UNIFIED_USING_RMT_V2)

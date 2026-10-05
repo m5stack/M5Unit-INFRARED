@@ -12,12 +12,14 @@
 #include <cstring>
 #include <esp_heap_caps.h>
 
+#if M5_UNIT_UNIFIED_HAS_RMT
 #if defined(M5_UNIT_UNIFIED_USING_RMT_V2)
 #include <driver/rmt_tx.h>  // includes rmt_common.h (rmt_apply_carrier)
 #include <esp_private/esp_clk.h>
 #else
 #include <driver/rmt.h>
 #include <esp32/clk.h>
+#endif
 #endif
 
 using namespace m5::utility::mmh3;
@@ -33,6 +35,10 @@ const types::attr_t UnitIR::attr{attribute::AccessGPIO};
 
 bool UnitIR::begin()
 {
+#if !M5_UNIT_UNIFIED_HAS_RMT
+    M5_LIB_LOGE("RMT is not supported on this target");
+    return false;
+#else
     // Codec timing constants assume 1us per RMT tick. Reject other resolutions.
     if (_cfg.tick_ns != 1000) {
         M5_LIB_LOGE("tick_ns must be 1000 (1us); got %u", _cfg.tick_ns);
@@ -95,9 +101,9 @@ bool UnitIR::begin()
         _rx_buffer.reset(rx_buf);
         _rx_buffer_size = buf_bytes;
 
-        cfg.rx.tick_ns = _cfg.tick_ns;
+        cfg.rx.tick_ns                = _cfg.tick_ns;
 #if defined(M5_UNIT_UNIFIED_USING_RMT_V2)
-        cfg.rx.mem_blocks = 2;
+        cfg.rx.mem_blocks             = 2;
 #elif defined(CONFIG_IDF_TARGET_ESP32S3)
         cfg.rx.mem_blocks = 1;
 #else
@@ -128,6 +134,7 @@ bool UnitIR::begin()
                 static_cast<uint8_t>(_codec->type()));
 
     return true;
+#endif
 }
 
 void UnitIR::update(const bool force)
@@ -289,7 +296,9 @@ bool UnitIR::apply_carrier()
 
     M5_LIB_LOGI("Applying carrier: %u Hz, duty %.2f", freq, duty);
 
-#if defined(M5_UNIT_UNIFIED_USING_RMT_V2)
+#if !M5_UNIT_UNIFIED_HAS_RMT
+    return false;
+#elif defined(M5_UNIT_UNIFIED_USING_RMT_V2)
     // RMT v2: apply carrier config to TX channel handle
     auto handle = static_cast<rmt_channel_handle_t>(ad->impl()->rmtTxHandle());
     if (!handle) {
@@ -313,8 +322,8 @@ bool UnitIR::apply_carrier()
     // Calculate high/low level counts from APB clock
     uint32_t apb_hz = esp_clk_apb_freq();
     uint32_t period = apb_hz / freq;  // Total period in APB ticks
-    uint16_t high = static_cast<uint16_t>(period * duty);
-    uint16_t low = static_cast<uint16_t>(period - high);
+    uint16_t high   = static_cast<uint16_t>(period * duty);
+    uint16_t low    = static_cast<uint16_t>(period - high);
 
     auto err = rmt_set_tx_carrier(static_cast<rmt_channel_t>(ch), true, high, low, RMT_CARRIER_LEVEL_HIGH);
     if (err != ESP_OK) {

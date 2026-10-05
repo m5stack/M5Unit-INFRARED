@@ -844,6 +844,7 @@ TEST_F(TestIRRmtItems, PulseWidthRoundTrip)
 // ============================================================
 // UnitIR component tests (requires hardware)
 // ============================================================
+#if M5_UNIT_UNIFIED_HAS_RMT
 class TestUnitIR : public GPIOComponentTestBase<UnitIR> {
 protected:
     virtual UnitIR* get_instance() override
@@ -958,3 +959,4 @@ TEST_F(TestUnitIR, DISABLED_SelfLoopback)
         EXPECT_EQ(r.command, command);
     }
 }
+#endif

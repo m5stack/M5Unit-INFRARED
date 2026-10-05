@@ -10,10 +10,10 @@
 */
 #include <M5Unified.h>
 #include <M5UnitUnified.h>
-#include <M5HAL.hpp>
 #include <M5UnitUnifiedINFRARED.h>
 #include <M5UnitUnifiedHUB.h>  // UnitPbHub
 #include <M5Utility.h>
+#include <wiring/m5_unit_unified_infrared_wiring.hpp>  // board-aware connection helpers (include last)
 
 namespace {
 auto& lcd = M5.Display;
@@ -108,44 +108,11 @@ void setup()
         }
     }
 
-    auto board = M5.getBoard();
-
-    // NessoN1: Arduino Wire (I2C_NUM_0) cannot be used for GROVE port.
-    //   Wire is used by M5Unified In_I2C for internal devices.
-    //   Reconfiguring Wire to GROVE pins breaks In_I2C.
-    //   Solution: Use SoftwareI2C via M5HAL for the GROVE port.
-    // NanoC6: Wire.begin() on GROVE pins conflicts with m5::I2C_Class
-    //   registered by Ex_I2C.setPort() on the same I2C_NUM_0.
-    //   Solution: Use M5.Ex_I2C directly instead of Arduino Wire.
-    bool unit_ready{};
-    if (board == m5::board_t::board_ArduinoNessoN1) {
-        auto pin_num_sda = M5.getPin(m5::pin_name_t::port_a_sda);
-        auto pin_num_scl = M5.getPin(m5::pin_name_t::port_a_scl);
-        M5_LOGI("getPin(M5HAL): SDA:%u SCL:%u", pin_num_sda, pin_num_scl);
-        m5::hal::bus::I2CBusConfig i2c_cfg;
-        i2c_cfg.pin_sda = m5::hal::gpio::getPin(pin_num_sda);
-        i2c_cfg.pin_scl = m5::hal::gpio::getPin(pin_num_scl);
-        auto i2c_bus    = m5::hal::bus::i2c::getBus(i2c_cfg);
-        M5_LOGI("Bus:%d", i2c_bus.has_value());
-        unit_ready = Units.add(hub, i2c_bus ? i2c_bus.value() : nullptr) && Units.begin();
-    } else if (board == m5::board_t::board_M5NanoC6) {
-        M5_LOGI("Using M5.Ex_I2C");
-        unit_ready = Units.add(hub, M5.Ex_I2C) && Units.begin();
-    } else {
-        auto pin_num_sda = M5.getPin(m5::pin_name_t::port_a_sda);
-        auto pin_num_scl = M5.getPin(m5::pin_name_t::port_a_scl);
-        M5_LOGI("getPin: SDA:%u SCL:%u", pin_num_sda, pin_num_scl);
-        Wire.end();
-        Wire.begin(pin_num_sda, pin_num_scl, 400000U);
-        unit_ready = Units.add(hub, Wire) && Units.begin();
-    }
-
-    if (!unit_ready) {
+    // Board-aware I2C for the PbHub: NessoN1 -> PortB GROVE (SoftwareI2C), NanoC6/NanoH2 -> Ex_I2C,
+    // others -> Wire. The UnitPIR is reached through the hub (added above), so only the hub is added here.
+    if (!m5::unit::wiring::addI2C(Units, hub, 400000) || !Units.begin()) {
         M5_LOGE("Failed to begin");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
+        m5::unit::wiring::failStop();
     }
 
     M5_LOGI("M5UnitUnified initialized");

@@ -24,6 +24,7 @@
 #include <unit/ir/rc6_codec.hpp>
 #include <unit/ir/panasonic_codec.hpp>
 #include <unit/ir/mitsubishi_codec.hpp>
+#include <wiring/m5_unit_unified_infrared_wiring.hpp>  // board-aware connection helpers (include last)
 
 namespace {
 auto& lcd = M5.Display;
@@ -225,42 +226,6 @@ void logStatus()
                   menu_labels[static_cast<uint8_t>(current_menu)]);
 }
 
-#if defined(USING_BUILTIN_IR)
-int8_t get_builtin_ir_tx_pin()
-{
-    switch (M5.getBoard()) {
-        case m5::board_t::board_M5StickC:
-        case m5::board_t::board_M5StickCPlus:
-        case m5::board_t::board_ArduinoNessoN1:
-            return 9;
-        case m5::board_t::board_M5StickCPlus2:
-            return 19;
-        case m5::board_t::board_M5StickS3:
-            return 46;
-        case m5::board_t::board_M5AtomLite:
-        case m5::board_t::board_M5AtomMatrix:
-        case m5::board_t::board_M5AtomU:
-        case m5::board_t::board_M5AtomS3U:
-            return 12;
-        case m5::board_t::board_M5AtomS3:
-        case m5::board_t::board_M5AtomS3Lite:
-        case m5::board_t::board_M5Capsule:
-            return 4;
-        case m5::board_t::board_M5AtomS3R:
-        case m5::board_t::board_M5AtomEchoS3R:
-            return 47;
-        case m5::board_t::board_M5NanoC6:
-            return 3;
-        case m5::board_t::board_M5Cardputer:
-        case m5::board_t::board_M5CardputerADV:
-            return 44;
-        default:
-            return -1;
-    }
-}
-
-#endif
-
 }  // namespace
 
 void setup()
@@ -281,39 +246,18 @@ void setup()
         sprite.createSprite(lcd.width(), lcd.height());
     }
 
-    // SendIR is TX-only: passing pin_rx = -1 avoids self-reception / RX buffer overflow
-    // on devices where TX and RX share the same Unit IR (VS1838B next to the IR LED).
-    int8_t pin_rx = -1;
+    // SendIR is TX-only: rx = -1 avoids self-reception / RX buffer overflow on devices where the
+    // VS1838B receiver sits next to the IR LED.
 #if defined(USING_BUILTIN_IR)
-    int8_t pin_tx = get_builtin_ir_tx_pin();
-    if (pin_tx < 0) {
-        M5_LOGE("No built-in IR TX on this board");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
-    }
-    // StickS3: EXT_5V must be enabled for IR TX
-    if (M5.getBoard() == m5::board_t::board_M5StickS3) {
-        M5.Power.setExtOutput(true);
-    }
-    M5_LOGI("Built-in IR: TX=%d", pin_tx);
+    // Built-in IR transmitter. StickS3 needs EXT_5V enabled (handled by helper).
+    bool ok = m5::unit::infrared::wiring::addBuiltinIrTx(Units, unit) && Units.begin();
 #else
-    // Unit IR (U002): Port B preferred, fallback to Port A
-    int8_t pin_tx = M5.getPin(m5::pin_name_t::port_b_out);
-    if (pin_tx < 0) {
-        M5_LOGW("PortB is not available, using PortA");
-        pin_tx = M5.getPin(m5::pin_name_t::port_a_pin2);
-    }
-    M5_LOGI("UnitIR GPIO: TX:%d", pin_tx);
+    // Unit IR (U002): TX only, PortB preferred, fallback to PortA
+    bool ok = m5::unit::wiring::addGPIO(Units, unit, m5::unit::wiring::GpioRole::OutOnly) && Units.begin();
 #endif
-
-    if (!Units.add(unit, pin_rx, pin_tx) || !Units.begin()) {
+    if (!ok) {
         M5_LOGE("Failed to begin");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
+        m5::unit::wiring::failStop();
     }
 
     M5_LOGI("M5UnitUnified initialized");

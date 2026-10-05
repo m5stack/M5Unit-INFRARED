@@ -11,6 +11,7 @@
 #include <M5UnitUnified.h>
 #include <M5UnitUnifiedINFRARED.h>
 #include <M5Utility.h>
+#include <wiring/m5_unit_unified_infrared_wiring.hpp>  // board-aware connection helpers (include last)
 
 namespace {
 auto& lcd = M5.Display;
@@ -100,22 +101,10 @@ void setup()
     sprite.setPaletteColor(1, TFT_BLUE);
     sprite.setPaletteColor(2, TFT_WHITE);
 
-    // UnitOP: Use Port B (GPIO).  If not available, fallback to Port A pins.
-    auto pin_in  = M5.getPin(m5::pin_name_t::port_b_in);
-    auto pin_out = M5.getPin(m5::pin_name_t::port_b_out);
-    if (pin_in < 0 || pin_out < 0) {
-        M5_LOGW("PortB is not available, using PortA");
-        pin_in  = M5.getPin(m5::pin_name_t::port_a_pin1);
-        pin_out = M5.getPin(m5::pin_name_t::port_a_pin2);
-    }
-    M5_LOGI("UnitOP GPIO: IN:%d OUT:%d", pin_in, pin_out);
-
-    if (!Units.add(unit, pin_in, pin_out) || !Units.begin()) {
+    // UnitOP (ITR9606) is an input-only photointerrupter: PortB preferred, fallback to PortA
+    if (!m5::unit::wiring::addGPIO(Units, unit, m5::unit::wiring::GpioRole::InOnly) || !Units.begin()) {
         M5_LOGE("Failed to begin");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
+        m5::unit::wiring::failStop();
     }
 
     M5_LOGI("M5UnitUnified initialized");

@@ -17,6 +17,7 @@
 #include <M5Utility.h>
 #include <unit/ir/auto_detect_codec.hpp>
 #include <numeric>
+#include <wiring/m5_unit_unified_infrared_wiring.hpp>  // board-aware connection helpers (include last)
 
 namespace {
 auto& lcd = M5.Display;
@@ -161,19 +162,6 @@ void updateDisplay(const m5::unit::ir::DecodeResult* result, const m5::unit::ir:
     lcd.endWrite();
 }
 
-#if defined(USING_BUILTIN_IR)
-// Get built-in IR RX pin for the current board
-int8_t get_builtin_ir_rx_pin()
-{
-    switch (M5.getBoard()) {
-        case m5::board_t::board_M5StickS3:
-            return 42;
-        default:
-            return -1;
-    }
-}
-#endif
-
 }  // namespace
 
 void setup()
@@ -194,41 +182,17 @@ void setup()
         sprite.createSprite(lcd.width(), lcd.height());
     }
 
-    // PlotToSerial is RX-only: passing pin_tx = -1 keeps the IR LED unclaimed
-    // and prevents any accidental TX activity from this example.
-    int8_t pin_tx = -1;
+    // PlotToSerial is RX-only: tx = -1 keeps the IR LED unclaimed and prevents accidental TX.
 #if defined(USING_BUILTIN_IR)
-    int8_t pin_rx = get_builtin_ir_rx_pin();
-    if (pin_rx < 0) {
-        M5_LOGE("No built-in IR RX on this board");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
-    }
-    // StickS3: built-in IR RX needs disable speaker, internal pullup, and EXT_5V
-    if (M5.getBoard() == m5::board_t::board_M5StickS3) {
-        M5.Speaker.end();
-        M5.Power.setExtOutput(true);
-        gpio_set_pull_mode((gpio_num_t)pin_rx, GPIO_PULLUP_ONLY);
-    }
-    M5_LOGI("Built-in IR: RX=%d", pin_rx);
+    // Built-in IR receiver. StickS3 needs the speaker off / EXT_5V / RX pull-up (handled by helper).
+    bool ok = m5::unit::infrared::wiring::addBuiltinIrRx(Units, unit) && Units.begin();
 #else
-    // Unit IR (U002): Port B preferred, fallback to Port A
-    int8_t pin_rx = M5.getPin(m5::pin_name_t::port_b_in);
-    if (pin_rx < 0) {
-        M5_LOGW("PortB is not available, using PortA");
-        pin_rx = M5.getPin(m5::pin_name_t::port_a_pin1);
-    }
-    M5_LOGI("UnitIR GPIO: RX:%d", pin_rx);
+    // Unit IR (U002): RX only, PortB preferred, fallback to PortA
+    bool ok = m5::unit::wiring::addGPIO(Units, unit, m5::unit::wiring::GpioRole::InOnly) && Units.begin();
 #endif
-
-    if (!Units.add(unit, pin_rx, pin_tx) || !Units.begin()) {
+    if (!ok) {
         M5_LOGE("Failed to begin");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
+        m5::unit::wiring::failStop();
     }
 
     M5_LOGI("M5UnitUnified initialized");

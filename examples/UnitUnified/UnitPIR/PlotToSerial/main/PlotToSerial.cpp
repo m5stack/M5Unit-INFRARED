@@ -10,6 +10,7 @@
 #include <M5UnitUnified.h>
 #include <M5UnitUnifiedINFRARED.h>
 #include <M5Utility.h>
+#include <wiring/m5_unit_unified_infrared_wiring.hpp>  // board-aware connection helpers (include last)
 
 // *************************************************************
 // Choose one define symbol to match the unit you are using
@@ -41,32 +42,6 @@ bool prev_display_detected{};
 bool display_initialized{};
 
 LGFX_Sprite sprite;
-
-#if defined(USING_HAT_PIR)
-struct GpioPins {
-    int in;
-    int out;
-};
-
-GpioPins get_hat_gpio_pins(const m5::board_t board)
-{
-    switch (board) {
-        case m5::board_t::board_M5StickC:
-            return {36, -1};
-        case m5::board_t::board_M5StickCPlus:
-        case m5::board_t::board_M5StickCPlus2:
-            return {36, -1};
-        case m5::board_t::board_M5StickS3:
-            return {1, -1};
-        case m5::board_t::board_M5StackCoreInk:
-            return {36, -1};
-        case m5::board_t::board_ArduinoNessoN1:
-            return {2, -1};
-        default:
-            return {-1, -1};
-    }
-}
-#endif
 
 // Palette indices
 constexpr uint8_t PAL_GREEN{0};
@@ -158,39 +133,17 @@ void setup()
     sprite.setPaletteColor(1, TFT_BLUE);
     sprite.setPaletteColor(2, TFT_WHITE);
 
-    bool unit_ready{};
-
 #if defined(USING_HAT_PIR)
-    auto board      = M5.getBoard();
-    const auto pins = get_hat_gpio_pins(board);
-    M5_LOGI("HatPIR GPIO: IN:%d OUT:%d", pins.in, pins.out);
-    if (pins.in < 0) {
-        M5_LOGE("Hat pins not available for this board");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
-    }
-    unit_ready = Units.add(unit, pins.in, pins.out) && Units.begin();
+    // HatPIR (U054): single DOUT input on the board's Hat header
+    bool unit_ready = m5::unit::infrared::wiring::addHatPIR(Units, unit) && Units.begin();
 #else
-    // UnitPIR: Use Port B (GPIO). If not available, fallback to Port A pins.
-    auto pin_in  = M5.getPin(m5::pin_name_t::port_b_in);
-    auto pin_out = M5.getPin(m5::pin_name_t::port_b_out);
-    if (pin_in < 0 || pin_out < 0) {
-        M5_LOGW("PortB is not available, using PortA");
-        pin_in  = M5.getPin(m5::pin_name_t::port_a_pin1);
-        pin_out = M5.getPin(m5::pin_name_t::port_a_pin2);
-    }
-    M5_LOGI("UnitPIR GPIO: IN:%d OUT:%d", pin_in, pin_out);
-    unit_ready = Units.add(unit, pin_in, pin_out) && Units.begin();
+    // UnitPIR (U004): input-only PIR, PortB preferred, fallback to PortA
+    bool unit_ready = m5::unit::wiring::addGPIO(Units, unit, m5::unit::wiring::GpioRole::InOnly) && Units.begin();
 #endif
 
     if (!unit_ready) {
         M5_LOGE("Failed to begin");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
+        m5::unit::wiring::failStop();
     }
 
     M5_LOGI("M5UnitUnified initialized");

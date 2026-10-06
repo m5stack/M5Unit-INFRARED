@@ -93,7 +93,7 @@ To use a board's built-in IR transmitter/receiver instead, define `USING_BUILTIN
 Supported boards for built-in IR:
 StickC / StickCPlus / StickCPlus2 / StickS3,
 Atom (Lite / Matrix / U / S3 / S3 Lite / S3U / S3R), AtomEchoS3R,
-Capsule, NanoC6, NessoN1, Cardputer / CardputerADV (17 boards).
+Capsule, NanoC6, NanoH2, NessoN1, Cardputer / CardputerADV (18 boards).
 
 ### For ESP-IDF settings
 

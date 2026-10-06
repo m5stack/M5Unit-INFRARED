@@ -114,6 +114,7 @@ void setup()
 #endif
 
     M5.begin(m5cfg);
+    M5.setTouchButtonHeightByRatio(100);
 
     // The screen shall be in landscape mode
     if (lcd.height() > lcd.width()) {

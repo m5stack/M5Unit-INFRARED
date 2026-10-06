@@ -470,10 +470,7 @@ void setup()
     // This example requires a non-EPD display
     if (lcd.isEPD() || lcd.width() == 0 || lcd.height() == 0) {
         M5_LOGE("No suitable display");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
+        m5::unit::wiring::failStop();
     }
 
     // The screen shall be in landscape mode if exists

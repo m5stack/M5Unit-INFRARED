@@ -103,10 +103,7 @@ void setup()
 
     if (!hub.add(unit, 4)) {  // PbHub ch:4 -> UnitOP
         M5_LOGE("Failed to add children");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
+        m5::unit::wiring::failStop();
     }
 
     // Board-aware I2C for the PbHub: NessoN1 -> PortB GROVE (SoftwareI2C), NanoC6/NanoH2 -> Ex_I2C,

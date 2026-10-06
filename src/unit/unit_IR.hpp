@@ -151,7 +151,12 @@ public:
      */
     ir::IRCodec& codec()
     {
-        return *_codec;
+        return _codec ? *_codec : static_cast<ir::IRCodec&>(_default_codec);
+    }
+    //! @brief Get current codec (const)
+    const ir::IRCodec& codec() const
+    {
+        return _codec ? static_cast<const ir::IRCodec&>(*_codec) : static_cast<const ir::IRCodec&>(_default_codec);
     }
     /*!
       @brief Set protocol codec
@@ -165,7 +170,7 @@ public:
     //! @brief Reset to built-in AutoDetectCodec
     void resetCodec()
     {
-        _codec = &_default_codec;
+        _codec = nullptr;
     }
     /*!
       @brief Get built-in AutoDetectCodec (for accessing individual protocol codecs)
@@ -275,7 +280,7 @@ private:
     bool apply_carrier();
 
     ir::AutoDetectCodec _default_codec{};
-    ir::IRCodec* _codec{&_default_codec};
+    ir::IRCodec* _codec{};  // nullptr: use _default_codec (no self-pointer, so the defaulted move stays valid)
     config_t _cfg{};
     ir::DecodeResult _latest_result{};
     const gpio::m5_rmt_item_t* _raw_items{};

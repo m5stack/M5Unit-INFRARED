@@ -131,7 +131,7 @@ bool UnitIR::begin()
     }
 
     M5_LIB_LOGI("UnitIR begin: TX=%s RX=%s codec=%u", _has_tx ? "yes" : "no", _has_rx ? "yes" : "no",
-                static_cast<uint8_t>(_codec->type()));
+                static_cast<uint8_t>(codec().type()));
 
     return true;
 #endif
@@ -166,13 +166,13 @@ bool UnitIR::send(uint16_t address, uint16_t command, uint8_t frames)
     apply_carrier();
 
     // Encode a single frame
-    auto single = _codec->encode(address, command, false);
+    auto single = codec().encode(address, command, false);
     if (single.empty()) {
         M5_LIB_LOGE("Encode failed");
         return false;
     }
 
-    uint8_t n = frames ? frames : _codec->minFrames();
+    uint8_t n = frames ? frames : codec().minFrames();
     if (n <= 1) {
         return sendRaw(single.data(), single.size());
     }
@@ -180,7 +180,7 @@ bool UnitIR::send(uint16_t address, uint16_t command, uint8_t frames)
     // Build N-frame burst: replicate the frame, inserting frameGapUs() between copies.
     // The gap is applied by overwriting the last RMT item's duration1/level1 of every
     // non-final frame copy (that slot normally holds the post-stop idle space).
-    uint16_t gap = _codec->frameGapUs();
+    uint16_t gap = codec().frameGapUs();
     ir::item_container_type burst;
     burst.reserve(single.size() * n);
     for (uint8_t i = 0; i < n; ++i) {
@@ -273,7 +273,7 @@ bool UnitIR::read_rx()
 
     // Try decoding with current codec
     ir::DecodeResult result{};
-    if (_codec->decode(items, inum, result)) {
+    if (codec().decode(items, inum, result)) {
         _latest_result = result;
         return true;
     }
@@ -291,8 +291,8 @@ bool UnitIR::apply_carrier()
         return false;
     }
 
-    uint32_t freq = _codec->carrierFrequencyHz();
-    float duty    = _codec->carrierDuty();
+    uint32_t freq = codec().carrierFrequencyHz();
+    float duty    = codec().carrierDuty();
 
     M5_LIB_LOGI("Applying carrier: %u Hz, duty %.2f", freq, duty);
 

@@ -6,6 +6,8 @@
 /*
   UnitTest for UnitIR and IR protocol codecs
 */
+#include <memory>
+#include <utility>
 #include <gtest/gtest.h>
 #include <Wire.h>
 #include <M5Unified.h>
@@ -839,6 +841,52 @@ TEST_F(TestIRRmtItems, PulseWidthRoundTrip)
     uint32_t consumed = decodePulseWidth(items.data(), items.size(), data_out, 12, 1200, 600, 600, 150, true);
     EXPECT_EQ(consumed, 12U);
     EXPECT_EQ(data_out, data_in);
+}
+
+// ============================================================
+// UnitIR codec selection survives move (no hardware needed)
+// ============================================================
+// The built-in codec is selected by a null codec pointer (not a self-pointer), so a defaulted
+// move must leave the moved-to unit using ITS OWN built-in codec, not the moved-from one.
+TEST(TestUnitIRMove, MoveConstructUsesOwnDefaultCodec)
+{
+    std::unique_ptr<UnitIR> src(new UnitIR());
+    UnitIR dst(std::move(*src));
+    src.reset();  // the moved-from unit (and its built-in codec) is gone
+
+    EXPECT_EQ(&dst.codec(), &dst.defaultCodec());
+    EXPECT_EQ(dst.codec().type(), CodecType::Unknown);
+
+    const UnitIR& cdst = dst;
+    EXPECT_EQ(&cdst.codec(), &dst.defaultCodec());
+}
+
+TEST(TestUnitIRMove, MoveAssignUsesOwnDefaultCodec)
+{
+    std::unique_ptr<UnitIR> src(new UnitIR());
+    UnitIR dst;
+    NecCodec nec;
+    dst.setCodec(nec);
+    dst = std::move(*src);
+    src.reset();
+
+    EXPECT_EQ(&dst.codec(), &dst.defaultCodec());
+    EXPECT_EQ(dst.codec().type(), CodecType::Unknown);
+}
+
+TEST(TestUnitIRMove, MoveKeepsExternalCodec)
+{
+    NecCodec nec;
+    std::unique_ptr<UnitIR> src(new UnitIR());
+    src->setCodec(nec);
+    UnitIR dst(std::move(*src));
+    src.reset();
+
+    EXPECT_EQ(&dst.codec(), &nec);
+    EXPECT_EQ(dst.codec().type(), CodecType::NEC);
+
+    dst.resetCodec();
+    EXPECT_EQ(&dst.codec(), &dst.defaultCodec());
 }
 
 // ============================================================

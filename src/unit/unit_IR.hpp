@@ -106,6 +106,10 @@ public:
         //! @note Most IR receivers (VS1838B on Unit IR, and most built-in IR receivers
         //!       such as StickS3) are active-LOW, so the default `true` is correct.
         bool rx_invert_level{true};
+        //! Internal pull on the RX pin, applied by the adapter at begin()
+        //! @note Unit IR (VS1838B) has its own pull-up, so the default None is correct. Receivers without
+        //!       an external pull-up (e.g. the StickS3 built-in IR) need Up; wiring::addBuiltinIrRx sets it.
+        gpio::RxPull rx_pull{gpio::RxPull::None};
     };
 
     //! @brief Constructor

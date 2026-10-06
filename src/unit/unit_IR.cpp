@@ -119,6 +119,7 @@ bool UnitIR::begin()
         cfg.rx.filter_enabled         = true;
         cfg.rx.filter_ticks_threshold = _cfg.rx_filter_threshold;
         cfg.rx.idle_ticks_threshold   = _cfg.rx_idle_threshold;
+        cfg.rx.pull                   = _cfg.rx_pull;
     }
 
     if (!ad->begin(cfg)) {

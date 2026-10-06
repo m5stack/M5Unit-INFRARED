@@ -18,9 +18,7 @@
 #define M5_UNIT_UNIFIED_INFRARED_WIRING_HPP
 
 #include <wiring/m5_unit_unified_wiring.hpp>  // M5UU core wiring (UnitUnified/Component/Wire + addI2C/addGPIO)
-#if defined(__M5UNIFIED_HPP__) && defined(ESP_PLATFORM)
-#include <driver/gpio.h>  // gpio_set_pull_mode / GPIO_PULLUP_ONLY (built-in IR RX on StickS3)
-#endif
+#include "../unit/unit_IR.hpp"                // UnitIR (addBuiltinIrRx sets its rx_pull)
 
 namespace m5 {
 namespace unit {
@@ -144,12 +142,13 @@ inline bool addBuiltinIrTx(UnitUnified& units, Component& unit)
 /*!
   @brief Add a unit on the board's built-in IR receiver (RX only, tx = -1)
   @param units UnitUnified manager
-  @param unit Unit Component to add (UnitIR)
+  @param unit UnitIR to add
   @return True if successful, false if the board has no built-in IR RX
   @note tx is -1 to keep the IR LED unclaimed. StickS3 needs the speaker disabled (shares the pin
-        domain), EXT_5V enabled, and an internal pull-up on the RX pin.
+        domain), EXT_5V enabled, and an internal pull-up on the RX pin (set via UnitIR::config_t::rx_pull,
+        applied by the adapter at begin()).
 */
-inline bool addBuiltinIrRx(UnitUnified& units, Component& unit)
+inline bool addBuiltinIrRx(UnitUnified& units, UnitIR& unit)
 {
     const int8_t rx = builtinIrRxPin();
     if (rx < 0) {
@@ -159,9 +158,9 @@ inline bool addBuiltinIrRx(UnitUnified& units, Component& unit)
     if (M5.getBoard() == m5::board_t::board_M5StickS3) {
         M5.Speaker.end();
         M5.Power.setExtOutput(true);
-#if defined(ESP_PLATFORM)
-        gpio_set_pull_mode(static_cast<gpio_num_t>(rx), GPIO_PULLUP_ONLY);
-#endif
+        auto cfg    = unit.config();
+        cfg.rx_pull = gpio::RxPull::Up;
+        unit.config(cfg);
     }
     M5_LIB_LOGI("wiring: addBuiltinIrRx rx=%d", rx);
     return units.add(unit, rx, static_cast<int8_t>(-1));

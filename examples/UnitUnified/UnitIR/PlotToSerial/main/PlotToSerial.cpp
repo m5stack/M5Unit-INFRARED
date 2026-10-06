@@ -26,7 +26,7 @@ m5::unit::UnitIR unit;
 
 LGFX_Sprite sprite;
 
-const char* codec_type_name(m5::unit::ir::CodecType t)
+const char* codec_type_name(const m5::unit::ir::CodecType t)
 {
     switch (t) {
         case m5::unit::ir::CodecType::NEC:
@@ -48,7 +48,8 @@ const char* codec_type_name(m5::unit::ir::CodecType t)
     }
 }
 
-void draw_waveform(const m5::unit::ir::item_container_type& items, int32_t x0, int32_t y0, int32_t w, int32_t h)
+void draw_waveform(const m5::unit::ir::item_container_type& items, const int32_t x0, const int32_t y0, const int32_t w,
+                   const int32_t h)
 {
     if (items.empty() || w < 2 || h < 4) {
         return;

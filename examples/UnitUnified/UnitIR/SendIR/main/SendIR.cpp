@@ -113,7 +113,7 @@ bool is_addr_menu_hidden()
     return current_range().addr_mask == 0;
 }
 
-void set_protocol(uint8_t idx)
+void set_protocol(const uint8_t idx)
 {
     protocol_index = idx % 6;
     switch (protocol_index) {

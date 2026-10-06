@@ -26,7 +26,7 @@ m5::unit::UnitIR unit;
 
 LGFX_Sprite sprite;
 
-const char* codecTypeName(m5::unit::ir::CodecType t)
+const char* codec_type_name(m5::unit::ir::CodecType t)
 {
     switch (t) {
         case m5::unit::ir::CodecType::NEC:
@@ -48,7 +48,7 @@ const char* codecTypeName(m5::unit::ir::CodecType t)
     }
 }
 
-void drawWaveform(const m5::unit::ir::item_container_type& items, int32_t x0, int32_t y0, int32_t w, int32_t h)
+void draw_waveform(const m5::unit::ir::item_container_type& items, int32_t x0, int32_t y0, int32_t w, int32_t h)
 {
     if (items.empty() || w < 2 || h < 4) {
         return;
@@ -107,7 +107,7 @@ void drawWaveform(const m5::unit::ir::item_container_type& items, int32_t x0, in
     }
 }
 
-void updateDisplay(const m5::unit::ir::DecodeResult* result, const m5::unit::ir::item_container_type* items)
+void update_display(const m5::unit::ir::DecodeResult* result, const m5::unit::ir::item_container_type* items)
 {
     auto w = sprite.width();
     auto h = sprite.height();
@@ -124,7 +124,7 @@ void updateDisplay(const m5::unit::ir::DecodeResult* result, const m5::unit::ir:
         int32_t ty  = 2;
 
         char buf[32];
-        snprintf(buf, sizeof(buf), "P:%s", codecTypeName(result->protocol));
+        snprintf(buf, sizeof(buf), "P:%s", codec_type_name(result->protocol));
         sprite.drawString(buf, 2, ty);
         ty += line_h;
         snprintf(buf, sizeof(buf), "A:0x%04X", result->address);
@@ -149,7 +149,7 @@ void updateDisplay(const m5::unit::ir::DecodeResult* result, const m5::unit::ir:
         if (items && !items->empty()) {
             sprite.drawFastHLine(0, ty, w, 1);
             ty += 2;
-            drawWaveform(*items, 2, ty, w - 4, h - ty - 2);
+            draw_waveform(*items, 2, ty, w - 4, h - ty - 2);
         }
     } else {
         sprite.setTextDatum(middle_center);
@@ -198,7 +198,7 @@ void setup()
     M5_LOGI("M5UnitUnified initialized");
     M5_LOGI("%s", Units.debugInfo().c_str());
 
-    updateDisplay(nullptr, nullptr);
+    update_display(nullptr, nullptr);
 }
 
 void loop()
@@ -211,7 +211,7 @@ void loop()
 
         // Serial output: decoded result
         M5.Log.printf(">Protocol:%s\n>Address:0x%04X\n>Command:0x%04X\n>Bits:%u\n>Repeat:%d\n>Raw:0x%08X%08X\n",
-                      codecTypeName(r.protocol), r.address, r.command, r.bits, r.repeat ? 1 : 0,
+                      codec_type_name(r.protocol), r.address, r.command, r.bits, r.repeat ? 1 : 0,
                       static_cast<uint32_t>(r.raw >> 32), static_cast<uint32_t>(r.raw & 0xFFFFFFFF));
         // RC5/RC6 carry a toggle bit in each frame (flipped on every new key press)
         if (r.protocol == m5::unit::ir::CodecType::RC5 || r.protocol == m5::unit::ir::CodecType::RC6) {
@@ -241,7 +241,7 @@ void loop()
             items.assign(raw, raw + cnt);
         }
 
-        updateDisplay(&r, &items);
+        update_display(&r, &items);
     }
 }
 

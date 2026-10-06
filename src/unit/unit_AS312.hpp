@@ -99,7 +99,6 @@ public:
 private:
     config_t _cfg{};
     bool _detected{};
-    bool _prev_detected{};
     bool _was_detected{};
     bool _was_released{};
 };

@@ -24,7 +24,7 @@ using namespace m5::unit::googletest;
 using namespace m5::unit;
 using namespace m5::unit::ir;
 
-#if M5_UNIT_UNIFIED_HAS_RMT
+#if !defined(M5_UNIT_UNIFIED_HAS_RMT) || M5_UNIT_UNIFIED_HAS_RMT
 class TestBuiltinIR : public GPIOComponentTestBase<UnitIR> {
 protected:
     virtual UnitIR* get_instance() override

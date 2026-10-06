@@ -12,7 +12,7 @@
 #include <cstring>
 #include <esp_heap_caps.h>
 
-#if M5_UNIT_UNIFIED_HAS_RMT
+#if !defined(M5_UNIT_UNIFIED_HAS_RMT) || M5_UNIT_UNIFIED_HAS_RMT
 #if defined(M5_UNIT_UNIFIED_USING_RMT_V2)
 #include <driver/rmt_tx.h>  // includes rmt_common.h (rmt_apply_carrier)
 #include <esp_private/esp_clk.h>
@@ -35,7 +35,7 @@ const types::attr_t UnitIR::attr{attribute::AccessGPIO};
 
 bool UnitIR::begin()
 {
-#if !M5_UNIT_UNIFIED_HAS_RMT
+#if defined(M5_UNIT_UNIFIED_HAS_RMT) && !M5_UNIT_UNIFIED_HAS_RMT
     M5_LIB_LOGE("RMT is not supported on this target");
     return false;
 #else
@@ -296,7 +296,7 @@ bool UnitIR::apply_carrier()
 
     M5_LIB_LOGI("Applying carrier: %u Hz, duty %.2f", freq, duty);
 
-#if !M5_UNIT_UNIFIED_HAS_RMT
+#if defined(M5_UNIT_UNIFIED_HAS_RMT) && !M5_UNIT_UNIFIED_HAS_RMT
     return false;
 #elif defined(M5_UNIT_UNIFIED_USING_RMT_V2)
     // RMT v2: apply carrier config to TX channel handle

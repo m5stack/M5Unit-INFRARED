@@ -71,4 +71,8 @@ TEST_F(TestHatPIR, UpdateState)
 
     // Force update
     unit->update(true);
+    EXPECT_NE(unit->updatedMillis(), 0U);                // the pin was read
+    EXPECT_EQ(unit->updated(), unit->isDetected());      // changed only if it is now detected
+    EXPECT_EQ(unit->wasDetected(), unit->isDetected());  // rising edge from the initial false
+    EXPECT_FALSE(unit->wasReleased());
 }

@@ -26,6 +26,11 @@ using namespace m5::utility::mmh3;
 using namespace m5::unit::types;
 using namespace m5::unit::gpio;
 
+namespace {
+// Front padding of the RX buffer so that the RMT items after the adapter's 2-byte length are 4-byte aligned
+constexpr uint16_t RX_FRONT_PAD{2};
+}  // namespace
+
 namespace m5 {
 namespace unit {
 
@@ -91,8 +96,9 @@ bool UnitIR::begin()
 
     // RX config
     if (rx_valid) {
-        // Allocate RX buffer (4-byte aligned for RMT v2)
-        uint16_t buf_bytes = (_cfg.rx_ring_buffer_size + 3) & ~3;
+        // Allocate RX buffer (4-byte aligned). The adapter writes a 2-byte length followed by the items,
+        // so 2 bytes of front padding are added to place the items on a 4-byte boundary (see read_rx)
+        uint16_t buf_bytes = (_cfg.rx_ring_buffer_size + RX_FRONT_PAD + 3) & ~3;
         auto* rx_buf       = static_cast<uint8_t*>(heap_caps_aligned_alloc(4, buf_bytes, MALLOC_CAP_8BIT));
         if (!rx_buf) {
             M5_LIB_LOGE("Failed to allocate rx buffer (%u bytes)", buf_bytes);
@@ -227,8 +233,9 @@ bool UnitIR::read_rx()
         return false;
     }
 
-    auto buffer_size = _rx_buffer_size;
-    auto* buff       = _rx_buffer.get();
+    // The adapter writes [len:2][items...]. Reading at +2 puts len at +2 and the items at +4 (4-byte aligned)
+    auto buffer_size = _rx_buffer_size - RX_FRONT_PAD;
+    auto* buff       = _rx_buffer.get() + RX_FRONT_PAD;
 
     if (readWithTransaction(buff, buffer_size) != m5::hal::error::error_t::OK) {
         return false;
@@ -253,10 +260,7 @@ bool UnitIR::read_rx()
         return false;
     }
 
-    // buff is 4-byte aligned (heap_caps_aligned_alloc); buff+2 is only 2-byte aligned but
-    // ESP32/Xtensa and ESP32-C6/RISC-V both tolerate unaligned 32-bit word access for
-    // RMT items, and in practice we only read/write 16-bit fields (duration0/1). Keep
-    // as-is to avoid an extra copy. cppcheck/UBSan will flag this; intentional.
+    // buff + 2 == _rx_buffer + 4, which is 4-byte aligned (heap_caps_aligned_alloc)
     auto* items = reinterpret_cast<m5::unit::gpio::m5_rmt_item_t*>(buff + 2);
 
     // Invert RX signal levels for active-LOW receivers (e.g. VS1838B)

@@ -19,7 +19,7 @@ m5::unit::UnitUnified Units;
 m5::unit::UnitOP unit;
 
 uint32_t detect_count{};
-unsigned long last_detect_ms{};
+m5::utility::elapsed_time_t last_detect_ms{};
 bool ever_detected{};
 
 LGFX_Sprite sprite;
@@ -63,7 +63,7 @@ void update_display(const bool detected)
 
     // Line 3: Last detection elapsed
     if (ever_detected) {
-        auto elapsed_ms = m5::utility::millis() - last_detect_ms;
+        auto elapsed_ms = m5::utility::elapsedSince(last_detect_ms);
         auto elapsed_s  = elapsed_ms / 1000;
         snprintf(buf, sizeof(buf), "Last: %lu.%lus ago", (unsigned long)(elapsed_s),
                  (unsigned long)((elapsed_ms / 100) % 10));

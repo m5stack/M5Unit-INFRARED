@@ -98,9 +98,9 @@ enum class ODR : uint8_t {
   @brief Measurement data group
  */
 struct Data {
-    static constexpr uint8_t PRES_FLAG{0x04};
-    static constexpr uint8_t MOT_FLAG{0x02};
-    static constexpr uint8_t TAMB_SHOCK_FLAG{0x01};
+    static constexpr uint8_t PRES_FLAG{0x04};        //!< Presence detection flag (bit in raw[12])
+    static constexpr uint8_t MOT_FLAG{0x02};         //!< Motion detection flag (bit in raw[12])
+    static constexpr uint8_t TAMB_SHOCK_FLAG{0x01};  //!< Ambient temperature shock flag (bit in raw[12])
 
     /*!
       Raw data
@@ -227,6 +227,7 @@ public:
         ccfg.clock = 400 * 1000U;
         component_config(ccfg);
     }
+    //! @brief Destructor
     virtual ~UnitSTHS34PF80()
     {
     }
@@ -240,12 +241,18 @@ public:
 
     ///@name Settings for begin
     ///@{
-    /*! @brief Gets the configuration */
-    inline config_t config()
+    /*!
+      @brief Gets the configuration
+      @return Copy of the current config
+    */
+    inline config_t config() const
     {
         return _cfg;
     }
-    //! @brief Set the configuration
+    /*!
+      @brief Set the configuration
+      @param cfg Config to apply on the next begin()
+    */
     inline void config(const config_t& cfg)
     {
         _cfg = cfg;
@@ -254,7 +261,10 @@ public:
 
     ///@name Properties
     ///@{
-    //! @brief Gets the inner sensitivity
+    /*!
+      @brief Gets the inner sensitivity
+      @return Sensitivity value read from the sensor
+    */
     uint16_t sensitivity() const
     {
         return _sensitivity;
@@ -337,14 +347,14 @@ public:
       @note Object data rate maximum configurable value depends on AVG_TMOS
       |ObjectTemperatureAverage(AVG_TMOS)| Maximum ODR |
       |---|---|
-      |Samples2|ODR30|
-      |Samples8|ODR30|
-      |Samples32|ODR30|
-      |Samples128|ODR8|
-      |Samples256|ODR4|
-      |Samples512|ODR2|
-      |Samples1024|ODR1|
-      |Samples2048|ODR0_5|
+      |Samples2|Rate30|
+      |Samples8|Rate30|
+      |Samples32|Rate30|
+      |Samples128|Rate8|
+      |Samples256|Rate4|
+      |Samples512|Rate2|
+      |Samples1024|Rate1|
+      |Samples2048|Rate0_5|
     */
     inline bool startPeriodicMeasurement(const sths34pf80::Gain mode, const sths34pf80::ODR odr,
                                          const bool comp_type = true, const bool abs = false)

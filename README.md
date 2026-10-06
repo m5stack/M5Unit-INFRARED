@@ -46,9 +46,7 @@ See also examples using conventional methods here.
 
 |Unit|Support|Note|
 |---|---|---|
-|UnitTmosPIR|NG|I2C with complex registers not supported by PbHub (usable via [PaHub](https://docs.m5stack.com/en/unit/Unit-PaHub%20v2.1))|
 |UnitPIR|OK||
-|HatPIR|NG|Hat form factor (not Grove)|
 |UnitOP|OK||
 |UnitIR|NG|RMT (hardware-demodulated) not supported by PbHub|
 

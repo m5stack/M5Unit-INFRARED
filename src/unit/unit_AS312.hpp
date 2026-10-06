@@ -40,22 +40,37 @@ public:
         uint32_t interval{500};
     };
 
+    //! @brief Constructor
     explicit UnitAS312() : Component(0x00)
     {
     }
 
-    //! @brief Gets the config values
+    /*!
+      @brief Gets the config values
+      @return Copy of the current config
+    */
     config_t config() const
     {
         return _cfg;
     }
-    //! @brief Set the config values
+    /*!
+      @brief Set the config values
+      @param cfg Config to apply on the next begin()
+    */
     void config(const config_t& cfg)
     {
         _cfg = cfg;
     }
 
+    /*!
+      @brief Set the RX pin to input with pull-up and apply the config
+      @return True if successful, false if config_t::interval >= HOLD_TIME_MS or the pin setup fails
+    */
     bool begin() override;
+    /*!
+      @brief Read the sensor pin and update the detection state
+      @param force Read immediately, ignoring config_t::interval
+    */
     void update(const bool force = false) override;
 
     ///@name Detection state

@@ -5,6 +5,7 @@
  */
 /*!
   @file M5UnitUnifiedINFRARED.h
+  @brief Main header of M5UnitUnifiedINFRARED (C++ guard wrapper)
  */
 #ifndef M5_UNIT_UNIFIED_INFRARED_H
 #define M5_UNIT_UNIFIED_INFRARED_H

@@ -67,7 +67,10 @@ inline bool addHatPIR(UnitUnified& units, Component& unit)
 
 ///@name Built-in IR (board IR LED / receiver)
 ///@{
-//! @brief Built-in IR transmit (LED) GPIO for the current board, or -1 if none
+/*!
+  @brief Built-in IR transmit (LED) GPIO for the current board
+  @return GPIO number, or -1 if the board has no built-in IR transmitter
+*/
 inline int8_t builtinIrTxPin()
 {
     switch (M5.getBoard()) {
@@ -102,7 +105,10 @@ inline int8_t builtinIrTxPin()
     }
 }
 
-//! @brief Built-in IR receive GPIO for the current board, or -1 if none (StickS3 only)
+/*!
+  @brief Built-in IR receive GPIO for the current board (StickS3 only)
+  @return GPIO number, or -1 if the board has no built-in IR receiver
+*/
 inline int8_t builtinIrRxPin()
 {
     switch (M5.getBoard()) {

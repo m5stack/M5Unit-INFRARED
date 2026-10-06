@@ -50,12 +50,18 @@ See also examples using conventional methods here.
 |UnitOP|OK||
 |UnitIR|NG|RMT (hardware-demodulated) not supported by PbHub|
 
+## Support via [PaHub](https://docs.m5stack.com/en/unit/Unit-PaHub%20v2.1)
+
+|Unit|Support|Note|
+|---|---|---|
+|UnitTmosPIR|OK||
+
 See also [M5Unit-HUB](https://github.com/m5stack/M5Unit-HUB)
 
 ## Examples
 See also [examples/UnitUnified](examples/UnitUnified)
 
-- **UnitTmosPIR (U185)**: `PlotToSerial`, `SimpleDisplay`
+- **UnitTmosPIR (U185)**: `PlotToSerial`, `SimpleDisplay`, `ViaPaHub`
 - **UnitPIR (U004) / HatPIR (U054)**: `PlotToSerial`, `ViaPbHub` (UnitPIR only)
 - **UnitOP (U057/U058)**: `PlotToSerial`, `ViaPbHub`
 - **UnitIR (U002)**: `PlotToSerial`, `SendIR` (both support `-DUSING_BUILTIN_IR` for built-in IR)
@@ -117,7 +123,7 @@ idf.py menuconfig
 idf.py build flash monitor
 ```
 
-The other examples (UnitTmosPIR PlotToSerial / SimpleDisplay, UnitOP PlotToSerial, ViaPbHub) have no variant; run `idf.py set-target <chip>` and `idf.py build flash monitor` directly.
+The other examples (UnitTmosPIR PlotToSerial / SimpleDisplay / ViaPaHub, UnitOP PlotToSerial, ViaPbHub) have no variant; run `idf.py set-target <chip>` and `idf.py build flash monitor` directly.
 
 
 ### Doxygen document

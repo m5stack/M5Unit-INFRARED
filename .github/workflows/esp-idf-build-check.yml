@@ -107,6 +107,9 @@ jobs:
           #- label: UnitOP ViaPbHub
           #  example_path: examples/UnitUnified/UnitOP/ViaPbHub
           #  config: ''
+          #- label: UnitTmosPIR ViaPaHub
+          #  example_path: examples/UnitUnified/UnitTmosPIR/ViaPaHub
+          #  config: ''
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -173,6 +173,9 @@ jobs:
           - { sketch: ViaPbHub, unit: UnitPIR, board: m5stack_core, platform-url: "https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json", platform-version: 3.2.5, platform: m5stack, archi: esp32 }
           - { sketch: ViaPbHub, unit: UnitOP, board: m5stack_core, platform-url: "https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json", platform-version: 3.2.5, platform: m5stack, archi: esp32 }
 
+          # ViaPaHub (Core only)
+          - { sketch: ViaPaHub, unit: UnitTmosPIR, board: m5stack_core, platform-url: "https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json", platform-version: 3.2.5, platform: m5stack, archi: esp32 }
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4

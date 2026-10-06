@@ -128,6 +128,9 @@ jobs:
           - { example: ViaPbHub, unit: UnitPIR, board: Core, framework: Arduino, espressif32: latest }
           - { example: ViaPbHub, unit: UnitOP, board: Core, framework: Arduino, espressif32: latest }
 
+          # ViaPaHub (Core only)
+          - { example: ViaPaHub, unit: UnitTmosPIR, board: Core, framework: Arduino, espressif32: latest }
+
 
 
     steps:

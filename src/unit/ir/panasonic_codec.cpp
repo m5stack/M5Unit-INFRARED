@@ -9,19 +9,7 @@
 */
 #include "panasonic_codec.hpp"
 #include "ir_rmt_items.hpp"
-
-namespace {
-
-// Reverse bits within a byte (LSB<->MSB)
-inline uint8_t reverse_byte(uint8_t b)
-{
-    b = ((b & 0xF0) >> 4) | ((b & 0x0F) << 4);
-    b = ((b & 0xCC) >> 2) | ((b & 0x33) << 2);
-    b = ((b & 0xAA) >> 1) | ((b & 0x55) << 1);
-    return b;
-}
-
-}  // namespace
+#include <m5_utility/misc.hpp>
 
 namespace m5 {
 namespace unit {
@@ -47,11 +35,12 @@ item_container_type PanasonicCodec::encodeRaw48(uint64_t data48)
     // Leader
     items.push_back(makeItem(LEADER_MARK, LEADER_SPACE));
 
-    // Encode 6 bytes, each byte LSB first, in MSB-byte order
+    // Encode 6 bytes in MSB-byte order. Each byte is bit-reversed and then sent LSB first,
+    // so data48 holds the conventional notation (e.g. manufacturer 0x4004).
     // data48 layout: byte0(MSB) byte1 byte2 byte3 byte4 byte5(LSB)
     for (int8_t byte_idx = 5; byte_idx >= 0; --byte_idx) {
         uint8_t byte_val  = (data48 >> (byte_idx * 8)) & 0xFF;
-        uint32_t reversed = reverse_byte(byte_val);
+        uint32_t reversed = m5::utility::reverseBitOrder(byte_val);
         encodePulseDistance(items, reversed, 8, BIT_MARK, ONE_SPACE, ZERO_SPACE, true);
     }
 
@@ -87,7 +76,7 @@ bool PanasonicCodec::decode(const gpio::m5_rmt_item_t* items, uint32_t num, Deco
             return false;
         }
         // Reverse bits to get conventional MSB-first-per-byte representation
-        uint8_t byte_val = reverse_byte(static_cast<uint8_t>(byte_raw));
+        uint8_t byte_val = m5::utility::reverseBitOrder(static_cast<uint8_t>(byte_raw));
         data48           = (data48 << 8) | byte_val;
         item_offset += 8;
     }

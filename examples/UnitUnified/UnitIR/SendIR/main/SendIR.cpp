@@ -261,6 +261,9 @@ void setup()
         m5::unit::wiring::failStop();
     }
 
+    // Beep on each successful transmission (no-op on boards without a speaker)
+    M5.Speaker.begin();
+
     M5_LOGI("M5UnitUnified initialized");
     M5_LOGI("%s", Units.debugInfo().c_str());
 
@@ -312,6 +315,9 @@ void loop()
                     bool ok    = !items.empty() && unit.sendRaw(items.data(), items.size());
                     M5.Log.printf(ok ? " OK\n" : " FAIL\n");
                     last_status = ok ? "Repeat OK" : "FAIL";
+                    if (ok) {
+                        M5.Speaker.tone(2000, 50);
+                    }
                 } else {
                     repeat_count  = 0;
                     last_protocol = protocol_index;
@@ -331,6 +337,7 @@ void loop()
                     if (unit.send(ir_address, ir_command)) {
                         M5.Log.printf(" OK\n");
                         last_status = "Sent OK";
+                        M5.Speaker.tone(2000, 50);
                         // RC5 / RC6 flip the toggle bit AFTER send so repeats are
                         // distinguishable; the flipped value is "what the next new
                         // press will transmit" — this matches the LCD display.

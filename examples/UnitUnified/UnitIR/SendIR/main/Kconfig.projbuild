@@ -1,0 +1,2 @@
+# The "Target IR" choice for this example.
+rsource "../../../common/Kconfig.variant.ir"

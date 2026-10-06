@@ -1,0 +1,22 @@
+# "Target IR" selection for the UnitIR PlotToSerial / SendIR examples (ESP-IDF).
+# rsource'd from UnitIR/PlotToSerial/main/Kconfig.projbuild and UnitIR/SendIR/main/Kconfig.projbuild.
+# The chosen CONFIG_EXAMPLE_USING_* is mapped to the source-level macro in common/variant.cmake
+# (shared with the Arduino build).
+menu "M5Unit-INFRARED IR example"
+
+choice EXAMPLE_IR_VARIANT
+    prompt "Target IR"
+    default EXAMPLE_USING_UNIT_IR
+    help
+        Which IR transmitter / receiver this example drives.
+
+    config EXAMPLE_USING_UNIT_IR
+        bool "UnitIR (U002, GPIO / GROVE)"
+    config EXAMPLE_USING_BUILTIN_IR
+        bool "Built-in IR (board IR LED / receiver)"
+        # Boards with built-in IR: StickC / Plus / Plus2, Atom (esp32), StickS3, AtomS3 / S3R,
+        # Cardputer (esp32s3), NanoC6, NessoN1 (esp32c6), NanoH2 (esp32h2)
+        depends on IDF_TARGET_ESP32 || IDF_TARGET_ESP32S3 || IDF_TARGET_ESP32C6 || IDF_TARGET_ESP32H2
+endchoice
+
+endmenu

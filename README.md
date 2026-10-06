@@ -95,6 +95,32 @@ StickC / StickCPlus / StickCPlus2 / StickS3,
 Atom (Lite / Matrix / U / S3 / S3 Lite / S3U / S3R), AtomEchoS3R,
 Capsule, NanoC6, NessoN1, Cardputer / CardputerADV (17 boards).
 
+### For ESP-IDF settings
+
+> **NOTE:** The ESP-IDF native build (`idf.py`) targets ESP-IDF **5.1 or later** (5.x and 6.x).
+
+On ESP-IDF native builds (`idf.py`), the unit is selected via Kconfig instead of editing the source `#define`. The examples with a variant expose the choice through `main/Kconfig.projbuild`, which sources one of the Kconfig files in `examples/UnitUnified/common/`:
+
+| Kconfig file | Variants offered | Used by |
+|---|---|---|
+| `Kconfig.variant.pir` | UnitPIR (U004) / HatPIR (U054) | UnitPIR/PlotToSerial |
+| `Kconfig.variant.ir` | UnitIR (U002) / Built-in IR | UnitIR/PlotToSerial, UnitIR/SendIR |
+
+`examples/UnitUnified/common/variant.cmake` then maps the chosen `CONFIG_EXAMPLE_USING_*` to the source-level macro shared with the Arduino build, so the example source itself does not need to be edited.
+The **HatPIR** option appears only when the target is esp32 / esp32s3 / esp32c6 (boards with a Hat header), and the **Built-in IR** option only when the target is esp32 / esp32s3 / esp32c6 / esp32h2 (boards with built-in IR).
+
+Pick the variant with `menuconfig`:
+
+```sh
+cd examples/UnitUnified/UnitIR/PlotToSerial        # or UnitIR/SendIR, UnitPIR/PlotToSerial
+idf.py set-target esp32s3                          # or esp32 / esp32c6 / esp32h2 / ...
+idf.py menuconfig
+# -> M5Unit-INFRARED IR example (or M5Unit-INFRARED PIR example) -> Target IR / Target unit -> choose ONE
+idf.py build flash monitor
+```
+
+The other examples (UnitTmosPIR PlotToSerial / SimpleDisplay, UnitOP PlotToSerial, ViaPbHub) have no variant; run `idf.py set-target <chip>` and `idf.py build flash monitor` directly.
+
 
 ### Doxygen document
 [GitHub Pages](https://m5stack.github.io/M5Unit-INFRARED/)

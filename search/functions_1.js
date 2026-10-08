@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['begin_0',['begin',['../classm5_1_1unit_1_1_unit_a_s312.html#aa9a995481362875edd3cb626733335c2',1,'m5::unit::UnitAS312::begin()'],['../classm5_1_1unit_1_1_unit_i_r.html#a67c5b81cbeda850601222f55a23f69ce',1,'m5::unit::UnitIR::begin()'],['../classm5_1_1unit_1_1_unit_i_t_r9606.html#aafce96edcd33f521ebe459d3a3843379',1,'m5::unit::UnitITR9606::begin()'],['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a96d4faf54b84bb147dad09ce34c69afa',1,'m5::unit::UnitSTHS34PF80::begin()']]]
+  ['compensated_5fobject_0',['compensated_object',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#af7c77dcdee3212b1140084c99e960362',1,'m5::unit::UnitSTHS34PF80']]],
+  ['compensatedobjecttemperature_1',['compensatedObjectTemperature',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a25e56832252277171bf180ebd20ed1d7',1,'m5::unit::UnitSTHS34PF80']]],
+  ['config_2',['config',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#af6c84bd6034cb57a84dea7768770e7f0',1,'m5::unit::UnitSTHS34PF80::config()'],['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a3ef0215117865c3e7cd071cabd31c923',1,'m5::unit::UnitSTHS34PF80::config(const config_t &amp;cfg)']]]
 ];

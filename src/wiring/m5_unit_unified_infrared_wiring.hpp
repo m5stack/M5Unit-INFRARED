@@ -147,6 +147,8 @@ inline bool addBuiltinIrTx(UnitUnified& units, Component& unit)
   @note tx is -1 to keep the IR LED unclaimed. StickS3 needs the speaker disabled (shares the pin
         domain), EXT_5V enabled, and an internal pull-up on the RX pin (set via UnitIR::config_t::rx_pull,
         applied by the adapter at begin()).
+  @note On StickS3 this sets config().rx_pull to RxPull::Up. Configure the unit before calling this, or keep
+        rx_pull when setting a new config afterwards (a default-constructed config_t resets it to None).
 */
 inline bool addBuiltinIrRx(UnitUnified& units, UnitIR& unit)
 {

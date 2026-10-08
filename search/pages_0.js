@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['m5unitinfrared_0',['M5UnitINFRARED',['../index.html',1,'']]]
+  ['infrared_0',['M5Unit-INFRARED',['../index.html',1,'']]]
 ];

@@ -1,15 +1,15 @@
 var searchData=
 [
-  ['wide_0',['Wide',['../unit___s_t_h_s34_p_f80_8hpp.html#a7ce1ea92914e5829c5b1deb4dd396e21ae7c770a61dbdf81ca922ae0260e327c1',1,'m5::unit::sths34pf80']]],
-  ['writeambientshockhysteresis_1',['writeAmbientShockHysteresis',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#ad91edfa8badccbae1c6f5e64130b0bbe',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writeambientshockthreshold_2',['writeAmbientShockThreshold',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#ab9e82e219198a2907e8869a88b1b9376',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writeaveragetrim_3',['writeAverageTrim',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a526586b35ab0ed5541af2803266b8348',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writegainmode_4',['writeGainMode',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#acc5626ed21a5f0b2b2078bdb6b070ff8',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writelowpassfilter_5',['writeLowPassFilter',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a4f6a59f852a28b20213c3fe094fa7d33',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writemotionhysteresis_6',['writeMotionHysteresis',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a0d60f4b0e088bf1ab70299f8e512ce75',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writemotionthreshold_7',['writeMotionThreshold',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#af3df2833749e920e3944067f3873b4c8',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writepresencehysteresis_8',['writePresenceHysteresis',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a226726fca24a80216e496060aa3bec98',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writepresencethreshold_9',['writePresenceThreshold',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#ae0624ff293d0599c04a4953da860b4a1',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writesensitivity_10',['writeSensitivity',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a86082cb56e69b96637f4c896f12028b8',1,'m5::unit::UnitSTHS34PF80']]],
-  ['writesensitivityraw_11',['writeSensitivityRaw',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a2589fafd62052f8d6469bb21550dd2bb',1,'m5::unit::UnitSTHS34PF80']]]
+  ['object_0',['object',['../structm5_1_1unit_1_1sths34pf80_1_1_data.html#ab77e0a1468df7269957f8f8e2b353cbf',1,'m5::unit::sths34pf80::Data::object()'],['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a6b0efa2d98f11ac91b4bbc041ab74e25',1,'m5::unit::UnitSTHS34PF80::object()']]],
+  ['objecttemperature_1',['objectTemperature',['../structm5_1_1unit_1_1sths34pf80_1_1_data.html#a93439c1b6c09d8e95cbb0c8b6b6af19a',1,'m5::unit::sths34pf80::Data::objectTemperature()'],['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#ad4a5104b2140e0a6bbc86150059181fd',1,'m5::unit::UnitSTHS34PF80::objectTemperature()']]],
+  ['objecttemperatureaverage_2',['ObjectTemperatureAverage',['../unit___s_t_h_s34_p_f80_8hpp.html#a54f18113646eb379b591aae120d837f9',1,'m5::unit::sths34pf80']]],
+  ['odr_3',['ODR',['../unit___s_t_h_s34_p_f80_8hpp.html#a77c07681630e9a92271561c54036dd20',1,'m5::unit::sths34pf80']]],
+  ['odr_4',['odr',['../structm5_1_1unit_1_1_unit_s_t_h_s34_p_f80_1_1config__t.html#a59314245df17a81e41d1116416ee1781',1,'m5::unit::UnitSTHS34PF80::config_t']]],
+  ['odr100_5',['ODR100',['../unit___s_t_h_s34_p_f80_8hpp.html#a89e1ae62dc396050b3bd9d7fc547265ea78c18b9969680c4fb600cf4122cb7ac6',1,'m5::unit::sths34pf80']]],
+  ['odr20_6',['ODR20',['../unit___s_t_h_s34_p_f80_8hpp.html#a89e1ae62dc396050b3bd9d7fc547265ea4c964ed25490dcf959c36546b56756f2',1,'m5::unit::sths34pf80']]],
+  ['odr200_7',['ODR200',['../unit___s_t_h_s34_p_f80_8hpp.html#a89e1ae62dc396050b3bd9d7fc547265eac5aea65bfdd44ae626cdc53edb6f2ce7',1,'m5::unit::sths34pf80']]],
+  ['odr400_8',['ODR400',['../unit___s_t_h_s34_p_f80_8hpp.html#a89e1ae62dc396050b3bd9d7fc547265ea727d2f3aa8957e705a9e84c4a7a60ba5',1,'m5::unit::sths34pf80']]],
+  ['odr50_9',['ODR50',['../unit___s_t_h_s34_p_f80_8hpp.html#a89e1ae62dc396050b3bd9d7fc547265ea912be55546900eb3a884cc8a98c7bd17',1,'m5::unit::sths34pf80']]],
+  ['odr800_10',['ODR800',['../unit___s_t_h_s34_p_f80_8hpp.html#a89e1ae62dc396050b3bd9d7fc547265ea5c75d45a34671fbc8b467a3e7963c5f9',1,'m5::unit::sths34pf80']]],
+  ['odr9_11',['ODR9',['../unit___s_t_h_s34_p_f80_8hpp.html#a89e1ae62dc396050b3bd9d7fc547265ea4578e89ead5fedec13b11c344fd1b137',1,'m5::unit::sths34pf80']]]
 ];

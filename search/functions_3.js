@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['maximum_5fodr_0',['maximum_odr',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a1f8ecaeb4f061abd7347e3ec183fc6fa',1,'m5::unit::UnitSTHS34PF80']]],
-  ['measuresingleshot_1',['measureSingleshot',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a79bdf20cbc5171f96328de8c338badd7',1,'m5::unit::UnitSTHS34PF80']]],
-  ['motion_2',['motion',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#aba9c968cb3c2e1e164430ce907595e05',1,'m5::unit::UnitSTHS34PF80']]]
+  ['decode_0',['decode',['../classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html#aaab4f978fcddd80874fc4649df469941',1,'m5::unit::ir::AutoDetectCodec::decode()'],['../classm5_1_1unit_1_1ir_1_1_i_r_codec.html#a8045d3a9e01c66e5c39ce170af0de52a',1,'m5::unit::ir::IRCodec::decode()'],['../classm5_1_1unit_1_1ir_1_1_mitsubishi_codec.html#a8362c79c7f0693fd794ec11c8ac2de35',1,'m5::unit::ir::MitsubishiCodec::decode()'],['../classm5_1_1unit_1_1ir_1_1_nec_codec.html#a32b6d0472b7b3d777a8285a60805e789',1,'m5::unit::ir::NecCodec::decode()'],['../classm5_1_1unit_1_1ir_1_1_panasonic_codec.html#a8abc19791d2f685282cae85a18de1d27',1,'m5::unit::ir::PanasonicCodec::decode()'],['../classm5_1_1unit_1_1ir_1_1_raw_codec.html#a11acb75d2b7c0898e2a2675b0566cf75',1,'m5::unit::ir::RawCodec::decode()'],['../classm5_1_1unit_1_1ir_1_1_rc5_codec.html#a457b0a354ae5e50279be6f9965671ba3',1,'m5::unit::ir::Rc5Codec::decode()'],['../classm5_1_1unit_1_1ir_1_1_rc6_codec.html#a0129ba2cc0b08ca1f8fef675367a30b8',1,'m5::unit::ir::Rc6Codec::decode()'],['../classm5_1_1unit_1_1ir_1_1_sirc_codec.html#a57d1e889e64e9e73a6ddb61f7afb21e9',1,'m5::unit::ir::SircCodec::decode()']]],
+  ['decodemanchester_1',['decodeManchester',['../ir__rmt__items_8cpp.html#add42da75ca2d6fffa364211ffbe59136',1,'m5::unit::ir']]],
+  ['decodepulsedistance_2',['decodePulseDistance',['../ir__rmt__items_8cpp.html#ab0143f6a3e423d7b207c4e6105c53873',1,'m5::unit::ir']]],
+  ['decodepulsewidth_3',['decodePulseWidth',['../ir__rmt__items_8cpp.html#a1ff01d88a41fc941ebaa224e5339afc5',1,'m5::unit::ir']]],
+  ['defaultcodec_4',['defaultCodec',['../classm5_1_1unit_1_1_unit_i_r.html#ab7a6c512cd49193d0dbdd62f84466d96',1,'m5::unit::UnitIR']]]
 ];

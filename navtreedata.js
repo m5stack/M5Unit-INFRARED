@@ -25,6 +25,7 @@
 var NAVTREE =
 [
   [ "M5Unit-INFRARED", "index.html", [
+    [ "M5UnitINFRARED", "index.html", null ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ]
     ] ],
@@ -35,8 +36,7 @@ var NAVTREE =
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", null ],
         [ "Functions", "functions_func.html", null ],
-        [ "Variables", "functions_vars.html", null ],
-        [ "Enumerations", "functions_enum.html", null ]
+        [ "Variables", "functions_vars.html", null ]
       ] ]
     ] ],
     [ "Files", "files.html", [
@@ -47,8 +47,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"_m5_unit_unified_i_n_f_r_a_r_e_d_8hpp.html",
-"structm5_1_1unit_1_1_unit_s_t_h_s34_p_f80_1_1config__t.html#ab4e82c01279bd275dcedadfc5ec7dada"
+"_m5_unit_unified_i_n_f_r_a_r_e_d_8hpp.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

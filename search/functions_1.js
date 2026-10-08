@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['begin_0',['begin',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a96d4faf54b84bb147dad09ce34c69afa',1,'m5::unit::UnitSTHS34PF80']]]
+  ['begin_0',['begin',['../classm5_1_1unit_1_1_unit_a_s312.html#aa9a995481362875edd3cb626733335c2',1,'m5::unit::UnitAS312::begin()'],['../classm5_1_1unit_1_1_unit_i_r.html#a67c5b81cbeda850601222f55a23f69ce',1,'m5::unit::UnitIR::begin()'],['../classm5_1_1unit_1_1_unit_i_t_r9606.html#aafce96edcd33f521ebe459d3a3843379',1,'m5::unit::UnitITR9606::begin()'],['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a96d4faf54b84bb147dad09ce34c69afa',1,'m5::unit::UnitSTHS34PF80::begin()']]]
 ];

@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['powerdown_0',['PowerDown',['../unit___s_t_h_s34_p_f80_8hpp.html#a77c07681630e9a92271561c54036dd20a5738b4738d0d5191678eed09d6b5c6f8',1,'m5::unit::sths34pf80']]],
-  ['presence_1',['presence',['../structm5_1_1unit_1_1sths34pf80_1_1_data.html#ae26d10116f63854de90115aa13191d1f',1,'m5::unit::sths34pf80::Data::presence()'],['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a4769c7b4d4380d36e3d2bb82dfdf32b1',1,'m5::unit::UnitSTHS34PF80::presence()']]]
+  ['lastcodec_0',['lastCodec',['../classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html#ada3eae5c80df64b9b40746d5e12fe1f4',1,'m5::unit::ir::AutoDetectCodec']]],
+  ['latest_1',['latest',['../classm5_1_1unit_1_1_unit_i_r.html#a8f35724d2ebcc2a9d5429f76b306cefc',1,'m5::unit::UnitIR']]],
+  ['lowpassfilter_2',['LowPassFilter',['../unit___s_t_h_s34_p_f80_8hpp.html#a89e1ae62dc396050b3bd9d7fc547265e',1,'m5::unit::sths34pf80']]]
 ];

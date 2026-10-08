@@ -8,6 +8,8 @@
 
   Core ---> PaHub ---> ch:0 UnitTmosPIR
 */
+#include <algorithm>
+#include <cstdlib>
 #include <M5Unified.h>
 #include <M5UnitUnified.h>
 #include <M5UnitUnifiedINFRARED.h>
@@ -32,7 +34,7 @@ constexpr uint8_t PAL_FRAME{2};
 constexpr uint8_t PAL_IDLE{3};
 constexpr uint8_t PAL_ACTIVE{4};
 
-constexpr const char* UNIT_LABEL = "TmosPIR via PaHub";
+constexpr const char* UNIT_LABEL{"TmosPIR via PaHub"};
 constexpr uint32_t DRAW_INTERVAL_MS{100};  // Limit redraws; periodic data arrives faster than this
 constexpr int32_t MIN_FULL_SCALE{1000};    // Lower bound of the auto-scaled bar range
 
@@ -103,7 +105,9 @@ void setup()
     if (!sprite.createSprite(lcd.width(), lcd.height())) {
         // Fallback to PSRAM for large screens (e.g. Tab5)
         sprite.setPsram(true);
-        sprite.createSprite(lcd.width(), lcd.height());
+        if (!sprite.createSprite(lcd.width(), lcd.height())) {
+            M5_LOGE("Failed to create sprite");
+        }
     }
     sprite.createPalette();
     sprite.setPaletteColor(PAL_BG, TFT_DARKGREEN);

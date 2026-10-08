@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">M5Unit-INFRARED<span id="projectnumber">&#160;0.2.0 git rev:76ad9e1</span>
+   <div id="projectname">M5Unit-INFRARED<span id="projectnumber">&#160;0.3.0 git rev:2148adc</span>
    </div>
   </td>
  </tr>
@@ -120,16 +120,16 @@ Inheritance diagram for m5::unit::ir::SircCodec:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:aeaa7d5a3273baad1975d35743cf8584a" id="r_aeaa7d5a3273baad1975d35743cf8584a"><td class="memItemLeft" align="right" valign="top"><a id="aeaa7d5a3273baad1975d35743cf8584a" name="aeaa7d5a3273baad1975d35743cf8584a"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeaa7d5a3273baad1975d35743cf8584a">Variant</a> : uint8_t { <b>SIRC12</b> = 12
-, <b>SIRC15</b> = 15
-, <b>SIRC20</b> = 20
+<tr class="memitem:aeaa7d5a3273baad1975d35743cf8584a" id="r_aeaa7d5a3273baad1975d35743cf8584a"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeaa7d5a3273baad1975d35743cf8584a">Variant</a> : uint8_t { <a class="el" href="#aeaa7d5a3273baad1975d35743cf8584aaa14702960932ad2f5672fbc4ad8d5f2d">SIRC12</a> = 12
+, <a class="el" href="#aeaa7d5a3273baad1975d35743cf8584aa17dc54bfcf8580aea1563fc0bd63c81a">SIRC15</a> = 15
+, <a class="el" href="#aeaa7d5a3273baad1975d35743cf8584aa38a0bc989ff99bbcf94743a55fb40031">SIRC20</a> = 20
  }</td></tr>
-<tr class="memdesc:aeaa7d5a3273baad1975d35743cf8584a"><td class="mdescLeft">&#160;</td><td class="mdescRight">SIRC protocol variants. <br /></td></tr>
+<tr class="memdesc:aeaa7d5a3273baad1975d35743cf8584a"><td class="mdescLeft">&#160;</td><td class="mdescRight">SIRC protocol variants.  <a href="#aeaa7d5a3273baad1975d35743cf8584a">More...</a><br /></td></tr>
 <tr class="separator:aeaa7d5a3273baad1975d35743cf8584a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8ca7f7071ab0d8396b81a10e1c8b529c" id="r_a8ca7f7071ab0d8396b81a10e1c8b529c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8ca7f7071ab0d8396b81a10e1c8b529c">SircCodec</a> (<a class="el" href="#aeaa7d5a3273baad1975d35743cf8584a">Variant</a> v=Variant::SIRC12)</td></tr>
+<tr class="memitem:a8ca7f7071ab0d8396b81a10e1c8b529c" id="r_a8ca7f7071ab0d8396b81a10e1c8b529c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8ca7f7071ab0d8396b81a10e1c8b529c">SircCodec</a> (<a class="el" href="#aeaa7d5a3273baad1975d35743cf8584a">Variant</a> v=<a class="el" href="#aeaa7d5a3273baad1975d35743cf8584aaa14702960932ad2f5672fbc4ad8d5f2d">Variant::SIRC12</a>)</td></tr>
 <tr class="memdesc:a8ca7f7071ab0d8396b81a10e1c8b529c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <br /></td></tr>
 <tr class="separator:a8ca7f7071ab0d8396b81a10e1c8b529c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14097e88555de69fd37aa4568ef2130d" id="r_a14097e88555de69fd37aa4568ef2130d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ir__codec_8hpp.html#a0456720f9eacc9a4157c19da0aaa6cb1">item_container_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a14097e88555de69fd37aa4568ef2130d">encode</a> (uint16_t address, uint16_t command, bool repeat) override</td></tr>
@@ -155,9 +155,13 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>decode</b> (const gpi
 <tr class="memdesc:a0e717944c6b1d796a1e4fbc00ced8676"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set variant (12 / 15 / 20-bit)  <br /></td></tr>
 <tr class="separator:a0e717944c6b1d796a1e4fbc00ced8676"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classm5_1_1unit_1_1ir_1_1_i_r_codec"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classm5_1_1unit_1_1ir_1_1_i_r_codec')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html">m5::unit::ir::IRCodec</a></td></tr>
-<tr class="memitem:ae8ab134fe26c6c4f8127b873c85d7d63 inherit pub_methods_classm5_1_1unit_1_1ir_1_1_i_r_codec" id="r_ae8ab134fe26c6c4f8127b873c85d7d63"><td class="memItemLeft" align="right" valign="top">
-&#160;</td><td class="memItemRight" valign="bottom"><b>IRCodec</b> (<a class="el" href="ir__codec_8hpp.html#abad07de0674f26a553411c1a09073655">CodecType</a> t)</td></tr>
-<tr class="separator:ae8ab134fe26c6c4f8127b873c85d7d63 inherit pub_methods_classm5_1_1unit_1_1ir_1_1_i_r_codec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcb7ad76398e93d4d89b5492c4b140d0 inherit pub_methods_classm5_1_1unit_1_1ir_1_1_i_r_codec" id="r_adcb7ad76398e93d4d89b5492c4b140d0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html#adcb7ad76398e93d4d89b5492c4b140d0">IRCodec</a> (const <a class="el" href="ir__codec_8hpp.html#abad07de0674f26a553411c1a09073655">CodecType</a> t)</td></tr>
+<tr class="memdesc:adcb7ad76398e93d4d89b5492c4b140d0 inherit pub_methods_classm5_1_1unit_1_1ir_1_1_i_r_codec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <br /></td></tr>
+<tr class="separator:adcb7ad76398e93d4d89b5492c4b140d0 inherit pub_methods_classm5_1_1unit_1_1ir_1_1_i_r_codec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b90dafc72e353081913585d5b10df0d inherit pub_methods_classm5_1_1unit_1_1ir_1_1_i_r_codec" id="r_a6b90dafc72e353081913585d5b10df0d"><td class="memItemLeft" align="right" valign="top">
+virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~IRCodec</b> ()=default</td></tr>
+<tr class="memdesc:a6b90dafc72e353081913585d5b10df0d inherit pub_methods_classm5_1_1unit_1_1ir_1_1_i_r_codec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
+<tr class="separator:a6b90dafc72e353081913585d5b10df0d inherit pub_methods_classm5_1_1unit_1_1ir_1_1_i_r_codec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9ddb583e909a982ff56307784cda7c0 inherit pub_methods_classm5_1_1unit_1_1ir_1_1_i_r_codec" id="r_ad9ddb583e909a982ff56307784cda7c0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ir__codec_8hpp.html#abad07de0674f26a553411c1a09073655">CodecType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html#ad9ddb583e909a982ff56307784cda7c0">type</a> () const</td></tr>
 <tr class="memdesc:ad9ddb583e909a982ff56307784cda7c0 inherit pub_methods_classm5_1_1unit_1_1ir_1_1_i_r_codec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get codec type for safe downcasting.  <br /></td></tr>
 <tr class="separator:ad9ddb583e909a982ff56307784cda7c0 inherit pub_methods_classm5_1_1unit_1_1ir_1_1_i_r_codec"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -189,7 +193,40 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>decode</b> (const gpi
 <td class="markdownTableBodyNone">Bit "0"   </td><td class="markdownTableBodyNone">600   </td><td class="markdownTableBodyNone">600   </td></tr>
 </table>
 </dd></dl>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="aeaa7d5a3273baad1975d35743cf8584a" name="aeaa7d5a3273baad1975d35743cf8584a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeaa7d5a3273baad1975d35743cf8584a">&#9670;&#160;</a></span>Variant</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="#aeaa7d5a3273baad1975d35743cf8584a">m5::unit::ir::SircCodec::Variant</a> : uint8_t</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>SIRC protocol variants. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aeaa7d5a3273baad1975d35743cf8584aaa14702960932ad2f5672fbc4ad8d5f2d" name="aeaa7d5a3273baad1975d35743cf8584aaa14702960932ad2f5672fbc4ad8d5f2d"></a>SIRC12&#160;</td><td class="fielddoc"><p>12-bit: 7-bit command + 5-bit address </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aeaa7d5a3273baad1975d35743cf8584aa17dc54bfcf8580aea1563fc0bd63c81a" name="aeaa7d5a3273baad1975d35743cf8584aa17dc54bfcf8580aea1563fc0bd63c81a"></a>SIRC15&#160;</td><td class="fielddoc"><p>15-bit: 7-bit command + 8-bit address </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aeaa7d5a3273baad1975d35743cf8584aa38a0bc989ff99bbcf94743a55fb40031" name="aeaa7d5a3273baad1975d35743cf8584aa38a0bc989ff99bbcf94743a55fb40031"></a>SIRC20&#160;</td><td class="fielddoc"><p>20-bit: 7-bit command + 5-bit address + 8-bit extended (address bits 5-12) </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8ca7f7071ab0d8396b81a10e1c8b529c" name="a8ca7f7071ab0d8396b81a10e1c8b529c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8ca7f7071ab0d8396b81a10e1c8b529c">&#9670;&#160;</a></span>SircCodec()</h2>
 
@@ -202,7 +239,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>decode</b> (const gpi
         <tr>
           <td class="memname">m5::unit::ir::SircCodec::SircCodec </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="#aeaa7d5a3273baad1975d35743cf8584a">Variant</a></td>          <td class="paramname"><span class="paramname"><em>v</em></span><span class="paramdefsep"> = </span><span class="paramdefval">Variant::SIRC12</span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="#aeaa7d5a3273baad1975d35743cf8584a">Variant</a></td>          <td class="paramname"><span class="paramname"><em>v</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="#aeaa7d5a3273baad1975d35743cf8584aaa14702960932ad2f5672fbc4ad8d5f2d">Variant::SIRC12</a></span></td><td>)</td>
           <td></td>
         </tr>
       </table>

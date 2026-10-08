@@ -1,5 +1,7 @@
 var classm5_1_1unit_1_1ir_1_1_i_r_codec =
 [
+    [ "IRCodec", "classm5_1_1unit_1_1ir_1_1_i_r_codec.html#adcb7ad76398e93d4d89b5492c4b140d0", null ],
+    [ "~IRCodec", "classm5_1_1unit_1_1ir_1_1_i_r_codec.html#a6b90dafc72e353081913585d5b10df0d", null ],
     [ "carrierDuty", "classm5_1_1unit_1_1ir_1_1_i_r_codec.html#a4aa4febe0f8be4dd30fec415b2d88028", null ],
     [ "carrierFrequencyHz", "classm5_1_1unit_1_1ir_1_1_i_r_codec.html#a9c98877ca295defc8bb55297815963cc", null ],
     [ "decode", "classm5_1_1unit_1_1ir_1_1_i_r_codec.html#a8045d3a9e01c66e5c39ce170af0de52a", null ],

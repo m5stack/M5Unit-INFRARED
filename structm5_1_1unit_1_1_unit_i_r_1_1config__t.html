@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">M5Unit-INFRARED<span id="projectnumber">&#160;0.2.0 git rev:76ad9e1</span>
+   <div id="projectname">M5Unit-INFRARED<span id="projectnumber">&#160;0.3.0 git rev:2148adc</span>
    </div>
   </td>
  </tr>
@@ -126,6 +126,8 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>rx_ring_buffer_si
 <tr class="separator:adab348feea8bee4b0273d1c074ee1651"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af49d19c505372a7076f906fc3f7e3ef7" id="r_af49d19c505372a7076f906fc3f7e3ef7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af49d19c505372a7076f906fc3f7e3ef7">rx_invert_level</a> {true}</td></tr>
 <tr class="separator:af49d19c505372a7076f906fc3f7e3ef7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa446c29277e9a185d5d9e8c533aa56e3" id="r_aa446c29277e9a185d5d9e8c533aa56e3"><td class="memItemLeft" align="right" valign="top">gpio::RxPull&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa446c29277e9a185d5d9e8c533aa56e3">rx_pull</a> {gpio::RxPull::None}</td></tr>
+<tr class="separator:aa446c29277e9a185d5d9e8c533aa56e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Settings for begin. </p>
@@ -187,6 +189,21 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>rx_ring_buffer_si
       </table>
 </div><div class="memdoc">
 <p>Minimum RMT items for a valid frame (noise filter) </p><dl class="section note"><dt>Note</dt><dd>Frames with fewer items are silently discarded. NEC=34, SIRC=13+, RC5=14, RC6=22+, Panasonic=50 </dd></dl>
+
+</div>
+</div>
+<a id="aa446c29277e9a185d5d9e8c533aa56e3" name="aa446c29277e9a185d5d9e8c533aa56e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa446c29277e9a185d5d9e8c533aa56e3">&#9670;&#160;</a></span>rx_pull</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">gpio::RxPull m5::unit::UnitIR::config_t::rx_pull {gpio::RxPull::None}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Internal pull on the RX pin, applied by the adapter at <a class="el" href="classm5_1_1unit_1_1_unit_i_r.html#a67c5b81cbeda850601222f55a23f69ce" title="Initialize the RMT channels (TX and/or RX) based on the adapter pins.">begin()</a> </p><dl class="section note"><dt>Note</dt><dd>Unit IR (VS1838B) has its own pull-up, so the default None is correct. Receivers without an external pull-up (e.g. the StickS3 built-in IR) need Up; wiring::addBuiltinIrRx sets it. </dd></dl>
 
 </div>
 </div>

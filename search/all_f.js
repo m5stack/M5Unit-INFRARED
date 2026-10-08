@@ -18,12 +18,15 @@ var searchData=
   ['setvariant_15',['setVariant',['../classm5_1_1unit_1_1ir_1_1_sirc_codec.html#a0e717944c6b1d796a1e4fbc00ced8676',1,'m5::unit::ir::SircCodec']]],
   ['sirc_16',['SIRC',['../ir__codec_8hpp.html#abad07de0674f26a553411c1a09073655a1139998ae422a39ffe83b8cab67c81eb',1,'m5::unit::ir']]],
   ['sirc_17',['sirc',['../classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html#aff4f1cbc591773e195f2502f245a4898',1,'m5::unit::ir::AutoDetectCodec']]],
-  ['sirc_5fcodec_2ecpp_18',['sirc_codec.cpp',['../sirc__codec_8cpp.html',1,'']]],
-  ['sirc_5fcodec_2ehpp_19',['sirc_codec.hpp',['../sirc__codec_8hpp.html',1,'']]],
-  ['sirccodec_20',['SircCodec',['../classm5_1_1unit_1_1ir_1_1_sirc_codec.html',1,'m5::unit::ir::SircCodec'],['../classm5_1_1unit_1_1ir_1_1_sirc_codec.html#a8ca7f7071ab0d8396b81a10e1c8b529c',1,'m5::unit::ir::SircCodec::SircCodec()']]],
-  ['softreset_21',['softReset',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a4280749cb390cc1a9ca240ae112d5ad2',1,'m5::unit::UnitSTHS34PF80']]],
-  ['start_5fperiodic_22',['start_periodic',['../structm5_1_1unit_1_1_unit_s_t_h_s34_p_f80_1_1config__t.html#ab4e82c01279bd275dcedadfc5ec7dada',1,'m5::unit::UnitSTHS34PF80::config_t']]],
-  ['startperiodicmeasurement_23',['startPeriodicMeasurement',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a0cc43f2e2c8acff1aedd86fd71cba5ec',1,'m5::unit::UnitSTHS34PF80']]],
-  ['sths34pf80_24',['sths34pf80',['../namespacesths34pf80.html',1,'']]],
-  ['stopperiodicmeasurement_25',['stopPeriodicMeasurement',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a60c4cb5c2403745cc69e83044283150b',1,'m5::unit::UnitSTHS34PF80']]]
+  ['sirc12_18',['SIRC12',['../classm5_1_1unit_1_1ir_1_1_sirc_codec.html#aeaa7d5a3273baad1975d35743cf8584aaa14702960932ad2f5672fbc4ad8d5f2d',1,'m5::unit::ir::SircCodec']]],
+  ['sirc15_19',['SIRC15',['../classm5_1_1unit_1_1ir_1_1_sirc_codec.html#aeaa7d5a3273baad1975d35743cf8584aa17dc54bfcf8580aea1563fc0bd63c81a',1,'m5::unit::ir::SircCodec']]],
+  ['sirc20_20',['SIRC20',['../classm5_1_1unit_1_1ir_1_1_sirc_codec.html#aeaa7d5a3273baad1975d35743cf8584aa38a0bc989ff99bbcf94743a55fb40031',1,'m5::unit::ir::SircCodec']]],
+  ['sirc_5fcodec_2ecpp_21',['sirc_codec.cpp',['../sirc__codec_8cpp.html',1,'']]],
+  ['sirc_5fcodec_2ehpp_22',['sirc_codec.hpp',['../sirc__codec_8hpp.html',1,'']]],
+  ['sirccodec_23',['SircCodec',['../classm5_1_1unit_1_1ir_1_1_sirc_codec.html',1,'m5::unit::ir::SircCodec'],['../classm5_1_1unit_1_1ir_1_1_sirc_codec.html#a8ca7f7071ab0d8396b81a10e1c8b529c',1,'m5::unit::ir::SircCodec::SircCodec()']]],
+  ['softreset_24',['softReset',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a4280749cb390cc1a9ca240ae112d5ad2',1,'m5::unit::UnitSTHS34PF80']]],
+  ['start_5fperiodic_25',['start_periodic',['../structm5_1_1unit_1_1_unit_s_t_h_s34_p_f80_1_1config__t.html#ab4e82c01279bd275dcedadfc5ec7dada',1,'m5::unit::UnitSTHS34PF80::config_t']]],
+  ['startperiodicmeasurement_26',['startPeriodicMeasurement',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a0cc43f2e2c8acff1aedd86fd71cba5ec',1,'m5::unit::UnitSTHS34PF80']]],
+  ['sths34pf80_27',['sths34pf80',['../namespacesths34pf80.html',1,'']]],
+  ['stopperiodicmeasurement_28',['stopPeriodicMeasurement',['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a60c4cb5c2403745cc69e83044283150b',1,'m5::unit::UnitSTHS34PF80']]]
 ];

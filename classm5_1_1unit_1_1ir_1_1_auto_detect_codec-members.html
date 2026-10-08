@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">M5Unit-INFRARED<span id="projectnumber">&#160;0.2.0 git rev:76ad9e1</span>
+   <div id="projectname">M5Unit-INFRARED<span id="projectnumber">&#160;0.3.0 git rev:2148adc</span>
    </div>
   </td>
  </tr>
@@ -109,7 +109,7 @@ $(function(){initNavTree('classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html','');
   <tr class="even"><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html#a8045d3a9e01c66e5c39ce170af0de52a">m5::unit::ir::IRCodec::decode</a>(const m5::unit::gpio::m5_rmt_item_t *items, uint32_t num, DecodeResult &amp;result)=0</td><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html">m5::unit::ir::IRCodec</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html#a68019e339e0535dc3556ac0bf7fc7ac3">encode</a>(uint16_t address, uint16_t command, bool repeat) override</td><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html">m5::unit::ir::AutoDetectCodec</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">virtual</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html#ab2e8670f620e27ca40376758477d5570">frameGapUs</a>() const</td><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html">m5::unit::ir::IRCodec</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">virtual</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>IRCodec</b>(CodecType t) (defined in <a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html">m5::unit::ir::IRCodec</a>)</td><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html">m5::unit::ir::IRCodec</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">explicit</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html#adcb7ad76398e93d4d89b5492c4b140d0">IRCodec</a>(const CodecType t)</td><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html">m5::unit::ir::IRCodec</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">explicit</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html#ada3eae5c80df64b9b40746d5e12fe1f4">lastCodec</a>()</td><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html">m5::unit::ir::AutoDetectCodec</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html#a5bd6de3759c63891e9526040a996ed53">minFrames</a>() const</td><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html">m5::unit::ir::IRCodec</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">virtual</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html#ac5d1292a1150f78d4c453a2900e36f32">mitsubishi</a>()</td><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html">m5::unit::ir::AutoDetectCodec</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
@@ -119,7 +119,7 @@ $(function(){initNavTree('classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html','');
   <tr class="even"><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html#ac8eed8e5ef8cc6009dd593b198954c87">rc6</a>()</td><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html">m5::unit::ir::AutoDetectCodec</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html#aff4f1cbc591773e195f2502f245a4898">sirc</a>()</td><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_auto_detect_codec.html">m5::unit::ir::AutoDetectCodec</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html#ad9ddb583e909a982ff56307784cda7c0">type</a>() const</td><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html">m5::unit::ir::IRCodec</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>~IRCodec</b>()=default (defined in <a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html">m5::unit::ir::IRCodec</a>)</td><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html">m5::unit::ir::IRCodec</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html#a6b90dafc72e353081913585d5b10df0d">~IRCodec</a>()=default</td><td class="entry"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html">m5::unit::ir::IRCodec</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

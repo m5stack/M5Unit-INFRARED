@@ -5,6 +5,7 @@ var classm5_1_1unit_1_1_unit_i_r =
     [ "available", "classm5_1_1unit_1_1_unit_i_r.html#a9525b1306e76a85fbba60b753c049f38", null ],
     [ "begin", "classm5_1_1unit_1_1_unit_i_r.html#a67c5b81cbeda850601222f55a23f69ce", null ],
     [ "codec", "classm5_1_1unit_1_1_unit_i_r.html#a31f84d136352f7474a5804fbbb7b4d83", null ],
+    [ "codec", "classm5_1_1unit_1_1_unit_i_r.html#aa5fa40ef91115e0f47398ae95cde54ad", null ],
     [ "config", "classm5_1_1unit_1_1_unit_i_r.html#aaefc1889cb98998c41f0f899ffa311a3", null ],
     [ "config", "classm5_1_1unit_1_1_unit_i_r.html#a93f43b2bfc8959b8ec49adb7ac974518", null ],
     [ "defaultCodec", "classm5_1_1unit_1_1_unit_i_r.html#ab7a6c512cd49193d0dbdd62f84466d96", null ],

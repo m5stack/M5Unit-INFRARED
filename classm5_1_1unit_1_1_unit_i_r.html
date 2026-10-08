@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">M5Unit-INFRARED<span id="projectnumber">&#160;0.2.0 git rev:76ad9e1</span>
+   <div id="projectname">M5Unit-INFRARED<span id="projectnumber">&#160;0.3.0 git rev:2148adc</span>
    </div>
   </td>
  </tr>
@@ -143,6 +143,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a31f84d136352f7474a5804fbbb7b4d83" id="r_a31f84d136352f7474a5804fbbb7b4d83"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html">ir::IRCodec</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a31f84d136352f7474a5804fbbb7b4d83">codec</a> ()</td></tr>
 <tr class="memdesc:a31f84d136352f7474a5804fbbb7b4d83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get current codec.  <br /></td></tr>
 <tr class="separator:a31f84d136352f7474a5804fbbb7b4d83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5fa40ef91115e0f47398ae95cde54ad" id="r_aa5fa40ef91115e0f47398ae95cde54ad"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html">ir::IRCodec</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa5fa40ef91115e0f47398ae95cde54ad">codec</a> () const</td></tr>
+<tr class="memdesc:aa5fa40ef91115e0f47398ae95cde54ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get current codec (const)  <br /></td></tr>
+<tr class="separator:aa5fa40ef91115e0f47398ae95cde54ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8f84c16d56978ffc9fee7c83fae121e" id="r_ae8f84c16d56978ffc9fee7c83fae121e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae8f84c16d56978ffc9fee7c83fae121e">setCodec</a> (<a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html">ir::IRCodec</a> &amp;<a class="el" href="#a31f84d136352f7474a5804fbbb7b4d83">codec</a>)</td></tr>
 <tr class="memdesc:ae8f84c16d56978ffc9fee7c83fae121e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set protocol codec.  <br /></td></tr>
 <tr class="separator:ae8f84c16d56978ffc9fee7c83fae121e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -162,13 +165,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>resetCodec</b> ()</td
 <tr class="separator:a98097d2fca1ce2d7f2c55bf3b99c01d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">RX</div></td></tr>
 <tr class="memitem:a9525b1306e76a85fbba60b753c049f38" id="r_a9525b1306e76a85fbba60b753c049f38"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9525b1306e76a85fbba60b753c049f38">available</a> () const</td></tr>
-<tr class="memdesc:a9525b1306e76a85fbba60b753c049f38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of decoded messages available since last update.  <br /></td></tr>
+<tr class="memdesc:a9525b1306e76a85fbba60b753c049f38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of received frames available since last update.  <br /></td></tr>
 <tr class="separator:a9525b1306e76a85fbba60b753c049f38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa679f6d7c3ccbebb3f3d807caee997f" id="r_afa679f6d7c3ccbebb3f3d807caee997f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afa679f6d7c3ccbebb3f3d807caee997f">empty</a> () const</td></tr>
-<tr class="memdesc:afa679f6d7c3ccbebb3f3d807caee997f"><td class="mdescLeft">&#160;</td><td class="mdescRight">True if no decoded messages.  <br /></td></tr>
+<tr class="memdesc:afa679f6d7c3ccbebb3f3d807caee997f"><td class="mdescLeft">&#160;</td><td class="mdescRight">True if no received frames.  <br /></td></tr>
 <tr class="separator:afa679f6d7c3ccbebb3f3d807caee997f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f35724d2ebcc2a9d5429f76b306cefc" id="r_a8f35724d2ebcc2a9d5429f76b306cefc"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structm5_1_1unit_1_1ir_1_1_decode_result.html">ir::DecodeResult</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8f35724d2ebcc2a9d5429f76b306cefc">latest</a> () const</td></tr>
-<tr class="memdesc:a8f35724d2ebcc2a9d5429f76b306cefc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get latest decoded result.  <br /></td></tr>
+<tr class="memdesc:a8f35724d2ebcc2a9d5429f76b306cefc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get latest received result.  <br /></td></tr>
 <tr class="separator:a8f35724d2ebcc2a9d5429f76b306cefc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ec9c1d1a53c14a170f53da7a682fedc" id="r_a7ec9c1d1a53c14a170f53da7a682fedc"><td class="memItemLeft" align="right" valign="top"><a id="a7ec9c1d1a53c14a170f53da7a682fedc" name="a7ec9c1d1a53c14a170f53da7a682fedc"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>flush</b> ()</td></tr>
@@ -190,7 +193,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>flush</b> ()</td></tr
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>IR remote control transceiver unit. </p>
-<p>Supports Unit IR (SKU: U002) via Grove and built-in IR transmitters (e.g., M5StickC Plus2 GPIO 9). Uses ESP32 RMT peripheral for precise carrier modulation (TX) and timing capture (RX).</p>
+<p>Supports Unit IR (SKU: U002) via Grove and built-in IR transmitters (e.g., M5StickC Plus2 GPIO 19). Uses ESP32 RMT peripheral for precise carrier modulation (TX) and timing capture (RX).</p>
 <dl class="section user"><dt>Usage (Unit IR U002 via Grove)</dt><dd><div class="fragment"><div class="line">m5::unit::UnitUnified Units;</div>
 <div class="line"><a class="code hl_class" href="classm5_1_1unit_1_1_unit_i_r.html">m5::unit::UnitIR</a> ir;</div>
 <div class="line"><span class="comment">// Port B preferred, fallback to Port A</span></div>
@@ -204,8 +207,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>flush</b> ()</td></tr
 <div class="line">Units.<a class="code hl_function" href="#a67c5b81cbeda850601222f55a23f69ce">begin</a>();</div>
 <div class="line">ir.<a class="code hl_function" href="#ac8ad1d9008435ade03485a2e703ea423">send</a>(0x00, 0x1F);  <span class="comment">// NEC send</span></div>
 <div class="ttc" id="aclassm5_1_1unit_1_1_unit_i_r_html"><div class="ttname"><a href="classm5_1_1unit_1_1_unit_i_r.html">m5::unit::UnitIR</a></div><div class="ttdoc">IR remote control transceiver unit.</div></div>
-<div class="ttc" id="aclassm5_1_1unit_1_1_unit_i_r_html_a67c5b81cbeda850601222f55a23f69ce"><div class="ttname"><a href="#a67c5b81cbeda850601222f55a23f69ce">m5::unit::UnitIR::begin</a></div><div class="ttdeci">bool begin() override</div><div class="ttdoc">Initialize the RMT channels (TX and/or RX) based on the adapter pins.</div><div class="ttdef"><b>Definition</b> unit_IR.cpp:34</div></div>
-<div class="ttc" id="aclassm5_1_1unit_1_1_unit_i_r_html_ac8ad1d9008435ade03485a2e703ea423"><div class="ttname"><a href="#ac8ad1d9008435ade03485a2e703ea423">m5::unit::UnitIR::send</a></div><div class="ttdeci">bool send(uint16_t address, uint16_t command, uint8_t frames=0)</div><div class="ttdoc">Send IR command using current codec.</div><div class="ttdef"><b>Definition</b> unit_IR.cpp:151</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_unit_i_r_html_a67c5b81cbeda850601222f55a23f69ce"><div class="ttname"><a href="#a67c5b81cbeda850601222f55a23f69ce">m5::unit::UnitIR::begin</a></div><div class="ttdeci">bool begin() override</div><div class="ttdoc">Initialize the RMT channels (TX and/or RX) based on the adapter pins.</div><div class="ttdef"><b>Definition</b> unit_IR.cpp:41</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_unit_i_r_html_ac8ad1d9008435ade03485a2e703ea423"><div class="ttname"><a href="#ac8ad1d9008435ade03485a2e703ea423">m5::unit::UnitIR::send</a></div><div class="ttdeci">bool send(uint16_t address, uint16_t command, uint8_t frames=0)</div><div class="ttdoc">Send IR command using current codec.</div><div class="ttdef"><b>Definition</b> unit_IR.cpp:165</div></div>
 </div><!-- fragment --></dd></dl>
 <dl class="section user"><dt>Usage (Built-in IR, TX only, e.g. M5StickC Plus2)</dt><dd><div class="fragment"><div class="line">m5::unit::UnitUnified Units;</div>
 <div class="line"><a class="code hl_class" href="classm5_1_1unit_1_1_unit_i_r.html">m5::unit::UnitIR</a> ir;</div>
@@ -283,8 +286,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>flush</b> ()</td></tr
 </table>
 </div><div class="memdoc">
 
-<p>Number of decoded messages available since last update. </p>
-<dl class="section return"><dt>Returns</dt><dd>1 if a decoded frame is pending, 0 otherwise </dd></dl>
+<p>Number of received frames available since last update. </p>
+<dl class="section return"><dt>Returns</dt><dd>1 if a frame is pending, 0 otherwise </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>A frame that no codec could decode is also counted; <a class="el" href="#a8f35724d2ebcc2a9d5429f76b306cefc" title="Get latest received result.">latest()</a>.protocol is then CodecType::Unknown and <a class="el" href="#accfe90dc635dc194253b03da7bf6249b" title="Get raw RMT items from last reception.">rawItems()</a> holds the captured items. </dd></dl>
 
 </div>
 </div>
@@ -318,7 +322,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>flush</b> ()</td></tr
 </div>
 </div>
 <a id="a31f84d136352f7474a5804fbbb7b4d83" name="a31f84d136352f7474a5804fbbb7b4d83"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a31f84d136352f7474a5804fbbb7b4d83">&#9670;&#160;</a></span>codec()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a31f84d136352f7474a5804fbbb7b4d83">&#9670;&#160;</a></span>codec() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -342,6 +346,34 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>flush</b> ()</td></tr
 
 <p>Get current codec. </p>
 <dl class="section return"><dt>Returns</dt><dd>Reference to the active codec (default: built-in AutoDetectCodec) </dd></dl>
+
+</div>
+</div>
+<a id="aa5fa40ef91115e0f47398ae95cde54ad" name="aa5fa40ef91115e0f47398ae95cde54ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5fa40ef91115e0f47398ae95cde54ad">&#9670;&#160;</a></span>codec() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classm5_1_1unit_1_1ir_1_1_i_r_codec.html">ir::IRCodec</a> &amp; m5::unit::UnitIR::codec </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get current codec (const) </p>
+<dl class="section return"><dt>Returns</dt><dd>Const reference to the active codec (default: built-in AutoDetectCodec) </dd></dl>
 
 </div>
 </div>
@@ -457,8 +489,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>flush</b> ()</td></tr
 </table>
 </div><div class="memdoc">
 
-<p>True if no decoded messages. </p>
-<dl class="section return"><dt>Returns</dt><dd>True when no frame has been decoded since the last flush/update </dd></dl>
+<p>True if no received frames. </p>
+<dl class="section return"><dt>Returns</dt><dd>True when no frame has been received since the last flush/update </dd></dl>
 
 </div>
 </div>
@@ -541,8 +573,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>flush</b> ()</td></tr
 </table>
 </div><div class="memdoc">
 
-<p>Get latest decoded result. </p>
-<dl class="section return"><dt>Returns</dt><dd>Reference to the most recent DecodeResult (valid until next update) </dd></dl>
+<p>Get latest received result. </p>
+<dl class="section return"><dt>Returns</dt><dd>Reference to the most recent DecodeResult (valid until next update). protocol is CodecType::Unknown if the frame could not be decoded </dd></dl>
 
 </div>
 </div>
@@ -700,7 +732,7 @@ Carrier frequency and duty cycle are determined by the current codec. </dd></dl>
 <p>Set protocol codec. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">codec</td><td>Codec instance (must outlive <a class="el" href="classm5_1_1unit_1_1_unit_i_r.html" title="IR remote control transceiver unit.">UnitIR</a>; typically a global/static variable) </td></tr>
+    <tr><td class="paramname">codec</td><td>Codec instance (must outlive <a class="el" href="classm5_1_1unit_1_1_unit_i_r.html" title="IR remote control transceiver unit.">UnitIR</a>; typically a global/static variable). Passing the unit's own built-in codec (<a class="el" href="#ab7a6c512cd49193d0dbdd62f84466d96" title="Get built-in AutoDetectCodec (for accessing individual protocol codecs)">defaultCodec()</a>) is the same as <a class="el" href="#a472841e495aadb0e8b4dc54439e80dc7" title="Reset to built-in AutoDetectCodec.">resetCodec()</a> </td></tr>
   </table>
   </dd>
 </dl>
@@ -734,7 +766,7 @@ Carrier frequency and duty cycle are determined by the current codec. </dd></dl>
 <p>Poll the RX ringbuffer and decode incoming frames. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">force</td><td>Unused (reserved for future periodic-update support) </td></tr>
+    <tr><td class="paramname">force</td><td>Ignored by <a class="el" href="classm5_1_1unit_1_1_unit_i_r.html" title="IR remote control transceiver unit.">UnitIR</a> </td></tr>
   </table>
   </dd>
 </dl>

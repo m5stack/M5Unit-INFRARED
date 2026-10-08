@@ -6,6 +6,7 @@ var searchData=
   ['panasonic_5fcodec_2ehpp_3',['panasonic_codec.hpp',['../panasonic__codec_8hpp.html',1,'']]],
   ['panasoniccodec_4',['PanasonicCodec',['../classm5_1_1unit_1_1ir_1_1_panasonic_codec.html',1,'m5::unit::ir::PanasonicCodec'],['../classm5_1_1unit_1_1ir_1_1_panasonic_codec.html#a231b0251712b6ddf58e116cf90263703',1,'m5::unit::ir::PanasonicCodec::PanasonicCodec()']]],
   ['powerdown_5',['PowerDown',['../unit___s_t_h_s34_p_f80_8hpp.html#a77c07681630e9a92271561c54036dd20a5738b4738d0d5191678eed09d6b5c6f8',1,'m5::unit::sths34pf80']]],
-  ['presence_6',['presence',['../structm5_1_1unit_1_1sths34pf80_1_1_data.html#ae26d10116f63854de90115aa13191d1f',1,'m5::unit::sths34pf80::Data::presence()'],['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a4769c7b4d4380d36e3d2bb82dfdf32b1',1,'m5::unit::UnitSTHS34PF80::presence()']]],
-  ['protocol_7',['protocol',['../structm5_1_1unit_1_1ir_1_1_decode_result.html#ad2f8177d655284e4a8bb6bfb589260a0',1,'m5::unit::ir::DecodeResult']]]
+  ['pres_5fflag_6',['PRES_FLAG',['../structm5_1_1unit_1_1sths34pf80_1_1_data.html#ad452872529462769cdf6a3c26df3f70b',1,'m5::unit::sths34pf80::Data']]],
+  ['presence_7',['presence',['../structm5_1_1unit_1_1sths34pf80_1_1_data.html#ae26d10116f63854de90115aa13191d1f',1,'m5::unit::sths34pf80::Data::presence()'],['../classm5_1_1unit_1_1_unit_s_t_h_s34_p_f80.html#a4769c7b4d4380d36e3d2bb82dfdf32b1',1,'m5::unit::UnitSTHS34PF80::presence()']]],
+  ['protocol_8',['protocol',['../structm5_1_1unit_1_1ir_1_1_decode_result.html#ad2f8177d655284e4a8bb6bfb589260a0',1,'m5::unit::ir::DecodeResult']]]
 ];

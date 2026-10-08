@@ -6,5 +6,6 @@ var searchData=
   ['rx_5fidle_5fthreshold_3',['rx_idle_threshold',['../structm5_1_1unit_1_1_unit_i_r_1_1config__t.html#a49f9db9965635935dd2c7c3eab9e3e72',1,'m5::unit::UnitIR::config_t']]],
   ['rx_5finvert_5flevel_4',['rx_invert_level',['../structm5_1_1unit_1_1_unit_i_r_1_1config__t.html#af49d19c505372a7076f906fc3f7e3ef7',1,'m5::unit::UnitIR::config_t']]],
   ['rx_5fmin_5fitem_5fcount_5',['rx_min_item_count',['../structm5_1_1unit_1_1_unit_i_r_1_1config__t.html#adab348feea8bee4b0273d1c074ee1651',1,'m5::unit::UnitIR::config_t']]],
-  ['rx_5fring_5fbuffer_5fsize_6',['rx_ring_buffer_size',['../structm5_1_1unit_1_1_unit_i_r_1_1config__t.html#a4c17467723da34ba96c7e923851f6619',1,'m5::unit::UnitIR::config_t']]]
+  ['rx_5fpull_6',['rx_pull',['../structm5_1_1unit_1_1_unit_i_r_1_1config__t.html#aa446c29277e9a185d5d9e8c533aa56e3',1,'m5::unit::UnitIR::config_t']]],
+  ['rx_5fring_5fbuffer_5fsize_7',['rx_ring_buffer_size',['../structm5_1_1unit_1_1_unit_i_r_1_1config__t.html#a4c17467723da34ba96c7e923851f6619',1,'m5::unit::UnitIR::config_t']]]
 ];

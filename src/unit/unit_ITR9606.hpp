@@ -20,7 +20,7 @@ namespace unit {
   @brief ITR9606 infrared photointerrupter unit
   @details The ITR9606 is a transmissive photointerrupter consisting of an IR LED and a phototransistor.
   When an object passes through the slot and blocks the IR beam, the output changes state.
-  Output is active LOW: LOW when blocked (object detected), HIGH when clear.
+  Output is active HIGH: HIGH when blocked (object detected), LOW when clear.
 */
 class UnitITR9606 : public Component {
     M5_UNIT_COMPONENT_HPP_BUILDER(UnitITR9606, 0x00);
@@ -36,29 +36,44 @@ public:
         uint32_t interval{50};
     };
 
+    //! @brief Constructor
     explicit UnitITR9606() : Component(0x00)
     {
     }
 
-    //! @brief Gets the config values
+    /*!
+      @brief Gets the config values
+      @return Copy of the current config
+    */
     config_t config() const
     {
         return _cfg;
     }
-    //! @brief Set the config values
+    /*!
+      @brief Set the config values
+      @param cfg Config to apply on the next begin()
+    */
     void config(const config_t& cfg)
     {
         _cfg = cfg;
     }
 
+    /*!
+      @brief Set the RX pin to input with pull-up and apply the config
+      @return True if successful
+    */
     bool begin() override;
+    /*!
+      @brief Read the sensor pin and update the detection state
+      @param force Read immediately, ignoring config_t::interval
+    */
     void update(const bool force = false) override;
 
     ///@name Detection state
     ///@{
     /*!
       @brief Current detection state
-      @return true if an object is blocking the IR beam (pin is LOW)
+      @return true if an object is blocking the IR beam (pin is HIGH)
     */
     inline bool isDetected() const
     {
@@ -95,7 +110,6 @@ public:
 private:
     config_t _cfg{};
     bool _detected{};
-    bool _prev_detected{};
     bool _was_detected{};
     bool _was_released{};
 };

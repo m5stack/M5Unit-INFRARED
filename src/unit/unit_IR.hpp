@@ -19,7 +19,7 @@ namespace unit {
 /*!
   @class m5::unit::UnitIR
   @brief IR remote control transceiver unit
-  @details Supports Unit IR (SKU: U002) via Grove and built-in IR transmitters (e.g., M5StickC Plus2 GPIO 9).
+  @details Supports Unit IR (SKU: U002) via Grove and built-in IR transmitters (e.g., M5StickC Plus2 GPIO 19).
   Uses ESP32 RMT peripheral for precise carrier modulation (TX) and timing capture (RX).
 
   @par Usage (Unit IR U002 via Grove)
@@ -106,6 +106,10 @@ public:
         //! @note Most IR receivers (VS1838B on Unit IR, and most built-in IR receivers
         //!       such as StickS3) are active-LOW, so the default `true` is correct.
         bool rx_invert_level{true};
+        //! Internal pull on the RX pin, applied by the adapter at begin()
+        //! @note Unit IR (VS1838B) has its own pull-up, so the default None is correct. Receivers without
+        //!       an external pull-up (e.g. the StickS3 built-in IR) need Up; wiring::addBuiltinIrRx sets it.
+        gpio::RxPull rx_pull{gpio::RxPull::None};
     };
 
     //! @brief Constructor
@@ -139,7 +143,7 @@ public:
     bool begin() override;
     /*!
       @brief Poll the RX ringbuffer and decode incoming frames
-      @param force Unused (reserved for future periodic-update support)
+      @param force Ignored by UnitIR
      */
     void update(const bool force = false) override;
 
@@ -151,21 +155,30 @@ public:
      */
     ir::IRCodec& codec()
     {
-        return *_codec;
+        return _codec ? *_codec : static_cast<ir::IRCodec&>(_default_codec);
+    }
+    /*!
+      @brief Get current codec (const)
+      @return Const reference to the active codec (default: built-in AutoDetectCodec)
+     */
+    const ir::IRCodec& codec() const
+    {
+        return _codec ? static_cast<const ir::IRCodec&>(*_codec) : static_cast<const ir::IRCodec&>(_default_codec);
     }
     /*!
       @brief Set protocol codec
-      @param codec Codec instance (must outlive UnitIR; typically a global/static variable)
+      @param codec Codec instance (must outlive UnitIR; typically a global/static variable).
+             Passing the unit's own built-in codec (defaultCodec()) is the same as resetCodec()
       @note Default codec is a built-in AutoDetectCodec. Call resetCodec() to restore it.
      */
     void setCodec(ir::IRCodec& codec)
     {
-        _codec = &codec;
+        _codec = (&codec == &_default_codec) ? nullptr : &codec;
     }
     //! @brief Reset to built-in AutoDetectCodec
     void resetCodec()
     {
-        _codec = &_default_codec;
+        _codec = nullptr;
     }
     /*!
       @brief Get built-in AutoDetectCodec (for accessing individual protocol codecs)
@@ -207,24 +220,27 @@ public:
     ///@name RX
     ///@{
     /*!
-      @brief Number of decoded messages available since last update
-      @return 1 if a decoded frame is pending, 0 otherwise
+      @brief Number of received frames available since last update
+      @return 1 if a frame is pending, 0 otherwise
+      @note A frame that no codec could decode is also counted; latest().protocol is then CodecType::Unknown
+            and rawItems() holds the captured items.
      */
     size_t available() const
     {
         return _rx_available ? 1 : 0;
     }
     /*!
-      @brief True if no decoded messages
-      @return True when no frame has been decoded since the last flush/update
+      @brief True if no received frames
+      @return True when no frame has been received since the last flush/update
      */
     bool empty() const
     {
         return !_rx_available;
     }
     /*!
-      @brief Get latest decoded result
-      @return Reference to the most recent DecodeResult (valid until next update)
+      @brief Get latest received result
+      @return Reference to the most recent DecodeResult (valid until next update).
+              protocol is CodecType::Unknown if the frame could not be decoded
      */
     const ir::DecodeResult& latest() const
     {
@@ -275,7 +291,7 @@ private:
     bool apply_carrier();
 
     ir::AutoDetectCodec _default_codec{};
-    ir::IRCodec* _codec{&_default_codec};
+    ir::IRCodec* _codec{};  // nullptr: use _default_codec (no self-pointer, so the defaulted move stays valid)
     config_t _cfg{};
     ir::DecodeResult _latest_result{};
     const gpio::m5_rmt_item_t* _raw_items{};

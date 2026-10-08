@@ -24,6 +24,8 @@
 #include <unit/ir/rc6_codec.hpp>
 #include <unit/ir/panasonic_codec.hpp>
 #include <unit/ir/mitsubishi_codec.hpp>
+#include <esp_random.h>                                // esp_random() (implicitly included by Arduino, not by ESP-IDF)
+#include <wiring/m5_unit_unified_infrared_wiring.hpp>  // board-aware connection helpers (include last)
 
 namespace {
 auto& lcd = M5.Display;
@@ -35,7 +37,7 @@ LGFX_Sprite sprite;
 // Protocol codecs (user-managed instances)
 m5::unit::ir::NecCodec nec_codec;
 // SIRC is initialized to SIRC20 so that the first visit to the SIRC menu
-// rotates forward to SIRC12 (see setProtocol()).
+// rotates forward to SIRC12 (see set_protocol()).
 m5::unit::ir::SircCodec sirc_codec{m5::unit::ir::SircCodec::Variant::SIRC20};
 m5::unit::ir::Rc5Codec rc5_codec;
 m5::unit::ir::Rc6Codec rc6_codec;
@@ -67,7 +69,7 @@ struct ProtocolRange {
 };
 const ProtocolRange protocol_ranges[] = {
     {0x00FF, 0x00FF},  // NEC (8-bit addr, 8-bit cmd)
-    {0x001F, 0x007F},  // SIRC12 (overridden by currentRange() per variant)
+    {0x001F, 0x007F},  // SIRC12 (overridden by current_range() per variant)
     {0x001F, 0x003F},  // RC5 (5-bit addr, 6-bit cmd; RC5X adds bit6)
     {0x00FF, 0x00FF},  // RC6 (8-bit addr, 8-bit cmd; Mode 0)
     {0xFFFF, 0xFFFF},  // Panasonic (16-bit addr, 16-bit cmd)
@@ -76,7 +78,7 @@ const ProtocolRange protocol_ranges[] = {
 
 constexpr uint8_t PROTO_SIRC = 1;
 
-ProtocolRange currentRange()
+ProtocolRange current_range()
 {
     if (protocol_index == PROTO_SIRC) {
         switch (sirc_codec.variant()) {
@@ -91,7 +93,7 @@ ProtocolRange currentRange()
     return protocol_ranges[protocol_index];
 }
 
-const char* currentProtoLabel()
+const char* current_proto_label()
 {
     if (protocol_index == PROTO_SIRC) {
         switch (sirc_codec.variant()) {
@@ -106,12 +108,12 @@ const char* currentProtoLabel()
     return protocol_names[protocol_index];
 }
 
-bool isAddrMenuHidden()
+bool is_addr_menu_hidden()
 {
-    return currentRange().addr_mask == 0;
+    return current_range().addr_mask == 0;
 }
 
-void setProtocol(uint8_t idx)
+void set_protocol(const uint8_t idx)
 {
     protocol_index = idx % 6;
     switch (protocol_index) {
@@ -141,16 +143,16 @@ void setProtocol(uint8_t idx)
             break;
     }
     // Clamp current values to the new protocol's valid bit-width
-    auto range = currentRange();
+    auto range = current_range();
     ir_address &= range.addr_mask;
     ir_command &= range.cmd_mask;
     // If the hidden Addr row is currently selected, advance past it
-    if (isAddrMenuHidden() && current_menu == Menu::Addr) {
+    if (is_addr_menu_hidden() && current_menu == Menu::Addr) {
         current_menu = Menu::Cmd;
     }
 }
 
-void updateDisplay()
+void update_display()
 {
     auto w = sprite.width();
     auto h = sprite.height();
@@ -169,7 +171,7 @@ void updateDisplay()
     // Menu rows
     for (uint8_t i = 0; i < static_cast<uint8_t>(Menu::Count); ++i) {
         // Hide Addr row for protocols with no address (e.g., Mitsubishi)
-        if (static_cast<Menu>(i) == Menu::Addr && isAddrMenuHidden()) {
+        if (static_cast<Menu>(i) == Menu::Addr && is_addr_menu_hidden()) {
             continue;
         }
         bool selected = (i == static_cast<uint8_t>(current_menu));
@@ -193,7 +195,7 @@ void updateDisplay()
                 } else if (protocol_index == 3) {
                     snprintf(tgl, sizeof(tgl), " T:%d", rc6_codec.toggle() ? 1 : 0);
                 }
-                snprintf(buf, sizeof(buf), "%s%s%s", selected ? "> " : "  ", currentProtoLabel(), tgl);
+                snprintf(buf, sizeof(buf), "%s%s%s", selected ? "> " : "  ", current_proto_label(), tgl);
                 break;
             }
             default:
@@ -219,47 +221,11 @@ void updateDisplay()
     lcd.endWrite();
 }
 
-void logStatus()
+void log_status()
 {
-    M5.Log.printf("[%s] A:0x%04X C:0x%04X  <menu:%s>\n", currentProtoLabel(), ir_address, ir_command,
+    M5.Log.printf("[%s] A:0x%04X C:0x%04X  <menu:%s>\n", current_proto_label(), ir_address, ir_command,
                   menu_labels[static_cast<uint8_t>(current_menu)]);
 }
-
-#if defined(USING_BUILTIN_IR)
-int8_t get_builtin_ir_tx_pin()
-{
-    switch (M5.getBoard()) {
-        case m5::board_t::board_M5StickC:
-        case m5::board_t::board_M5StickCPlus:
-        case m5::board_t::board_ArduinoNessoN1:
-            return 9;
-        case m5::board_t::board_M5StickCPlus2:
-            return 19;
-        case m5::board_t::board_M5StickS3:
-            return 46;
-        case m5::board_t::board_M5AtomLite:
-        case m5::board_t::board_M5AtomMatrix:
-        case m5::board_t::board_M5AtomU:
-        case m5::board_t::board_M5AtomS3U:
-            return 12;
-        case m5::board_t::board_M5AtomS3:
-        case m5::board_t::board_M5AtomS3Lite:
-        case m5::board_t::board_M5Capsule:
-            return 4;
-        case m5::board_t::board_M5AtomS3R:
-        case m5::board_t::board_M5AtomEchoS3R:
-            return 47;
-        case m5::board_t::board_M5NanoC6:
-            return 3;
-        case m5::board_t::board_M5Cardputer:
-        case m5::board_t::board_M5CardputerADV:
-            return 44;
-        default:
-            return -1;
-    }
-}
-
-#endif
 
 }  // namespace
 
@@ -281,47 +247,29 @@ void setup()
         sprite.createSprite(lcd.width(), lcd.height());
     }
 
-    // SendIR is TX-only: passing pin_rx = -1 avoids self-reception / RX buffer overflow
-    // on devices where TX and RX share the same Unit IR (VS1838B next to the IR LED).
-    int8_t pin_rx = -1;
+    // SendIR is TX-only: rx = -1 avoids self-reception / RX buffer overflow on devices where the
+    // VS1838B receiver sits next to the IR LED.
 #if defined(USING_BUILTIN_IR)
-    int8_t pin_tx = get_builtin_ir_tx_pin();
-    if (pin_tx < 0) {
-        M5_LOGE("No built-in IR TX on this board");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
-    }
-    // StickS3: EXT_5V must be enabled for IR TX
-    if (M5.getBoard() == m5::board_t::board_M5StickS3) {
-        M5.Power.setExtOutput(true);
-    }
-    M5_LOGI("Built-in IR: TX=%d", pin_tx);
+    // Built-in IR transmitter. StickS3 needs EXT_5V enabled (handled by helper).
+    bool ok = m5::unit::infrared::wiring::addBuiltinIrTx(Units, unit) && Units.begin();
 #else
-    // Unit IR (U002): Port B preferred, fallback to Port A
-    int8_t pin_tx = M5.getPin(m5::pin_name_t::port_b_out);
-    if (pin_tx < 0) {
-        M5_LOGW("PortB is not available, using PortA");
-        pin_tx = M5.getPin(m5::pin_name_t::port_a_pin2);
-    }
-    M5_LOGI("UnitIR GPIO: TX:%d", pin_tx);
+    // Unit IR (U002): TX only, PortB preferred, fallback to PortA
+    bool ok = m5::unit::wiring::addGPIO(Units, unit, m5::unit::wiring::GpioRole::OutOnly) && Units.begin();
 #endif
-
-    if (!Units.add(unit, pin_rx, pin_tx) || !Units.begin()) {
+    if (!ok) {
         M5_LOGE("Failed to begin");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
+        m5::unit::wiring::failStop();
     }
+
+    // Beep on each successful transmission (no-op on boards without a speaker)
+    M5.Speaker.begin();
 
     M5_LOGI("M5UnitUnified initialized");
     M5_LOGI("%s", Units.debugInfo().c_str());
 
     last_status = "Hold:Menu Click:Exec";
-    logStatus();
-    updateDisplay();
+    log_status();
+    update_display();
 }
 
 void loop()
@@ -336,7 +284,7 @@ void loop()
         do {
             current_menu =
                 static_cast<Menu>((static_cast<uint8_t>(current_menu) + 1) % static_cast<uint8_t>(Menu::Count));
-        } while (current_menu == Menu::Addr && isAddrMenuHidden());
+        } while (current_menu == Menu::Addr && is_addr_menu_hidden());
         M5.Log.printf("Menu -> %s\n", menu_labels[static_cast<uint8_t>(current_menu)]);
         last_status = menu_labels[static_cast<uint8_t>(current_menu)];
         need_update = true;
@@ -360,13 +308,16 @@ void loop()
                     (protocol_index == last_protocol && ir_address == last_address && ir_command == last_command);
                 if (is_repeat && protocol_index == 0 /* NEC */) {
                     ++repeat_count;
-                    M5.Log.printf("Repeat[%u] [%s] A:0x%04X C:0x%04X ...", repeat_count, currentProtoLabel(),
+                    M5.Log.printf("Repeat[%u] [%s] A:0x%04X C:0x%04X ...", repeat_count, current_proto_label(),
                                   ir_address, ir_command);
                     // Send repeat frame only
                     auto items = unit.codec().encode(ir_address, ir_command, true);
                     bool ok    = !items.empty() && unit.sendRaw(items.data(), items.size());
                     M5.Log.printf(ok ? " OK\n" : " FAIL\n");
                     last_status = ok ? "Repeat OK" : "FAIL";
+                    if (ok) {
+                        M5.Speaker.tone(2000, 50);
+                    }
                 } else {
                     repeat_count  = 0;
                     last_protocol = protocol_index;
@@ -381,11 +332,12 @@ void loop()
                     } else if (protocol_index == 3) {
                         snprintf(tgl_log, sizeof(tgl_log), " T:%d", rc6_codec.toggle() ? 1 : 0);
                     }
-                    M5.Log.printf("Sending [%s] A:0x%04X C:0x%04X%s ...", currentProtoLabel(), ir_address, ir_command,
+                    M5.Log.printf("Sending [%s] A:0x%04X C:0x%04X%s ...", current_proto_label(), ir_address, ir_command,
                                   tgl_log);
                     if (unit.send(ir_address, ir_command)) {
                         M5.Log.printf(" OK\n");
                         last_status = "Sent OK";
+                        M5.Speaker.tone(2000, 50);
                         // RC5 / RC6 flip the toggle bit AFTER send so repeats are
                         // distinguishable; the flipped value is "what the next new
                         // press will transmit" — this matches the LCD display.
@@ -402,28 +354,59 @@ void loop()
                 break;
             }
             case Menu::Addr:
-                ir_address = esp_random() & currentRange().addr_mask;
+                ir_address = esp_random() & current_range().addr_mask;
                 M5.Log.printf("Addr -> 0x%04X\n", ir_address);
                 last_status = "Addr?";
                 break;
             case Menu::Cmd:
-                ir_command = esp_random() & currentRange().cmd_mask;
+                ir_command = esp_random() & current_range().cmd_mask;
                 M5.Log.printf("Cmd -> 0x%04X\n", ir_command);
                 last_status = "Cmd?";
                 break;
             case Menu::Proto:
-                setProtocol(protocol_index + 1);
-                M5.Log.printf("Proto -> %s\n", currentProtoLabel());
-                last_status = currentProtoLabel();
+                set_protocol(protocol_index + 1);
+                M5.Log.printf("Proto -> %s\n", current_proto_label());
+                last_status = current_proto_label();
                 break;
             default:
                 break;
         }
-        logStatus();
+        log_status();
         need_update = true;
     }
 
     if (need_update) {
-        updateDisplay();
+        update_display();
     }
 }
+
+#if !defined(ARDUINO)
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <esp_timer.h>
+
+#if CONFIG_FREERTOS_UNICORE
+static inline void feedIdleTaskPeriodically(void)
+{
+    constexpr uint32_t FEED_INTERVAL_MS{2000};
+    constexpr TickType_t FEED_SLEEP_TICKS{pdMS_TO_TICKS(5)};
+    static uint32_t s_last_feed_ms{};
+    const uint32_t now_ms{static_cast<uint32_t>(esp_timer_get_time() / 1000)};
+    if (now_ms - s_last_feed_ms >= FEED_INTERVAL_MS) {
+        s_last_feed_ms = now_ms;
+        vTaskDelay(FEED_SLEEP_TICKS);
+    }
+}
+#endif
+
+extern "C" void app_main(void)
+{
+    setup();
+    for (;;) {
+#if CONFIG_FREERTOS_UNICORE
+        feedIdleTaskPeriodically();
+#endif
+        loop();
+    }
+}
+#endif

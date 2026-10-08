@@ -12,6 +12,7 @@
 #include <cstring>
 #include <esp_heap_caps.h>
 
+#if !defined(M5_UNIT_UNIFIED_HAS_RMT) || M5_UNIT_UNIFIED_HAS_RMT
 #if defined(M5_UNIT_UNIFIED_USING_RMT_V2)
 #include <driver/rmt_tx.h>  // includes rmt_common.h (rmt_apply_carrier)
 #include <esp_private/esp_clk.h>
@@ -19,10 +20,16 @@
 #include <driver/rmt.h>
 #include <esp32/clk.h>
 #endif
+#endif
 
 using namespace m5::utility::mmh3;
 using namespace m5::unit::types;
 using namespace m5::unit::gpio;
+
+namespace {
+// Front padding of the RX buffer so that the RMT items after the adapter's 2-byte length are 4-byte aligned
+constexpr uint16_t RX_FRONT_PAD{2};
+}  // namespace
 
 namespace m5 {
 namespace unit {
@@ -33,6 +40,10 @@ const types::attr_t UnitIR::attr{attribute::AccessGPIO};
 
 bool UnitIR::begin()
 {
+#if defined(M5_UNIT_UNIFIED_HAS_RMT) && !M5_UNIT_UNIFIED_HAS_RMT
+    M5_LIB_LOGE("RMT is not supported on this target");
+    return false;
+#else
     // Codec timing constants assume 1us per RMT tick. Reject other resolutions.
     if (_cfg.tick_ns != 1000) {
         M5_LIB_LOGE("tick_ns must be 1000 (1us); got %u", _cfg.tick_ns);
@@ -85,8 +96,9 @@ bool UnitIR::begin()
 
     // RX config
     if (rx_valid) {
-        // Allocate RX buffer (4-byte aligned for RMT v2)
-        uint16_t buf_bytes = (_cfg.rx_ring_buffer_size + 3) & ~3;
+        // Allocate RX buffer (4-byte aligned). The adapter writes a 2-byte length followed by the items,
+        // so 2 bytes of front padding are added to place the items on a 4-byte boundary (see read_rx)
+        uint16_t buf_bytes = (_cfg.rx_ring_buffer_size + RX_FRONT_PAD + 3) & ~3;
         auto* rx_buf       = static_cast<uint8_t*>(heap_caps_aligned_alloc(4, buf_bytes, MALLOC_CAP_8BIT));
         if (!rx_buf) {
             M5_LIB_LOGE("Failed to allocate rx buffer (%u bytes)", buf_bytes);
@@ -95,9 +107,9 @@ bool UnitIR::begin()
         _rx_buffer.reset(rx_buf);
         _rx_buffer_size = buf_bytes;
 
-        cfg.rx.tick_ns = _cfg.tick_ns;
+        cfg.rx.tick_ns                = _cfg.tick_ns;
 #if defined(M5_UNIT_UNIFIED_USING_RMT_V2)
-        cfg.rx.mem_blocks = 2;
+        cfg.rx.mem_blocks             = 2;
 #elif defined(CONFIG_IDF_TARGET_ESP32S3)
         cfg.rx.mem_blocks = 1;
 #else
@@ -107,6 +119,7 @@ bool UnitIR::begin()
         cfg.rx.filter_enabled         = true;
         cfg.rx.filter_ticks_threshold = _cfg.rx_filter_threshold;
         cfg.rx.idle_ticks_threshold   = _cfg.rx_idle_threshold;
+        cfg.rx.pull                   = _cfg.rx_pull;
     }
 
     if (!ad->begin(cfg)) {
@@ -125,9 +138,10 @@ bool UnitIR::begin()
     }
 
     M5_LIB_LOGI("UnitIR begin: TX=%s RX=%s codec=%u", _has_tx ? "yes" : "no", _has_rx ? "yes" : "no",
-                static_cast<uint8_t>(_codec->type()));
+                static_cast<uint8_t>(codec().type()));
 
     return true;
+#endif
 }
 
 void UnitIR::update(const bool force)
@@ -159,13 +173,13 @@ bool UnitIR::send(uint16_t address, uint16_t command, uint8_t frames)
     apply_carrier();
 
     // Encode a single frame
-    auto single = _codec->encode(address, command, false);
+    auto single = codec().encode(address, command, false);
     if (single.empty()) {
         M5_LIB_LOGE("Encode failed");
         return false;
     }
 
-    uint8_t n = frames ? frames : _codec->minFrames();
+    uint8_t n = frames ? frames : codec().minFrames();
     if (n <= 1) {
         return sendRaw(single.data(), single.size());
     }
@@ -173,7 +187,7 @@ bool UnitIR::send(uint16_t address, uint16_t command, uint8_t frames)
     // Build N-frame burst: replicate the frame, inserting frameGapUs() between copies.
     // The gap is applied by overwriting the last RMT item's duration1/level1 of every
     // non-final frame copy (that slot normally holds the post-stop idle space).
-    uint16_t gap = _codec->frameGapUs();
+    uint16_t gap = codec().frameGapUs();
     ir::item_container_type burst;
     burst.reserve(single.size() * n);
     for (uint8_t i = 0; i < n; ++i) {
@@ -220,8 +234,9 @@ bool UnitIR::read_rx()
         return false;
     }
 
-    auto buffer_size = _rx_buffer_size;
-    auto* buff       = _rx_buffer.get();
+    // The adapter writes [len:2][items...]. Reading at +2 puts len at +2 and the items at +4 (4-byte aligned)
+    auto buffer_size = _rx_buffer_size - RX_FRONT_PAD;
+    auto* buff       = _rx_buffer.get() + RX_FRONT_PAD;
 
     if (readWithTransaction(buff, buffer_size) != m5::hal::error::error_t::OK) {
         return false;
@@ -246,10 +261,7 @@ bool UnitIR::read_rx()
         return false;
     }
 
-    // buff is 4-byte aligned (heap_caps_aligned_alloc); buff+2 is only 2-byte aligned but
-    // ESP32/Xtensa and ESP32-C6/RISC-V both tolerate unaligned 32-bit word access for
-    // RMT items, and in practice we only read/write 16-bit fields (duration0/1). Keep
-    // as-is to avoid an extra copy. cppcheck/UBSan will flag this; intentional.
+    // buff + 2 == _rx_buffer + 4, which is 4-byte aligned (heap_caps_aligned_alloc)
     auto* items = reinterpret_cast<m5::unit::gpio::m5_rmt_item_t*>(buff + 2);
 
     // Invert RX signal levels for active-LOW receivers (e.g. VS1838B)
@@ -266,7 +278,7 @@ bool UnitIR::read_rx()
 
     // Try decoding with current codec
     ir::DecodeResult result{};
-    if (_codec->decode(items, inum, result)) {
+    if (codec().decode(items, inum, result)) {
         _latest_result = result;
         return true;
     }
@@ -284,12 +296,14 @@ bool UnitIR::apply_carrier()
         return false;
     }
 
-    uint32_t freq = _codec->carrierFrequencyHz();
-    float duty    = _codec->carrierDuty();
+    uint32_t freq = codec().carrierFrequencyHz();
+    float duty    = codec().carrierDuty();
 
     M5_LIB_LOGI("Applying carrier: %u Hz, duty %.2f", freq, duty);
 
-#if defined(M5_UNIT_UNIFIED_USING_RMT_V2)
+#if defined(M5_UNIT_UNIFIED_HAS_RMT) && !M5_UNIT_UNIFIED_HAS_RMT
+    return false;
+#elif defined(M5_UNIT_UNIFIED_USING_RMT_V2)
     // RMT v2: apply carrier config to TX channel handle
     auto handle = static_cast<rmt_channel_handle_t>(ad->impl()->rmtTxHandle());
     if (!handle) {
@@ -313,8 +327,8 @@ bool UnitIR::apply_carrier()
     // Calculate high/low level counts from APB clock
     uint32_t apb_hz = esp_clk_apb_freq();
     uint32_t period = apb_hz / freq;  // Total period in APB ticks
-    uint16_t high = static_cast<uint16_t>(period * duty);
-    uint16_t low = static_cast<uint16_t>(period - high);
+    uint16_t high   = static_cast<uint16_t>(period * duty);
+    uint16_t low    = static_cast<uint16_t>(period - high);
 
     auto err = rmt_set_tx_carrier(static_cast<rmt_channel_t>(ch), true, high, low, RMT_CARRIER_LEVEL_HIGH);
     if (err != ESP_OK) {

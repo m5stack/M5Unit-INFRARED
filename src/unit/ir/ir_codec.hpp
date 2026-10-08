@@ -21,8 +21,7 @@ namespace ir {
 /*!
   @enum CodecType
   @brief Identifies the IR protocol codec implementation
-  @note Additional protocols (e.g., Samsung, LG, JVC, Sharp, AEHA) may be added in future versions.
-  Values up to 253 are reserved for built-in protocols. Use Custom (255) for user-defined protocols.
+  @note Values 7..253 are reserved for built-in protocols. Use Custom (255) for user-defined protocols.
  */
 enum class CodecType : uint8_t {
     NEC = 0,     //!< NEC / Extended NEC
@@ -32,7 +31,7 @@ enum class CodecType : uint8_t {
     Panasonic,   //!< Panasonic / Kaseikyo (48-bit, customer code + data)
     Mitsubishi,  //!< Mitsubishi (16-bit, no leader, sent twice)
     Raw,         //!< Raw mark/space (no protocol)
-    // Reserved for future protocols (Samsung, LG, JVC, Sharp, AEHA, etc.)
+    // Built-in protocol IDs 7..253 are reserved.
     Unknown = 254,  //!< Unknown protocol
     Custom  = 255,  //!< User-defined custom protocol
 };
@@ -56,14 +55,19 @@ using item_container_type = std::vector<m5::unit::gpio::m5_rmt_item_t>;  //!< RM
 /*!
   @class IRCodec
   @brief Abstract base class for IR protocol encoding/decoding
-  @details Follows the Strategy pattern (like rf433::ProtocolCodec).
+  @details Follows the Strategy pattern.
   Each protocol subclass implements encode/decode with protocol-specific timing.
  */
 class IRCodec {
 public:
-    explicit IRCodec(CodecType t) : _type(t)
+    /*!
+      @brief Constructor
+      @param t Codec type reported by type()
+    */
+    explicit IRCodec(const CodecType t) : _type(t)
     {
     }
+    //! @brief Destructor
     virtual ~IRCodec() = default;
 
     /*!

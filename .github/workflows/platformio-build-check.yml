@@ -68,25 +68,35 @@ jobs:
           - { example: SendIR, unit: UnitPIR }
           - { example: SendIR, unit: UnitOP }
 
+        # Reduced from 19 to 5 boards: one per distinct compile config (toolchain x chip arch).
+        # The other boards differ only in variant headers and select their wiring at runtime
+        # (M5.getBoard()), so the library and example code compile identically.
+        # Kept: env definitions in platformio.ini (build locally with pio run -e <env>).
         board:
+          # espressif32 x ESP32
           - Core
-          - Core2
+          #- Core2       # ESP32: represented by Core
+          #- Fire        # ESP32: represented by Core
+          #- Atom        # ESP32: represented by Core
+          #- StickCPlus  # ESP32: represented by Core
+          #- StickCPlus2 # ESP32: represented by Core
+          #- Paper       # ESP32: represented by Core
+          #- CoreInk     # ESP32: represented by Core
+          # espressif32 x ESP32-S3
           - CoreS3
-          - Fire
-          - StampS3
-          - Dial
-          - Atom
-          - AtomS3
-          - AtomS3R
+          #- StampS3     # ESP32-S3: represented by CoreS3
+          #- Dial        # ESP32-S3: represented by CoreS3
+          #- AtomS3      # ESP32-S3: represented by CoreS3
+          #- AtomS3R     # ESP32-S3: represented by CoreS3
+          #- StickS3     # ESP32-S3: represented by CoreS3
+          #- Cardputer   # ESP32-S3: represented by CoreS3
+          # pioarduino x ESP32-C6
           - NanoC6
-          - StickCPlus
-          - StickCPlus2
-          - StickS3
-          - Paper
-          - CoreInk
-          - Cardputer
+          #- NessoN1     # ESP32-C6: represented by NanoC6
+          # pioarduino x ESP32-H2
+          - NanoH2
+          # pioarduino x ESP32-P4
           - Tab5
-          - NessoN1
 
         framework:
           - Arduino
@@ -102,20 +112,24 @@ jobs:
             framework: Arduino
             espressif32: latest
 
-          # Built-in IR (StickS3 only)
+          # Built-in IR (USING_BUILTIN_IR example branch): TX on both platforms, RX only exists on StickS3
           - { example: Builtin_SendIR, unit: "", board: StickS3, framework: Arduino, espressif32: latest }
           - { example: Builtin_PlotToSerial, unit: "", board: StickS3, framework: Arduino, espressif32: latest }
+          - { example: Builtin_SendIR, unit: "", board: NanoC6, framework: Arduino, espressif32: latest }
 
-          # HatPIR (Hat-compatible boards)
+          # HatPIR (USING_HAT_PIR example branch, addHatPIR): one board per platform
           - { example: PlotToSerial, unit: HatPIR, board: StickCPlus, framework: Arduino, espressif32: latest }
-          - { example: PlotToSerial, unit: HatPIR, board: StickCPlus2, framework: Arduino, espressif32: latest }
-          - { example: PlotToSerial, unit: HatPIR, board: StickS3, framework: Arduino, espressif32: latest }
-          - { example: PlotToSerial, unit: HatPIR, board: CoreInk, framework: Arduino, espressif32: latest }
+          #- { example: PlotToSerial, unit: HatPIR, board: StickCPlus2, framework: Arduino, espressif32: latest }  # espressif32: represented by StickCPlus
+          #- { example: PlotToSerial, unit: HatPIR, board: StickS3, framework: Arduino, espressif32: latest }      # espressif32: represented by StickCPlus
+          #- { example: PlotToSerial, unit: HatPIR, board: CoreInk, framework: Arduino, espressif32: latest }      # espressif32: represented by StickCPlus
           - { example: PlotToSerial, unit: HatPIR, board: NessoN1, framework: Arduino, espressif32: latest }
 
           # ViaPbHub (Core only)
           - { example: ViaPbHub, unit: UnitPIR, board: Core, framework: Arduino, espressif32: latest }
           - { example: ViaPbHub, unit: UnitOP, board: Core, framework: Arduino, espressif32: latest }
+
+          # ViaPaHub (Core only)
+          - { example: ViaPaHub, unit: UnitTmosPIR, board: Core, framework: Arduino, espressif32: latest }
 
 
 

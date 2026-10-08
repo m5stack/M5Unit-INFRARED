@@ -38,9 +38,9 @@ class SircCodec : public IRCodec {
 public:
     //! @brief SIRC protocol variants
     enum class Variant : uint8_t {
-        SIRC12 = 12,
-        SIRC15 = 15,
-        SIRC20 = 20,
+        SIRC12 = 12,  //!< 12-bit: 7-bit command + 5-bit address
+        SIRC15 = 15,  //!< 15-bit: 7-bit command + 8-bit address
+        SIRC20 = 20,  //!< 20-bit: 7-bit command + 5-bit address + 8-bit extended (address bits 5-12)
     };
 
     /*!

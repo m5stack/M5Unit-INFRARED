@@ -17,6 +17,7 @@
 #include <M5Utility.h>
 #include <unit/ir/auto_detect_codec.hpp>
 #include <numeric>
+#include <wiring/m5_unit_unified_infrared_wiring.hpp>  // board-aware connection helpers (include last)
 
 namespace {
 auto& lcd = M5.Display;
@@ -25,7 +26,7 @@ m5::unit::UnitIR unit;
 
 LGFX_Sprite sprite;
 
-const char* codecTypeName(m5::unit::ir::CodecType t)
+const char* codec_type_name(const m5::unit::ir::CodecType t)
 {
     switch (t) {
         case m5::unit::ir::CodecType::NEC:
@@ -47,7 +48,8 @@ const char* codecTypeName(m5::unit::ir::CodecType t)
     }
 }
 
-void drawWaveform(const m5::unit::ir::item_container_type& items, int32_t x0, int32_t y0, int32_t w, int32_t h)
+void draw_waveform(const m5::unit::ir::item_container_type& items, const int32_t x0, const int32_t y0, const int32_t w,
+                   const int32_t h)
 {
     if (items.empty() || w < 2 || h < 4) {
         return;
@@ -106,7 +108,7 @@ void drawWaveform(const m5::unit::ir::item_container_type& items, int32_t x0, in
     }
 }
 
-void updateDisplay(const m5::unit::ir::DecodeResult* result, const m5::unit::ir::item_container_type* items)
+void update_display(const m5::unit::ir::DecodeResult* result, const m5::unit::ir::item_container_type* items)
 {
     auto w = sprite.width();
     auto h = sprite.height();
@@ -123,7 +125,7 @@ void updateDisplay(const m5::unit::ir::DecodeResult* result, const m5::unit::ir:
         int32_t ty  = 2;
 
         char buf[32];
-        snprintf(buf, sizeof(buf), "P:%s", codecTypeName(result->protocol));
+        snprintf(buf, sizeof(buf), "P:%s", codec_type_name(result->protocol));
         sprite.drawString(buf, 2, ty);
         ty += line_h;
         snprintf(buf, sizeof(buf), "A:0x%04X", result->address);
@@ -148,7 +150,7 @@ void updateDisplay(const m5::unit::ir::DecodeResult* result, const m5::unit::ir:
         if (items && !items->empty()) {
             sprite.drawFastHLine(0, ty, w, 1);
             ty += 2;
-            drawWaveform(*items, 2, ty, w - 4, h - ty - 2);
+            draw_waveform(*items, 2, ty, w - 4, h - ty - 2);
         }
     } else {
         sprite.setTextDatum(middle_center);
@@ -160,19 +162,6 @@ void updateDisplay(const m5::unit::ir::DecodeResult* result, const m5::unit::ir:
     sprite.pushSprite(&lcd, 0, 0);
     lcd.endWrite();
 }
-
-#if defined(USING_BUILTIN_IR)
-// Get built-in IR RX pin for the current board
-int8_t get_builtin_ir_rx_pin()
-{
-    switch (M5.getBoard()) {
-        case m5::board_t::board_M5StickS3:
-            return 42;
-        default:
-            return -1;
-    }
-}
-#endif
 
 }  // namespace
 
@@ -194,47 +183,23 @@ void setup()
         sprite.createSprite(lcd.width(), lcd.height());
     }
 
-    // PlotToSerial is RX-only: passing pin_tx = -1 keeps the IR LED unclaimed
-    // and prevents any accidental TX activity from this example.
-    int8_t pin_tx = -1;
+    // PlotToSerial is RX-only: tx = -1 keeps the IR LED unclaimed and prevents accidental TX.
 #if defined(USING_BUILTIN_IR)
-    int8_t pin_rx = get_builtin_ir_rx_pin();
-    if (pin_rx < 0) {
-        M5_LOGE("No built-in IR RX on this board");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
-    }
-    // StickS3: built-in IR RX needs disable speaker, internal pullup, and EXT_5V
-    if (M5.getBoard() == m5::board_t::board_M5StickS3) {
-        M5.Speaker.end();
-        M5.Power.setExtOutput(true);
-        gpio_set_pull_mode((gpio_num_t)pin_rx, GPIO_PULLUP_ONLY);
-    }
-    M5_LOGI("Built-in IR: RX=%d", pin_rx);
+    // Built-in IR receiver. StickS3 needs the speaker off / EXT_5V / RX pull-up (handled by helper).
+    bool ok = m5::unit::infrared::wiring::addBuiltinIrRx(Units, unit) && Units.begin();
 #else
-    // Unit IR (U002): Port B preferred, fallback to Port A
-    int8_t pin_rx = M5.getPin(m5::pin_name_t::port_b_in);
-    if (pin_rx < 0) {
-        M5_LOGW("PortB is not available, using PortA");
-        pin_rx = M5.getPin(m5::pin_name_t::port_a_pin1);
-    }
-    M5_LOGI("UnitIR GPIO: RX:%d", pin_rx);
+    // Unit IR (U002): RX only, PortB preferred, fallback to PortA
+    bool ok = m5::unit::wiring::addGPIO(Units, unit, m5::unit::wiring::GpioRole::InOnly) && Units.begin();
 #endif
-
-    if (!Units.add(unit, pin_rx, pin_tx) || !Units.begin()) {
+    if (!ok) {
         M5_LOGE("Failed to begin");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
+        m5::unit::wiring::failStop();
     }
 
     M5_LOGI("M5UnitUnified initialized");
     M5_LOGI("%s", Units.debugInfo().c_str());
 
-    updateDisplay(nullptr, nullptr);
+    update_display(nullptr, nullptr);
 }
 
 void loop()
@@ -247,7 +212,7 @@ void loop()
 
         // Serial output: decoded result
         M5.Log.printf(">Protocol:%s\n>Address:0x%04X\n>Command:0x%04X\n>Bits:%u\n>Repeat:%d\n>Raw:0x%08X%08X\n",
-                      codecTypeName(r.protocol), r.address, r.command, r.bits, r.repeat ? 1 : 0,
+                      codec_type_name(r.protocol), r.address, r.command, r.bits, r.repeat ? 1 : 0,
                       static_cast<uint32_t>(r.raw >> 32), static_cast<uint32_t>(r.raw & 0xFFFFFFFF));
         // RC5/RC6 carry a toggle bit in each frame (flipped on every new key press)
         if (r.protocol == m5::unit::ir::CodecType::RC5 || r.protocol == m5::unit::ir::CodecType::RC6) {
@@ -277,6 +242,37 @@ void loop()
             items.assign(raw, raw + cnt);
         }
 
-        updateDisplay(&r, &items);
+        update_display(&r, &items);
     }
 }
+
+#if !defined(ARDUINO)
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <esp_timer.h>
+
+#if CONFIG_FREERTOS_UNICORE
+static inline void feedIdleTaskPeriodically(void)
+{
+    constexpr uint32_t FEED_INTERVAL_MS{2000};
+    constexpr TickType_t FEED_SLEEP_TICKS{pdMS_TO_TICKS(5)};
+    static uint32_t s_last_feed_ms{};
+    const uint32_t now_ms{static_cast<uint32_t>(esp_timer_get_time() / 1000)};
+    if (now_ms - s_last_feed_ms >= FEED_INTERVAL_MS) {
+        s_last_feed_ms = now_ms;
+        vTaskDelay(FEED_SLEEP_TICKS);
+    }
+}
+#endif
+
+extern "C" void app_main(void)
+{
+    setup();
+    for (;;) {
+#if CONFIG_FREERTOS_UNICORE
+        feedIdleTaskPeriodically();
+#endif
+        loop();
+    }
+}
+#endif

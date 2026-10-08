@@ -554,9 +554,9 @@ TEST_F(TestSTHS34PF80, Periodic)
         auto r           = collect_periodic_measurements(unit.get(), STORED_SIZE, timeout);
         EXPECT_FALSE(r.timed_out);
         EXPECT_EQ(r.update_count, STORED_SIZE);
-        // Sensor actual interval is ~1.5% longer than nominal
+        // Sensor actual interval runs slightly longer than nominal (measured up to ~2.4%, e.g. AtomS3R)
         uint32_t tol =
-            is_bus ? std::max<uint32_t>(unit->interval() / 20, 5) : std::max<uint32_t>(unit->interval() / 50, 2);
+            is_bus ? std::max<uint32_t>(unit->interval() / 20, 5) : std::max<uint32_t>(unit->interval() / 33, 5);
         EXPECT_LE(r.median(), r.expected_interval + tol);
 
         EXPECT_TRUE(unit->stopPeriodicMeasurement());

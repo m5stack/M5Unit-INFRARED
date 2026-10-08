@@ -60,11 +60,10 @@ void UnitAS312::update(const bool force)
         _latest = now;
         if (det != _detected) {
             _updated      = true;
-            _was_detected = (det && !_prev_detected);
-            _was_released = (!det && _prev_detected);
+            _was_detected = det;
+            _was_released = !det;
         }
-        _prev_detected = _detected;
-        _detected      = det;
+        _detected = det;
     }
 }
 

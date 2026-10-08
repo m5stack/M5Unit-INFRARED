@@ -12,7 +12,7 @@ Unit TMOS PIR is a high-sensitivity infrared sensor unit for presence and motion
 Unit PIR is a high-performance passive pyroelectric infrared detector. Adopting pyroelectric infrared sensing technology, it judges movements by detecting changes in infrared radiation emitted by the human body or objects. This unit communicates via the Grove HY2.0-4P interface. It outputs a high level when an infrared signal is detected, and features a 2-second delay and a re-triggerable mechanism (continuous detection after triggering will extend the high-level duration). It boasts a detection distance of 500 cm and a wide sensing angle of less than 100°. Equipped with LEGO-compatible mounting holes, it can be flexibly assembled with LEGO structures or fixed using screws. It is suitable for human-sensing lighting, security alarms, smart home automatic control and other application scenarios requiring motion detection.
 
 ### SKU: U054
-Hat PIR is a human body infrared sensor compatible with M5SticKC. It is a "Passive Pyroelectric Infrared Detector" that works by detecting infrared radiation emitted or reflected by humans or objects. When infrared is detected, it outputs a high level signal and delays for a period of time (during which the high level is maintained and repeat triggers are allowed) until the trigger signal disappears (returns to low level).
+Hat PIR is a human body infrared sensor compatible with M5StickC. It is a "Passive Pyroelectric Infrared Detector" that works by detecting infrared radiation emitted or reflected by humans or objects. When infrared is detected, it outputs a high level signal and delays for a period of time (during which the high level is maintained and repeat triggers are allowed) until the trigger signal disappears (returns to low level).
 
 ### SKU: U057
 Unit OP90 is a 90° non-contact photoelectric limit switch. The unit has an infrared transmitter and receiver located on opposite sides. During normal operation, the transmitter continuously emits an infrared signal to the receiver. When an object passes between them and blocks the infrared signal, the output terminal will generate an action signal to detect the object's passage. It is commonly used in mechanical control systems as a safety interlock or photoelectric counter.
@@ -46,18 +46,22 @@ See also examples using conventional methods here.
 
 |Unit|Support|Note|
 |---|---|---|
-|UnitTmosPIR|NG|I2C with complex registers not supported by PbHub (usable via [PaHub](https://docs.m5stack.com/en/unit/Unit-PaHub%20v2.1))|
 |UnitPIR|OK||
-|HatPIR|NG|Hat form factor (not Grove)|
 |UnitOP|OK||
 |UnitIR|NG|RMT (hardware-demodulated) not supported by PbHub|
+
+## Support via [PaHub](https://docs.m5stack.com/en/unit/Unit-PaHub%20v2.1)
+
+|Unit|Support|Note|
+|---|---|---|
+|UnitTmosPIR|OK||
 
 See also [M5Unit-HUB](https://github.com/m5stack/M5Unit-HUB)
 
 ## Examples
 See also [examples/UnitUnified](examples/UnitUnified)
 
-- **UnitTmosPIR (U185)**: `PlotToSerial`, `SimpleDisplay`
+- **UnitTmosPIR (U185)**: `PlotToSerial`, `SimpleDisplay`, `ViaPaHub`
 - **UnitPIR (U004) / HatPIR (U054)**: `PlotToSerial`, `ViaPbHub` (UnitPIR only)
 - **UnitOP (U057/U058)**: `PlotToSerial`, `ViaPbHub`
 - **UnitIR (U002)**: `PlotToSerial`, `SendIR` (both support `-DUSING_BUILTIN_IR` for built-in IR)
@@ -93,7 +97,33 @@ To use a board's built-in IR transmitter/receiver instead, define `USING_BUILTIN
 Supported boards for built-in IR:
 StickC / StickCPlus / StickCPlus2 / StickS3,
 Atom (Lite / Matrix / U / S3 / S3 Lite / S3U / S3R), AtomEchoS3R,
-Capsule, NanoC6, NessoN1, Cardputer / CardputerADV (17 boards).
+Capsule, NanoC6, NanoH2, NessoN1, Cardputer / CardputerADV (18 boards).
+
+### For ESP-IDF settings
+
+> **NOTE:** The ESP-IDF native build (`idf.py`) targets ESP-IDF **5.1 or later** (5.x and 6.x).
+
+On ESP-IDF native builds (`idf.py`), the unit is selected via Kconfig instead of editing the source `#define`. The examples with a variant expose the choice through `main/Kconfig.projbuild`, which sources one of the Kconfig files in `examples/UnitUnified/common/`:
+
+| Kconfig file | Variants offered | Used by |
+|---|---|---|
+| `Kconfig.variant.pir` | UnitPIR (U004) / HatPIR (U054) | UnitPIR/PlotToSerial |
+| `Kconfig.variant.ir` | UnitIR (U002) / Built-in IR | UnitIR/PlotToSerial, UnitIR/SendIR |
+
+`examples/UnitUnified/common/variant.cmake` then maps the chosen `CONFIG_EXAMPLE_USING_*` to the source-level macro shared with the Arduino build, so the example source itself does not need to be edited.
+The **HatPIR** option appears only when the target is esp32 / esp32s3 / esp32c6 (boards with a Hat header), and the **Built-in IR** option only when the target is esp32 / esp32s3 / esp32c6 / esp32h2 (boards with built-in IR).
+
+Pick the variant with `menuconfig`:
+
+```sh
+cd examples/UnitUnified/UnitIR/PlotToSerial        # or UnitIR/SendIR, UnitPIR/PlotToSerial
+idf.py set-target esp32s3                          # or esp32 / esp32c6 / esp32h2 / ...
+idf.py menuconfig
+# -> M5Unit-INFRARED IR example (or M5Unit-INFRARED PIR example) -> Target IR / Target unit -> choose ONE
+idf.py build flash monitor
+```
+
+The other examples (UnitTmosPIR PlotToSerial / SimpleDisplay / ViaPaHub, UnitOP PlotToSerial, ViaPbHub) have no variant; run `idf.py set-target <chip>` and `idf.py build flash monitor` directly.
 
 
 ### Doxygen document
@@ -110,6 +140,5 @@ If you want to output Git commit hashes to html, do it for the git cloned folder
 
 #### Required
 - [Doxygen](https://www.doxygen.nl/)
-- [pcregrep](https://formulae.brew.sh/formula/pcre2)
 - [Git](https://git-scm.com/) (Output commit hash to html)
 

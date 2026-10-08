@@ -10,6 +10,7 @@
 #include <M5UnitUnified.h>
 #include <M5UnitUnifiedINFRARED.h>
 #include <M5Utility.h>
+#include <wiring/m5_unit_unified_infrared_wiring.hpp>  // board-aware connection helpers (include last)
 
 // *************************************************************
 // Choose one define symbol to match the unit you are using
@@ -35,38 +36,12 @@ m5::unit::HatPIR unit;
 #endif
 
 uint32_t detect_count{};
-unsigned long last_detect_ms{};
+m5::utility::elapsed_time_t last_detect_ms{};
 bool ever_detected{};
 bool prev_display_detected{};
 bool display_initialized{};
 
 LGFX_Sprite sprite;
-
-#if defined(USING_HAT_PIR)
-struct GpioPins {
-    int in;
-    int out;
-};
-
-GpioPins get_hat_gpio_pins(const m5::board_t board)
-{
-    switch (board) {
-        case m5::board_t::board_M5StickC:
-            return {36, -1};
-        case m5::board_t::board_M5StickCPlus:
-        case m5::board_t::board_M5StickCPlus2:
-            return {36, -1};
-        case m5::board_t::board_M5StickS3:
-            return {1, -1};
-        case m5::board_t::board_M5StackCoreInk:
-            return {36, -1};
-        case m5::board_t::board_ArduinoNessoN1:
-            return {2, -1};
-        default:
-            return {-1, -1};
-    }
-}
-#endif
 
 // Palette indices
 constexpr uint8_t PAL_GREEN{0};
@@ -113,7 +88,7 @@ void update_display(const bool detected)
 
     // Line 3: Last detection elapsed
     if (ever_detected) {
-        auto elapsed_ms = m5::utility::millis() - last_detect_ms;
+        auto elapsed_ms = m5::utility::elapsedSince(last_detect_ms);
         auto elapsed_s  = elapsed_ms / 1000;
         snprintf(buf, sizeof(buf), "Last: %lu.%lus ago", (unsigned long)(elapsed_s),
                  (unsigned long)((elapsed_ms / 100) % 10));
@@ -139,6 +114,7 @@ void setup()
 #endif
 
     M5.begin(m5cfg);
+    M5.setTouchButtonHeightByRatio(100);
 
     // The screen shall be in landscape mode
     if (lcd.height() > lcd.width()) {
@@ -158,39 +134,17 @@ void setup()
     sprite.setPaletteColor(1, TFT_BLUE);
     sprite.setPaletteColor(2, TFT_WHITE);
 
-    bool unit_ready{};
-
 #if defined(USING_HAT_PIR)
-    auto board      = M5.getBoard();
-    const auto pins = get_hat_gpio_pins(board);
-    M5_LOGI("HatPIR GPIO: IN:%d OUT:%d", pins.in, pins.out);
-    if (pins.in < 0) {
-        M5_LOGE("Hat pins not available for this board");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
-    }
-    unit_ready = Units.add(unit, pins.in, pins.out) && Units.begin();
+    // HatPIR (U054): single DOUT input on the board's Hat header
+    bool unit_ready = m5::unit::infrared::wiring::addHatPIR(Units, unit) && Units.begin();
 #else
-    // UnitPIR: Use Port B (GPIO). If not available, fallback to Port A pins.
-    auto pin_in  = M5.getPin(m5::pin_name_t::port_b_in);
-    auto pin_out = M5.getPin(m5::pin_name_t::port_b_out);
-    if (pin_in < 0 || pin_out < 0) {
-        M5_LOGW("PortB is not available, using PortA");
-        pin_in  = M5.getPin(m5::pin_name_t::port_a_pin1);
-        pin_out = M5.getPin(m5::pin_name_t::port_a_pin2);
-    }
-    M5_LOGI("UnitPIR GPIO: IN:%d OUT:%d", pin_in, pin_out);
-    unit_ready = Units.add(unit, pin_in, pin_out) && Units.begin();
+    // UnitPIR (U004): input-only PIR, PortB preferred, fallback to PortA
+    bool unit_ready = m5::unit::wiring::addGPIO(Units, unit, m5::unit::wiring::GpioRole::InOnly) && Units.begin();
 #endif
 
     if (!unit_ready) {
         M5_LOGE("Failed to begin");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
+        m5::unit::wiring::failStop();
     }
 
     M5_LOGI("M5UnitUnified initialized");
@@ -216,3 +170,34 @@ void loop()
         update_display(unit.isDetected());
     }
 }
+
+#if !defined(ARDUINO)
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <esp_timer.h>
+
+#if CONFIG_FREERTOS_UNICORE
+static inline void feedIdleTaskPeriodically(void)
+{
+    constexpr uint32_t FEED_INTERVAL_MS{2000};
+    constexpr TickType_t FEED_SLEEP_TICKS{pdMS_TO_TICKS(5)};
+    static uint32_t s_last_feed_ms{};
+    const uint32_t now_ms{static_cast<uint32_t>(esp_timer_get_time() / 1000)};
+    if (now_ms - s_last_feed_ms >= FEED_INTERVAL_MS) {
+        s_last_feed_ms = now_ms;
+        vTaskDelay(FEED_SLEEP_TICKS);
+    }
+}
+#endif
+
+extern "C" void app_main(void)
+{
+    setup();
+    for (;;) {
+#if CONFIG_FREERTOS_UNICORE
+        feedIdleTaskPeriodically();
+#endif
+        loop();
+    }
+}
+#endif

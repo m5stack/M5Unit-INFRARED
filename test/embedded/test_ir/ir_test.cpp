@@ -6,6 +6,8 @@
 /*
   UnitTest for UnitIR and IR protocol codecs
 */
+#include <memory>
+#include <utility>
 #include <gtest/gtest.h>
 #include <Wire.h>
 #include <M5Unified.h>
@@ -842,8 +844,64 @@ TEST_F(TestIRRmtItems, PulseWidthRoundTrip)
 }
 
 // ============================================================
+// UnitIR codec selection survives move (no hardware needed)
+// ============================================================
+// The built-in codec is selected by a null codec pointer (not a self-pointer), so a defaulted
+// move must leave the moved-to unit using ITS OWN built-in codec, not the moved-from one.
+TEST(TestUnitIRMove, MoveConstructUsesOwnDefaultCodec)
+{
+    std::unique_ptr<UnitIR> src(new UnitIR());
+    UnitIR dst(std::move(*src));
+    src.reset();  // the moved-from unit (and its built-in codec) is gone
+
+    EXPECT_EQ(&dst.codec(), &dst.defaultCodec());
+    EXPECT_EQ(dst.codec().type(), CodecType::Unknown);
+
+    const UnitIR& cdst = dst;
+    EXPECT_EQ(&cdst.codec(), &dst.defaultCodec());
+}
+
+TEST(TestUnitIRMove, MoveAssignUsesOwnDefaultCodec)
+{
+    std::unique_ptr<UnitIR> src(new UnitIR());
+    UnitIR dst;
+    NecCodec nec;
+    dst.setCodec(nec);
+    dst = std::move(*src);
+    src.reset();
+
+    EXPECT_EQ(&dst.codec(), &dst.defaultCodec());
+    EXPECT_EQ(dst.codec().type(), CodecType::Unknown);
+}
+
+TEST(TestUnitIRMove, SetOwnDefaultCodecStaysMoveSafe)
+{
+    std::unique_ptr<UnitIR> src(new UnitIR());
+    src->setCodec(src->defaultCodec());
+    UnitIR dst(std::move(*src));
+    src.reset();
+    EXPECT_EQ(&dst.codec(), &dst.defaultCodec());
+}
+
+TEST(TestUnitIRMove, MoveKeepsExternalCodec)
+{
+    NecCodec nec;
+    std::unique_ptr<UnitIR> src(new UnitIR());
+    src->setCodec(nec);
+    UnitIR dst(std::move(*src));
+    src.reset();
+
+    EXPECT_EQ(&dst.codec(), &nec);
+    EXPECT_EQ(dst.codec().type(), CodecType::NEC);
+
+    dst.resetCodec();
+    EXPECT_EQ(&dst.codec(), &dst.defaultCodec());
+}
+
+// ============================================================
 // UnitIR component tests (requires hardware)
 // ============================================================
+#if !defined(M5_UNIT_UNIFIED_HAS_RMT) || M5_UNIT_UNIFIED_HAS_RMT
 class TestUnitIR : public GPIOComponentTestBase<UnitIR> {
 protected:
     virtual UnitIR* get_instance() override
@@ -958,3 +1016,4 @@ TEST_F(TestUnitIR, DISABLED_SelfLoopback)
         EXPECT_EQ(r.command, command);
     }
 }
+#endif

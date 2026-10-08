@@ -106,7 +106,7 @@ void UnitSTHS34PF80::update(const bool force)
     _updated = false;
     if (inPeriodic()) {
         elapsed_time_t at{m5::utility::millis()};
-        if (force || !_latest || at >= _latest + _interval) {
+        if (force || !_latest || m5::utility::hasElapsed(_latest, _interval, at)) {
             Data d{};
             _updated = is_data_ready() && read_measurement(d);
             if (_updated) {
@@ -165,7 +165,7 @@ bool UnitSTHS34PF80::stop_periodic_measurement()
     uint8_t fs{};
     // 1. Read the FUNC_STATUS (25h) register
     if (readRegister8(FUNC_STATUS_REG, fs, 0)) {
-        auto timeout_at = m5::utility::millis() + 4100;
+        const elapsed_time_t start_at{m5::utility::millis()};
         // 2. Wait for the DRDY bit in the STATUS (23h) register to be set to 1
         do {
             if (is_data_ready()) {
@@ -178,7 +178,7 @@ bool UnitSTHS34PF80::stop_periodic_measurement()
                 }
             }
             m5::utility::delay(1);
-        } while (m5::utility::millis() <= timeout_at);
+        } while (!m5::utility::hasElapsed(start_at, 4100));
     }
     return !_periodic;
 }
@@ -196,7 +196,7 @@ bool UnitSTHS34PF80::measureSingleshot(sths34pf80::Data& data, const sths34pf80:
     if (writeAverageTrim(avg_t, avg_tmos) && write_odr(ODR::PowerDown) && readRegister8(CTRL2_REG, c2, 0) &&
         writeRegister8(CTRL2_REG, c2 | CTRL2_ONE_SHOT)) {
         m5::utility::delay(wait_table[m5::stl::to_underlying(avg_tmos)]);
-        auto timeout_at = m5::utility::millis() + wait_table[m5::stl::to_underlying(avg_tmos)];
+        const elapsed_time_t start_at{m5::utility::millis()};
         do {
             // Check CTRL2_ONE_SHOT is cleared and ready to read data
             if (readRegister8(CTRL2_REG, c2, 0) && ((c2 & CTRL2_ONE_SHOT) == 0) && is_data_ready() &&
@@ -205,7 +205,7 @@ bool UnitSTHS34PF80::measureSingleshot(sths34pf80::Data& data, const sths34pf80:
                 return true;
             }
             m5::utility::delay(1);
-        } while (m5::utility::millis() <= timeout_at);
+        } while (!m5::utility::hasElapsed(start_at, wait_table[m5::stl::to_underlying(avg_tmos)]));
     }
     return false;
 }
@@ -553,7 +553,9 @@ bool UnitSTHS34PF80::read_embedded_register(const uint8_t ereg, uint8_t* rbuf, c
                 *rbuf++ = v;
                 --count;
             }
-            return writeRegister8(PAGE_RW_REG, 0x00) && writeRegister8(CTRL2_REG, 0x00) && (count == 0);
+            const bool page_cleared   = writeRegister8(PAGE_RW_REG, 0x00);
+            const bool access_cleared = writeRegister8(CTRL2_REG, 0x00);
+            return page_cleared && access_cleared && (count == 0);
         }
         return writeRegister8(CTRL2_REG, 0x00) && false;
     }
@@ -579,7 +581,9 @@ bool UnitSTHS34PF80::write_embedded_register(const uint8_t ereg, const uint8_t* 
                 }
                 --count;
             }
-            return writeRegister8(PAGE_RW_REG, 0x00) && writeRegister8(CTRL2_REG, 0x00) && (count == 0);
+            const bool page_cleared   = writeRegister8(PAGE_RW_REG, 0x00);
+            const bool access_cleared = writeRegister8(CTRL2_REG, 0x00);
+            return page_cleared && access_cleared && (count == 0);
         }
         return writeRegister8(CTRL2_REG, 0x00) && false;
     }

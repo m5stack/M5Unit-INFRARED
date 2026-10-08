@@ -73,34 +73,36 @@ jobs:
           - { sketch: SendIR, unit: UnitOP }
 
         board:
-          - arduino_nesso_n1
-          - m5stack_atom
-          - m5stack_atoms3
+          # Reduced from 22 to 8 boards: one per compile config (chip arch) plus boards whose FQBN
+          # carries distinct build properties (PSRAM / USB mode). Others are commented out with the reason.
+#          - arduino_nesso_n1  # ESP32-C6: represented by m5stack_nano_c6
+#          - m5stack_atom  # ESP32: represented by m5stack_core
+#          - m5stack_atoms3  # ESP32-S3: represented by m5stack_cores3
           - m5stack_atoms3r
-          - m5stack_capsule
+#          - m5stack_capsule  # ESP32-S3: represented by m5stack_cores3
           - m5stack_cardputer
 #          - m5stack_chain_dualkey
           - m5stack_core
-          - m5stack_core2
-          - m5stack_coreink
+#          - m5stack_core2  # ESP32: represented by m5stack_core
+#          - m5stack_coreink  # ESP32: represented by m5stack_core
           - m5stack_cores3
-          - m5stack_dial
-          - m5stack_dinmeter
-          - m5stack_fire
+#          - m5stack_dial  # ESP32-S3: represented by m5stack_cores3
+#          - m5stack_dinmeter  # ESP32-S3: represented by m5stack_cores3
+#          - m5stack_fire  # ESP32: represented by m5stack_core
           - m5stack_nano_c6
 #          - m5stack_nano_h2
-          - m5stack_paper
+#          - m5stack_paper  # ESP32: represented by m5stack_core
           - m5stack_papers3
 #          - m5stack_poe_cam
 #          - m5stack_powerhub
 #          - m5stack_stamp_c3
 #          - m5stack_stamp_pico
-          - m5stack_stamp_s3
+#          - m5stack_stamp_s3  # ESP32-S3: represented by m5stack_cores3
 #          - m5stack_stamplc
 #          - m5stack_station
-          - m5stack_stickc
-          - m5stack_stickc_plus
-          - m5stack_stickc_plus2
+#          - m5stack_stickc  # ESP32: represented by m5stack_core
+#          - m5stack_stickc_plus  # ESP32: represented by m5stack_core
+#          - m5stack_stickc_plus2  # ESP32: represented by m5stack_core
           - m5stack_sticks3
           - m5stack_tab5
 #          - m5stack_timer_cam
@@ -110,7 +112,7 @@ jobs:
 #          - m5stack_unit_cams3
 
         platform-version:
-          - 3.2.5
+          - 3.3.9
 
         platform:
           - m5stack
@@ -124,7 +126,7 @@ jobs:
             unit: UnitTmosPIR
             board: m5stack_core
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.9
             platform: m5stack
             archi: esp32
 
@@ -133,45 +135,48 @@ jobs:
             unit: HatPIR
             board: m5stack_stickc_plus
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.9
             platform: m5stack
             archi: esp32
           - sketch: PlotToSerial
             unit: HatPIR
             board: m5stack_stickc_plus2
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.9
             platform: m5stack
             archi: esp32
           - sketch: PlotToSerial
             unit: HatPIR
             board: m5stack_sticks3
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.9
             platform: m5stack
             archi: esp32
           - sketch: PlotToSerial
             unit: HatPIR
             board: m5stack_coreink
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.9
             platform: m5stack
             archi: esp32
           - sketch: PlotToSerial
             unit: HatPIR
             board: arduino_nesso_n1
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.9
             platform: m5stack
             archi: esp32
 
           # Built-in IR (StickS3 only)
-          - { sketch: PlotToSerial, unit: BuiltinIR, board: m5stack_sticks3, platform-url: "https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json", platform-version: 3.2.5, platform: m5stack, archi: esp32 }
-          - { sketch: SendIR, unit: BuiltinIR, board: m5stack_sticks3, platform-url: "https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json", platform-version: 3.2.5, platform: m5stack, archi: esp32 }
+          - { sketch: PlotToSerial, unit: BuiltinIR, board: m5stack_sticks3, platform-url: "https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json", platform-version: 3.3.9, platform: m5stack, archi: esp32 }
+          - { sketch: SendIR, unit: BuiltinIR, board: m5stack_sticks3, platform-url: "https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json", platform-version: 3.3.9, platform: m5stack, archi: esp32 }
 
           # ViaPbHub (Core only)
-          - { sketch: ViaPbHub, unit: UnitPIR, board: m5stack_core, platform-url: "https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json", platform-version: 3.2.5, platform: m5stack, archi: esp32 }
-          - { sketch: ViaPbHub, unit: UnitOP, board: m5stack_core, platform-url: "https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json", platform-version: 3.2.5, platform: m5stack, archi: esp32 }
+          - { sketch: ViaPbHub, unit: UnitPIR, board: m5stack_core, platform-url: "https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json", platform-version: 3.3.9, platform: m5stack, archi: esp32 }
+          - { sketch: ViaPbHub, unit: UnitOP, board: m5stack_core, platform-url: "https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json", platform-version: 3.3.9, platform: m5stack, archi: esp32 }
+
+          # ViaPaHub (Core only)
+          - { sketch: ViaPaHub, unit: UnitTmosPIR, board: m5stack_core, platform-url: "https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json", platform-version: 3.3.9, platform: m5stack, archi: esp32 }
 
     steps:
       - name: Checkout

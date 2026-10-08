@@ -167,12 +167,13 @@ public:
     }
     /*!
       @brief Set protocol codec
-      @param codec Codec instance (must outlive UnitIR; typically a global/static variable)
+      @param codec Codec instance (must outlive UnitIR; typically a global/static variable).
+             Passing the unit's own built-in codec (defaultCodec()) is the same as resetCodec()
       @note Default codec is a built-in AutoDetectCodec. Call resetCodec() to restore it.
      */
     void setCodec(ir::IRCodec& codec)
     {
-        _codec = &codec;
+        _codec = (&codec == &_default_codec) ? nullptr : &codec;
     }
     //! @brief Reset to built-in AutoDetectCodec
     void resetCodec()

@@ -874,6 +874,15 @@ TEST(TestUnitIRMove, MoveAssignUsesOwnDefaultCodec)
     EXPECT_EQ(dst.codec().type(), CodecType::Unknown);
 }
 
+TEST(TestUnitIRMove, SetOwnDefaultCodecStaysMoveSafe)
+{
+    std::unique_ptr<UnitIR> src(new UnitIR());
+    src->setCodec(src->defaultCodec());
+    UnitIR dst(std::move(*src));
+    src.reset();
+    EXPECT_EQ(&dst.codec(), &dst.defaultCodec());
+}
+
 TEST(TestUnitIRMove, MoveKeepsExternalCodec)
 {
     NecCodec nec;

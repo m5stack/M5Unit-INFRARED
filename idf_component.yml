@@ -2,7 +2,7 @@ description: Library for M5Stack UNIT INFRARED (TmosPIR / PIR / OP / IR) using M
 url: https://github.com/m5stack/M5Unit-INFRARED
 issues: https://github.com/m5stack/M5Unit-INFRARED/issues
 license: MIT
-version: "0.2.0"
+version: "0.3.0"
 
 dependencies:
   idf: ">=5.1"

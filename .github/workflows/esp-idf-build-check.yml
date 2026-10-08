@@ -99,17 +99,16 @@ jobs:
           - label: UnitIR SendIR (Built-in IR)
             example_path: examples/UnitUnified/UnitIR/SendIR
             config: CONFIG_EXAMPLE_USING_BUILTIN_IR=y
-          # ViaPbHub needs M5Unit-HUB with ESP-IDF support on its main branch (git main reference).
-          # Enable these once M5Unit-HUB main has the ESP-IDF component manifest.
-          #- label: UnitPIR ViaPbHub
-          #  example_path: examples/UnitUnified/UnitPIR/ViaPbHub
-          #  config: ''
-          #- label: UnitOP ViaPbHub
-          #  example_path: examples/UnitUnified/UnitOP/ViaPbHub
-          #  config: ''
-          #- label: UnitTmosPIR ViaPaHub
-          #  example_path: examples/UnitUnified/UnitTmosPIR/ViaPaHub
-          #  config: ''
+          # ViaPbHub / ViaPaHub pull M5Unit-HUB from its main branch (git reference in main/idf_component.yml).
+          - label: UnitPIR ViaPbHub
+            example_path: examples/UnitUnified/UnitPIR/ViaPbHub
+            config: ''
+          - label: UnitOP ViaPbHub
+            example_path: examples/UnitUnified/UnitOP/ViaPbHub
+            config: ''
+          - label: UnitTmosPIR ViaPaHub
+            example_path: examples/UnitUnified/UnitTmosPIR/ViaPaHub
+            config: ''
     steps:
       - name: Checkout
         uses: actions/checkout@v4

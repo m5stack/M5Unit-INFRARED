@@ -31,7 +31,7 @@ void setup()
     }
 
     // Board-aware I2C: NessoN1 -> SoftwareI2C (M5HAL), NanoC6/NanoH2 -> Ex_I2C, others -> Wire
-    if (!m5::unit::wiring::addI2C(Units, unit, 400000) || !Units.begin()) {
+    if (!m5::unit::wiring::addI2C(Units, unit) || !Units.begin()) {
         M5_LOGE("Failed to begin");
         m5::unit::wiring::failStop();
     }

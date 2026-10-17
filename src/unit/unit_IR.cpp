@@ -111,7 +111,8 @@ bool UnitIR::begin()
 #if defined(M5_UNIT_UNIFIED_USING_RMT_V2)
         cfg.rx.mem_blocks             = 2;
 #elif defined(CONFIG_IDF_TARGET_ESP32S3)
-        cfg.rx.mem_blocks = 1;
+        // 2 blocks (96 items) to hold a Panasonic 48-bit frame (50 items)
+        cfg.rx.mem_blocks = 2;
 #else
         cfg.rx.mem_blocks = 4;
 #endif

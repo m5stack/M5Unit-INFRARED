@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['powerdown_0',['PowerDown',['../unit___s_t_h_s34_p_f80_8hpp.html#a77c07681630e9a92271561c54036dd20a5738b4738d0d5191678eed09d6b5c6f8',1,'m5::unit::sths34pf80']]]
+  ['mitsubishi_0',['Mitsubishi',['../ir__codec_8hpp.html#abad07de0674f26a553411c1a09073655a2fab5d8de22382790ca8eeb34d389b73',1,'m5::unit::ir']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lowpassfilter_0',['LowPassFilter',['../unit___s_t_h_s34_p_f80_8hpp.html#a89e1ae62dc396050b3bd9d7fc547265e',1,'m5::unit::sths34pf80']]]
+  ['gain_0',['Gain',['../unit___s_t_h_s34_p_f80_8hpp.html#a7ce1ea92914e5829c5b1deb4dd396e21',1,'m5::unit::sths34pf80']]]
 ];
